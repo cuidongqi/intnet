@@ -1,0 +1,664 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0042)http://hw1287789687.iteye.com/blog/2213288 -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" dir="ltr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站</title>
+    <meta name="description" content="  本人做java web开发4年了,对java的&quot;慢&quot;深有感触,和PHP没法比啊.  php修改代码之后,立刻生效,无需重启服务器;  而java,修改java文件之后,就得重新部署或者重新启动tomcat.  我一直主要使用eclipse进行java web开发,在编写代码过程中,不管你改了一个字符还是一个方法,甚至整个类,tomcat也会重启.改一点就得重启一次,真心觉得效 ...">
+    <meta name="keywords" content="jrebel, 热部署, tomcat不重启, 重新装载, 差量装载 eclipse插件JRebel的好处">
+    <link rel="shortcut icon" href="http://hw1287789687.iteye.com/images/favicon.ico" type="image/x-icon">
+    <link rel="search" type="application/opensearchdescription+xml" href="http://hw1287789687.iteye.com/open_search.xml" title="ITeye">
+    <link href="http://hw1287789687.iteye.com/rss" rel="alternate" title="简单的幸福" type="application/rss+xml">
+    <link href="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/blog.css" media="screen" rel="stylesheet" type="text/css">
+<link href="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/orange.css" media="screen" rel="stylesheet" type="text/css">
+    <script type="text/javascript" async="" src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/dynamicFloat.js"></script><script src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/hm.js"></script><script type="text/javascript" async="" src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/ga.js"></script><script src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/application.js" type="text/javascript"></script>    
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-535605-1']);
+  _gaq.push(['_setDomainName', 'iteye.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+      <link href="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/SyntaxHighlighter.css" media="screen" rel="stylesheet" type="text/css">
+  <script src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/shCoreCommon.js" type="text/javascript"></script>
+<script src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/hotkey.js" type="text/javascript"></script>
+  <script src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/code_favorites.js" type="text/javascript"></script>
+<script src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/weiboshare.js" type="text/javascript"></script>
+  <script>
+		var _hmt = _hmt || [];
+		(function() {
+		 var hm = document.createElement("script");
+		 hm.src = "//hm.baidu.com/hm.js?e19a8b00cf63f716d774540875007664";
+		 var s = document.getElementsByTagName("script")[0]; 
+		 s.parentNode.insertBefore(hm, s);
+		})();
+	</script>
+    
+  <script src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/get_ads.php" type="text/javascript"></script></head>
+  <body>
+    <div id="header">
+	      <div id="blog_site_nav">
+  <a href="http://www.iteye.com/" class="homepage">首页</a>
+  <a href="http://www.iteye.com/news">资讯</a>
+  <a href="http://www.iteye.com/magazines">精华</a>
+  <a href="http://www.iteye.com/forums">论坛</a>
+  <a href="http://www.iteye.com/ask">问答</a>
+  <a href="http://www.iteye.com/blogs">博客</a>
+  <a href="http://www.iteye.com/blogs/subjects">专栏</a>
+  <a href="http://www.iteye.com/groups">群组</a>
+  <a href="http://hw1287789687.iteye.com/blog/2213288#" onclick="return false;" id="msna"><u>更多</u> <small>▼</small></a>
+  <div class="quick_menu" style="display:none;">
+    <a target="_blank" href="http://job.iteye.com/iteye">知识库</a>
+    <a href="http://www.iteye.com/search">搜索</a>
+  </div>
+</div>
+
+	      <div id="user_nav">
+      <a href="http://hw1287789687.iteye.com/login" class="welcome" title="登录">您还未登录 !</a>
+    <a href="http://hw1287789687.iteye.com/login">登录</a>
+    <a href="http://hw1287789687.iteye.com/signup" class="nobg">注册</a>
+  </div>
+
+	    
+    </div>
+
+    <div id="page">
+        <div id="branding" class="clearfix" style="overflow: hidden;background: none;padding:0 0 2px;">
+        	<div class="J_adv" data-view="true" data-mod="ad_popu_184" data-mtp="34" data-order="92" data-con="ad_content_1127" style="width: 960px; height: 90px;"><!-- 广告占位容器 --><div id="cpro_u2720131"><iframe id="iframeu2720131_0" src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/ycdm.html" width="960" height="90" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0; vertical-align:bottom;margin:0;" allowtransparency="true"></iframe></div><!-- 投放代码 --><script type="text/javascript">   /*服务器频道首页置顶Banner960*90，创建于2014-7-3*/    (window.cproArray = window.cproArray || []).push({        id: 'u2720131'      });  </script>  <script src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/c.js" type="text/javascript"></script></div>
+        </div>
+      <div id="branding" class="clearfix">
+        <div id="blog_name">
+          <h1><a href="http://hw1287789687.iteye.com/">简单的幸福</a></h1>
+        </div>
+        <div id="fd"></div>
+        <div id="blog_navbar">
+          <ul>
+            <li class="blog_navbar_for"><a href="http://hw1287789687.iteye.com/"><strong>博客</strong></a></li>
+            <li><a href="http://hw1287789687.iteye.com/weibo">微博</a></li>
+            <li><a href="http://hw1287789687.iteye.com/album">相册</a></li>
+            <li><a href="http://hw1287789687.iteye.com/link">收藏</a></li>
+            <li><a href="http://hw1287789687.iteye.com/blog/guest_book">留言</a></li>
+            <li><a href="http://hw1287789687.iteye.com/blog/profile">关于我</a></li>
+          </ul>
+    
+          <div class="search">
+            <form action="http://hw1287789687.iteye.com/blog/search" method="get">
+              <input class="search_text" id="query" name="query" style="margin-left: 10px;width: 110px;" type="text" value="">
+              <input class="submit_search" type="submit" value="">
+            </form>
+          </div> 
+          <div id="fd"></div>         
+        </div>
+      </div>
+      
+      <div id="content" class="clearfix">
+        <div id="main">
+          
+
+
+
+          
+
+
+<div class="h-entry" style="display:none">
+  <a href="http://hw1287789687.iteye.com/" class="p-author" target="_blank">hw1287789687</a>
+</div>
+
+
+<div class="blog_main">
+  <div class="blog_title">
+    <h3>
+      <a href="http://hw1287789687.iteye.com/blog/2213288">eclipse插件JRebel的好处</a>
+      <em class="actions">      </em>
+    </h3>
+    <ul class="blog_categories"><strong>博客分类：</strong> <li><a href="http://hw1287789687.iteye.com/category/211079">Java Web</a></li><li><a href="http://hw1287789687.iteye.com/category/254983">Java</a></li> </ul>
+        <div class="news_tag"><a href="http://www.iteye.com/blogs/tag/jrebel">jrebel</a><a href="http://www.iteye.com/blogs/tag/%E7%83%AD%E9%83%A8%E7%BD%B2">热部署</a><a href="http://www.iteye.com/blogs/tag/tomcat%E4%B8%8D%E9%87%8D%E5%90%AF">tomcat不重启</a><a href="http://www.iteye.com/blogs/tag/%E9%87%8D%E6%96%B0%E8%A3%85%E8%BD%BD">重新装载</a><a href="http://www.iteye.com/blogs/tag/%E5%B7%AE%E9%87%8F%E8%A3%85%E8%BD%BD">差量装载</a></div>
+    	  
+    	
+    	
+  		
+      </div>
+
+  <div id="blog_content" class="blog_content">
+    <div style="font-size: 14px;" class="iteye-blog-content-contain">
+<p>本人做java web开发4年了,对java的"慢"深有感触,和PHP没法比啊.</p>
+<p>php修改代码之后,立刻生效,无需重启服务器;</p>
+<p>而java,修改java文件之后,就得重新部署或者重新启动tomcat.</p>
+<p>我一直主要使用eclipse进行java web开发,在编写代码过程中,不管你改了一个字符还是一个方法,甚至整个类,tomcat也会重启.改一点就得重启一次,真心觉得效率太低了,时间都浪费在tomcat重启了.</p>
+<p><span style="color: #ff0000;"><strong>大家说的热部署或者重新发布实际上也相当于tomcat重启了,因为同样是把所有的class和资源文件加载一遍</strong></span></p>
+<p><span style="color: #ff0000;"><strong>其实关键点不是tomcat重不重启,而是每次都全量加载</strong></span></p>
+<p>现在用上了JRebel,tomcat重启的老毛病终于解决了!</p>
+<p>为什么早几年没有人告诉我有JRebel 呢?</p>
+<p>eclipse 安装好JRebel插件之后,可以'帮助'中看到<span style="line-height: 1.5;">JRebel的图标:<br><img alt="" src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/19fe60a6-c27f-3ca5-9ab5-4b4a08f652b2.jpg"><br>&nbsp;</span></p>
+<p><span style="line-height: 1.5;">进入</span><span style="line-height: 1.5;">JRebel Config CENTER:<br><img alt="" src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/68ccf888-7138-3458-97a4-d36fe644acf8.jpg"><br>&nbsp;</span></p>
+<p><span style="line-height: 1.5;">tomcat 的VM arguments 如下:</span></p>
+<p><span style="color: #0000ff;">${jrebel_args}</span></p>
+<p><span style="color: #0000ff;">-Dcatalina.base="D:\software\eclipse\workspace2\.metadata\.plugins\org.eclipse.wst.server.core\tmp0" -Dcatalina.home="D:\software\apache-tomcat-7.0.59-windows-x64\apache-tomcat-7.0.59" -Dwtp.deploy="D:\software\eclipse\workspace2\.metadata\.plugins\org.eclipse.wst.server.core\tmp0\wtpwebapps" -Djava.endorsed.dirs="D:\software\apache-tomcat-7.0.59-windows-x64\apache-tomcat-7.0.59\endorsed"</span></p>
+<p>&nbsp;</p>
+<p><span style="color: #0000ff;">-Drebel.spring_plugin=true</span></p>
+<p>&nbsp;</p>
+<p><span style="line-height: 1.5;">好处:</span></p>
+<p><span style="line-height: 1.5;">当我们修改java文件时,妈妈再也不用担心tomcat重启了,而且JRebel也不会立刻重新装载修改的class,</span></p>
+<p><span style="line-height: 1.5;">只有当我们http访问时才会重新装载修改的类,而且仅仅装载修改的类.实际上是一种<strong><span style="color: #ff0000;">差量装载</span></strong>:<br><img alt="" src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/75172c22-d1f2-38eb-ac56-99d7363b7c7f.jpg"><br>&nbsp;</span></p>
+<p><span style="line-height: 1.5;">JRebel 的破解包&nbsp;</span><strong>jrebel-5.6.1-crack.zip</strong> 见附件</p>
+<p>&nbsp;</p>
+<p>&nbsp;参考:http://hw1287789687.iteye.com/blog/2208906</p>
+<p>&nbsp;</p>
+</div>
+  </div>
+
+  
+  <div class="attachments">
+    
+      
+        <ul style="display:none;">
+          <li><a href="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/19fe60a6-c27f-3ca5-9ab5-4b4a08f652b2.jpg" target="_blank"><img src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/19fe60a6-c27f-3ca5-9ab5-4b4a08f652b2-thumb.jpg" class="magplus" title="点击查看原始大小图片"></a></li>
+          
+          <li>大小: 39.1 KB</li>
+        </ul>
+      
+    
+      
+        <ul style="display:none;">
+          <li><a href="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/68ccf888-7138-3458-97a4-d36fe644acf8.jpg" target="_blank"><img src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/68ccf888-7138-3458-97a4-d36fe644acf8-thumb.jpg" class="magplus" title="点击查看原始大小图片"></a></li>
+          
+          <li>大小: 75.6 KB</li>
+        </ul>
+      
+    
+      
+        <ul style="display:none;">
+          <li><a href="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/75172c22-d1f2-38eb-ac56-99d7363b7c7f.jpg" target="_blank"><img src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/75172c22-d1f2-38eb-ac56-99d7363b7c7f-thumb.jpg" class="magplus" title="点击查看原始大小图片"></a></li>
+          
+          <li>大小: 169.5 KB</li>
+        </ul>
+      
+    
+      
+        <ul>
+          <li><a href="http://dl.iteye.com/topics/download/2be871c2-1119-32e9-8557-0f71d0c4a80a">jrebel-5.6.1-crack.zip</a> (8.2 MB)</li>
+          
+          <li>下载次数: 252</li>
+        </ul>
+      
+    
+    
+      <ul>
+        <li><a href="http://hw1287789687.iteye.com/blog/2213288#" onclick="$$(&#39;div.attachments ul&#39;).invoke(&#39;show&#39;);$(this).up(1).hide();return false;">查看图片附件</a></li>
+      </ul>
+    
+  </div>
+
+
+  
+  <script type="text/javascript">
+    /*iteye博客内页Banner-468*60，创建于2016-5-31*/
+    var cpro_id = "u1405021";
+	</script>
+	<script type="text/javascript" src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/c.js"></script><div id="BAIDU_SSP__wrapper_u1405021_0"><iframe id="iframeu1405021_0" src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/ycdm(1).html" width="468" height="60" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0; vertical-align:bottom;margin:0;" allowtransparency="true"></iframe></div>
+  
+
+  <div id="bottoms" class="clearfix">
+    <div id="digg_bottom" class="clearfix"><div class="digged"><strong>5</strong> <br>顶</div><div class="digged"><strong>2</strong> <br>踩</div></div>
+    <div id="share_weibo">分享到：
+      <a data-type="sina" href="javascript:;" title="分享到新浪微博"><img src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/sina.jpg"></a>
+      <a data-type="qq" href="javascript:;" title="分享到腾讯微博"><img src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/tec.jpg"></a>
+    </div>
+  </div>
+
+  <div class="blog_nav">
+    <div class="pre_next">
+      <a href="http://hw1287789687.iteye.com/blog/2213393" class="next" title="UI设计的五大原则">UI设计的五大原则</a>
+      |
+      <a href="http://hw1287789687.iteye.com/blog/2213002" class="pre" title="html文本框只能输入数字">html文本框只能输入数字</a>
+    </div>
+  </div>
+  <div class="blog_bottom">
+    <ul>
+      <li>2015-05-21 16:51</li>
+      <li>浏览 6855</li>
+      <li><a href="http://hw1287789687.iteye.com/blog/2213288#comments">评论(7)</a></li>
+      
+      
+      <li>分类:<a href="http://www.iteye.com/blogs/category/language">编程语言</a></li>      
+      <li class="last"><a href="http://www.iteye.com/wiki/blog/2213288" target="_blank" class="more">相关推荐</a></li>
+    </ul>    
+  </div>
+  
+		    
+	  		
+<div class="newfors">
+  <em>相关知识库：</em>
+  
+  <a target="_blank" href="http://lib.csdn.net/base/hbase">
+  	<img src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/1479363734443_443.jpg" width="30" height="30" alt="" class="imgradius">
+    <span>Hbase知识库</span>
+  </a>
+  
+  <a target="_blank" href="http://lib.csdn.net/base/mongodb">
+  	<img src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/1478676229520_520.jpg" width="30" height="30" alt="" class="imgradius">
+    <span>MongoDB知识库</span>
+  </a>
+  
+  <a target="_blank" href="http://lib.csdn.net/base/blockchain">
+  	<img src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/1476175342721_721.jpg" width="30" height="30" alt="" class="imgradius">
+    <span>区块链知识库</span>
+  </a>
+  
+  <a target="_blank" href="http://lib.csdn.net/base/objective-c">
+  	<img src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/1477273962202_202.jpg" width="30" height="30" alt="" class="imgradius">
+    <span>Objective-C知识库</span>
+  </a>
+  </div>
+
+	        
+  <div class="blog_comment">
+    <h5>评论</h5>
+    <a id="comments" name="comments"></a>
+    <div id="bc2393490">
+  <div class="comment_title">
+    7 楼
+    <a href="http://di1984hit.iteye.com/" target="_blank" title="di1984HIT">di1984HIT</a>
+    2016-09-21&nbsp;&nbsp;
+    
+    
+  </div>
+  <div class="comment_content">还可以吧～～～～～～～～～～～</div>
+</div>
+
+<div id="bc2390718">
+  <div class="comment_title">
+    6 楼
+    <a href="http://zhao103804.iteye.com/" target="_blank" title="zhao103804">zhao103804</a>
+    2016-06-24&nbsp;&nbsp;
+    
+    
+  </div>
+  <div class="comment_content">这个插件对tomcat有限制吧，我用tomcat8是不行的</div>
+</div>
+
+<div id="bc2380393">
+  <div class="comment_title">
+    5 楼
+    <a href="http://545283613.iteye.com/" target="_blank" title="南瓜猿">南瓜猿</a>
+    2015-10-17&nbsp;&nbsp;
+    
+    
+  </div>
+  <div class="comment_content">楼主很厉害，赞一个！</div>
+</div>
+
+<div id="bc2378371">
+  <div class="comment_title">
+    4 楼
+    <a href="http://851228082.iteye.com/" target="_blank" title="851228082">851228082</a>
+    2015-09-22&nbsp;&nbsp;
+    
+    
+  </div>
+  <div class="comment_content">tomcat如果是debug模式，会自动加载类，不需要重启；</div>
+</div>
+
+<div id="bc2372482">
+  <div class="comment_title">
+    3 楼
+    <a href="http://xiaoxin622sushe.iteye.com/" target="_blank" title="xiaoxin622sushe">xiaoxin622sushe</a>
+    2015-05-22&nbsp;&nbsp;
+    
+    
+  </div>
+  <div class="comment_content">怎么安装？</div>
+</div>
+
+<div id="bc2372451">
+  <div class="comment_title">
+    2 楼
+    <a href="http://haiyangyiba.iteye.com/" target="_blank" title="haiyangyiba">haiyangyiba</a>
+    2015-05-22&nbsp;&nbsp;
+    
+    
+  </div>
+  <div class="comment_content">我一直主要使用eclipse进行java web开发,在编写代码过程中,不管你改了一个字符还是一个方法,甚至整个类,tomcat也会重启.改一点就得重启一次,真心觉得效率太低了,时间都浪费在tomcat重启了.<br><br>楼主你偏搞笑了，不是修改配置文件，添加函数之类的，是可以不用重启的，如果每次保存自动重新发布，则是你eclipse中Server设置的问题</div>
+</div>
+
+<div id="bc2372436">
+  <div class="comment_title">
+    1 楼
+    <a href="http://white-crucifix.iteye.com/" target="_blank" title="white_crucifix">white_crucifix</a>
+    2015-05-21&nbsp;&nbsp;
+    
+    
+  </div>
+  <div class="comment_content">其实如果只修改方法内部代码，是不需要重启服务器的，保存后就自动增量编译了。一定程度上会稍微好一点。</div>
+</div>
+
+
+    
+    
+  </div>
+
+  <div class="blog_comment">
+    <h5>发表评论</h5>
+            <p style="text-align:center; margin-top:30px;margin-bottom:0px;"><a href="http://hw1287789687.iteye.com/login" style="background-color:white;"> <img src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/login_icon.png" style="vertical-align:middle; margin-right: 10px;"></a><a href="http://hw1287789687.iteye.com/login">  您还没有登录,请您登录后再发表评论 </a></p>
+      </div>
+</div>
+
+
+<script type="text/javascript">
+  dp.SyntaxHighlighter.HighlightAll('code', true, true);
+
+  $$('#main .blog_content pre[name=code]').each(function(pre, index){ // blog content
+    var post_id = 2213288;
+    var location = window.location;
+    source_url = location.protocol + "//" + location.host + location.pathname + location.search;
+    pre.writeAttribute('codeable_id', post_id);
+    pre.writeAttribute('codeable_type', "Blog");
+    pre.writeAttribute('source_url', source_url);
+    pre.writeAttribute('pre_index', index);
+    pre.writeAttribute('title', 'eclipse插件JRebel的好处');
+  });
+
+  fix_image_size($$('div.blog_content img'), 700);
+
+  function processComment() {
+    $$('#main .blog_comment > div').each(function(comment){// comment
+      var post_id = comment.id.substr(2);
+      $$("#"+comment.id+" pre[name=code]").each(function(pre, index){
+        var location = window.location;
+        source_url = location.protocol + "//" + location.host + location.pathname + location.search;
+        source_url += "#" + comment.id;
+        pre.writeAttribute('codeable_id', post_id);
+        pre.writeAttribute('codeable_type', "BlogComment");
+        pre.writeAttribute('source_url', source_url);
+        pre.writeAttribute('pre_index', index);
+        pre.writeAttribute('title', 'eclipse插件JRebel的好处');
+      });
+    });
+  }
+
+  function quote_comment(id) {
+    new Ajax.Request('/editor/quote', {
+      parameters: {'id':id, 'type':'BlogComment'},
+      onSuccess:function(response){editor.bbcode_editor.textarea.insertAfterSelection(response.responseText);
+        Element.scrollTo(editor.bbcode_editor.textarea.element);}
+    });
+  }
+
+  code_favorites_init();
+  processComment();
+  new WeiboShare({share_buttons: $('share_weibo'), img_scope: $('blog_content')});
+</script>
+
+
+
+
+        </div>
+
+        <div id="local">
+          <div class="local_top"></div>
+          <div id="blog_owner">
+  <div id="blog_owner_logo"><a href="http://hw1287789687.iteye.com/"><img alt="hw1287789687的博客" class="logo" src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/79082e45-0ca9-3f4e-9721-ae9d56ee6e83.png" title="hw1287789687的博客: 简单的幸福" width=""></a></div>
+  <div id="blog_owner_name">hw1287789687</div>
+</div>
+
+          <div id="blog_actions">
+            <ul>
+              <li>浏览: 1730954 次</li>
+              <li>性别: <img alt="Icon_minigender_1" src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/icon_minigender_1.gif" title="男"></li>
+              <li>来自: 北京</li>
+              <li><img src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/offline.gif"></li>
+              
+            </ul>
+          </div>
+          <div id="user_visits" class="clearfix">
+            <h5>最近访客 <span style="font-weight:normal;font-size:12px;padding-left:30px;"><a href="http://hw1287789687.iteye.com/blog/user_visits">更多访客&gt;&gt;</a></span></h5>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://liunancun.iteye.com/" target="_blank"><img alt="liunancun的博客" class="logo" src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/user-logo-thumb.gif" title="liunancun的博客: " width="48px"></a></div>
+                <div class="left"><a href="http://liunancun.iteye.com/" target="_blank" title="liunancun">liunancun</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://eshidai19861227.iteye.com/" target="_blank"><img alt="eshidai19861227的博客" class="logo" src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/user-logo-thumb.gif" title="eshidai19861227的博客: " width="48px"></a></div>
+                <div class="left"><a href="http://eshidai19861227.iteye.com/" target="_blank" title="eshidai19861227">eshidai19861227</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://zhangdong92.iteye.com/" target="_blank"><img alt="zhangdong92的博客" class="logo" src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/user-logo-thumb.gif" title="zhangdong92的博客: " width="48px"></a></div>
+                <div class="left"><a href="http://zhangdong92.iteye.com/" target="_blank" title="zhangdong92">zhangdong92</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://kidding87.iteye.com/" target="_blank"><img alt="kidding87的博客" class="logo" src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/c9e4f91e-e674-3e6e-9148-db6593e12ab4-thumb.jpg" title="kidding87的博客: " width="48px"></a></div>
+                <div class="left"><a href="http://kidding87.iteye.com/" target="_blank" title="kidding87">kidding87</a></div>
+              </div>
+            
+          </div>
+
+          
+
+                      <div id="blog_menu">
+              <h5>文章分类</h5>
+              <ul>
+                <li><a href="http://hw1287789687.iteye.com/">全部博客 (701)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/211076">postgreSQL (1)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/211077">数据库 (11)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/211078">oracle (1)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/211079">Java Web (199)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/211080">ZK框架 (0)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/211081">installanywhere (0)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/211082">linux命令 (44)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/211083">dos cmd (3)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/211084">随笔_随感 (14)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/254983">Java (271)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/254984">C (0)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/254985">unix (10)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/256226">C++ (0)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/256227">perl (0)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/256228">python (9)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/256229">ruby (2)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/256230">bash (1)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/256231">mysql (6)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/292732">android (5)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/292733">法律 (0)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/295000">maven ant (1)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/295001">ios (7)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/295002">Continuous integration (2)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/295003">java swing (66)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/295004">java  swt (4)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/295005">spring MVC (20)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/311041">javascript (131)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/311042">css (22)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/311043">libgdx (0)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/312862">nginx (8)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/312863">loadruner (0)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/330423">php (5)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/342538">git (8)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/352467">IDEA (3)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/352584">接口调试神器 (7)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/352749">数学math (1)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/352750">eclipse (1)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/355274">mac (10)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/362580">freemark (0)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/363226">ajax (1)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/363293">less (1)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/363907">zookeeper (1)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/365348">react (3)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/365573">html5 (1)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/365609">jQuery (1)</a></li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/category/366358">gitlab (1)</a></li>
+                
+              </ul>
+            </div>
+            <div id="month_blogs">
+              <h5>社区版块</h5>
+              <ul>
+                <li><a href="http://hw1287789687.iteye.com/blog/news">我的资讯</a> (0)</li>
+                <li>
+                  <a href="http://hw1287789687.iteye.com/blog/post">我的论坛</a> (25)
+                </li>
+                <li><a href="http://hw1287789687.iteye.com/blog/answered_problems">我的问答</a> (3)</li>
+              </ul>
+            </div>
+            <div id="month_blogs">
+              <h5>存档分类</h5>
+              <ul>
+                
+                  <li><a href="http://hw1287789687.iteye.com/blog/monthblog/2016-11">2016-11</a> (13)</li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/blog/monthblog/2016-10">2016-10</a> (19)</li>
+                
+                  <li><a href="http://hw1287789687.iteye.com/blog/monthblog/2016-09">2016-09</a> (20)</li>
+                
+                <li><a href="http://hw1287789687.iteye.com/blog/monthblog_more">更多存档...</a></li>
+              </ul>
+            </div>
+            
+            
+              <div id="comments_top">
+                <h5>评论排行榜</h5>
+                <ul>
+                  
+                    <li><a href="http://hw1287789687.iteye.com/blog/2286007" title="mac book 搭建开发环境">mac book 搭建开发环境</a></li>
+                  
+                    <li><a href="http://hw1287789687.iteye.com/blog/2335495" title="swing itemStateChanged为什么执行了两次">swing itemStateChanged为什么执行了两次</a></li>
+                  
+                    <li><a href="http://hw1287789687.iteye.com/blog/2311311" title="网页保持footer始终在底部">网页保持footer始终在底部</a></li>
+                  
+                    <li><a href="http://hw1287789687.iteye.com/blog/2277799" title="点赞功能的设计">点赞功能的设计</a></li>
+                  
+                    <li><a href="http://hw1287789687.iteye.com/blog/2261455" title="html li标签设置value诡异的问题">html li标签设置value诡异的问题</a></li>
+                  
+                </ul>
+              </div>
+            
+
+            <div id="guest_books">
+              <h5>最新评论</h5>
+              <ul>
+                
+                <li>
+                  <a href="http://tangzhichao.iteye.com/" target="_blank" title="tangzhichao">tangzhichao</a>： 
+                  itemStateChanged：已选中的item不选中时触发 ...<br>
+                  <a href="http://hw1287789687.iteye.com/blog/2335495#bc2394673">swing itemStateChanged为什么执行了两次</a>
+                </li>
+                
+                <li>
+                  <a href="http://1191280273.iteye.com/" target="_blank" title="风陵渡口">风陵渡口</a>： 
+                  成功实现，感谢&nbsp;&nbsp;<br>
+                  <a href="http://hw1287789687.iteye.com/blog/2188617#bc2394535">java web跨域请求</a>
+                </li>
+                
+                <li>
+                  <a href="http://masuweng.iteye.com/" target="_blank" title="masuweng">masuweng</a>： 
+                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>
+                  <a href="http://hw1287789687.iteye.com/blog/1891291#bc2394435">安装完maven之后第一次构件报错</a>
+                </li>
+                
+                <li>
+                  <a href="http://a791756102.iteye.com/" target="_blank" title="清名清心">清名清心</a>： 
+                  找了好多帖子，这是最简单的解决方法！<br>
+                  <a href="http://hw1287789687.iteye.com/blog/2128296#bc2394404">IE中使用ajaxSubmit上传文件弹出下载提示框</a>
+                </li>
+                
+                <li>
+                  <a href="http://jiafuwei0407.iteye.com/" target="_blank" title="jiafuwei0407">jiafuwei0407</a>： 
+                  写的很好<br>
+                  <a href="http://hw1287789687.iteye.com/blog/2004742#bc2393845">方向错了，第一名就会变成最后一名</a>
+                </li>
+                
+              </ul>
+            </div>
+
+            <div class="local_bottom"></div>
+          
+        </div>
+        <div style="margin-top: 10px;float: left;clear: left;">
+					<div class="J_adv" data-view="true" data-mod="ad_popu_185" data-mtp="36" data-order="92" data-con="ad_content_1129" style="width: 200px; height: 200px;"><!-- 广告占位容器 --><div id="cpro_u2720202" style="width: 200px; height: 200px; display: inline-block;"><iframe id="iframeu2720202_0" src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/ycdm(2).html" width="200" height="200" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0; vertical-align:bottom;margin:0;" allowtransparency="true"></iframe></div><!-- 投放代码 --><script type="text/javascript">(window['cproStyleApi'] = window['cproStyleApi'] ||{})['u2720202']={at:'3',rsi0:'200',rsi1:'200',pat:'6',tn:'baiduCustNativeAD',rss1:'#FFFFFF',conBW:'1',adp:'1',ptt:'0',titFF:'%E5%BE%AE%E8%BD%AF%E9%9B%85%E9%BB%91',titFS:'',rss2:'#000000',titSU:'0',ptbg:'90',piw:'0',pih:'0',ptp:'0'};/*服务器频道首页置顶Banner960*90，创建于2014-7-3*/(window.cproArray = window.cproArray || []).push({id:'u2720202'});  </script>  <script src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/c.js" type="text/javascript"></script></div>
+				</div>
+      </div>    
+
+      <div id="footer" class="clearfix">
+        <div id="copyright">
+          <hr>
+          声明：ITeye文章版权属于作者，受法律保护。没有作者书面许可不得转载。若作者同意转载，必须以超链接形式标明文章原始出处和作者。<br>
+          © 2003-2016 ITeye.com.   All rights reserved.  [ 京ICP证110151号  京公网安备110105010620 ]
+        </div>
+        <div class="J_adv" data-view="true" data-mod="ad_popu_186" data-mtp="40" data-order="92" data-con="ad_content_1132" style="width: 1px; height: 1px; position: fixed; right: 10px; bottom: 10px; z-index: 999; background-color: transparent;"><div id="location_parent"></div><script>document.getElementById('location_parent').parentNode.style.height='1px';document.getElementById('location_parent').parentNode.style.width='1px';document.getElementById('location_parent').parentNode.style.position='fixed';document.getElementById('location_parent').parentNode.style.right='10px';document.getElementById('location_parent').parentNode.style.bottom='10px';document.getElementById('location_parent').parentNode.style.zIndex=999;document.getElementById('location_parent').parentNode.style.backgroundColor='transparent';</script><!-- 广告占位容器 --><div id="cpro_u2720296" style="box-sizing: content-box; width: 311px; height: 286px; overflow: hidden; z-index: 2147483647; position: fixed; bottom: 10px; right: 10px;"><div style="box-sizing: content-box;width:300px;height:250px;padding:4px;border:#acacac 1px solid;overflow:hidden;position:absolute;left:0;top:25px;"><iframe id="iframeu2720296_0" src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/ycdm(3).html" width="300" height="250" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0; vertical-align:bottom;margin:0;" allowtransparency="true"></iframe></div><div id="cpro_u2720296_closebtn" style="box-sizing: content-box;position:absolute;width:61px;height:20px;top:0;left:250px;margin:0;padding:0;margin-bottom:5px;cursor:pointer;overflow:hidden;"><div style="box-sizing: content-box;width:40px;height:20px;background-color:#999999;color:#fff;float:left;margin-right:1px;font-size:12px;font-family:微软雅黑;text-align: center;line-height:20px;">关闭</div><a style="maring:0;padding:0;display:inline-block;border:none;overflow:hidden;height:20px;line-height:20px;cursor:pointer;width:20px;background:url(&#39;https://cpro.baidustatic.com/cpro/ui/noexpire/img/2.0.1/xuanfu_close.png&#39;) no-repeat 0 0;margin-bottom:3px;float:left"></a></div></div><!-- 投放代码 --><script type="text/javascript">(window['cproStyleApi'] = window['cproStyleApi'] || {})['u2720296']={at:'3',rsi0:'300',rsi1:'250',pat:'17',tn:'baiduCustNativeAD_xuanfu',rss1:'#FFFFFF',conBW:'1',adp:'1',ptt:'0',titFF:'%E5%BE%AE%E8%BD%AF%E9%9B%85%E9%BB%91',titFS:'14',rss2:'#000000',titSU:'0'};/*服务器频道首页置顶Banner960*90，创建于2014-7-3*/(window.cproArray = window.cproArray || []).push({id:'u2720296'});  </script>  <script src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/f.js" type="text/javascript"></script></div>
+      </div>
+    </div>
+    <script type="text/javascript">
+  document.write("<img src='http://stat.iteye.com/?url="+ encodeURIComponent(document.location.href) + "&referrer=" + encodeURIComponent(document.referrer) + "&user_id=' width='0' height='0' />");
+</script><img src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/saved_resource" width="0" height="0">
+
+<script src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/tracking.js" type="text/javascript"></script>
+
+    
+    
+    <script language="javascript" type="text/javascript" src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/async_new.js"></script>
+<script src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">var $csdn_iteye_jq = jQuery.noConflict();// 解决jq与prototype.js命名空间冲突的问题</script>
+<script src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/tracking(1).js" type="text/javascript"></script>
+    
+	    
+	    <script src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/web-storage-cache.min.js" type="text/javascript"></script>
+	    <script src="./eclipse插件JRebel的好处 - 简单的幸福 - ITeye技术网站_files/replace.min.js" type="text/javascript"></script>
+    
+    
+  
+
+</body></html>

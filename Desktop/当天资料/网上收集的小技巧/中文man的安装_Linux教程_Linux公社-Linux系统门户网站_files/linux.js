@@ -1,0 +1,1 @@
+document.writeln("<a href=\"http:\/\/www.yutianedu.cn\/exam-service\/hciecloud-2.html\" target=\"_blank\"><img src=\"http:\/\/www.linuxidc.com\/linuxfile\/yutian50060.gif\" alt=\"\" width=\"500\" height=\"60\" \/><\/a>")

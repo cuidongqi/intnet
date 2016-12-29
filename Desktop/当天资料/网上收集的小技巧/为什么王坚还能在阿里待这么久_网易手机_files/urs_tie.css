@@ -1,0 +1,43 @@
+.g-bd {width: 380px;margin: 0 auto;}
+.m-header {padding: 50px 0 40px;}
+.m-header .headimg {width: 180px;height: 18px;background: url(http://img6.cache.netease.com/tie/images/sdk/urs_title.png) no-repeat;background-position: 0 0;}
+.u-closebtn, .w-exception .close {top: 0;right: 0;width: 50px;height: 49px;background: url(http://img6.cache.netease.com/tie/images/sdk/urs_close.png) no-repeat;}
+.u-closebtn:hover {transform: none;background-position: 0 -50px;}
+.u-closebtn1 {background-position: 0 0;}
+.m-cnt {padding: 0 40px;}
+.m-cnt .u-logo {display: none;}
+.m-cnt .inputbox {height: 48px;line-height: 48px;border-radius: 5px;border-color: #e5e5e5;}
+.m-cnt .inputbox.active {border-color: #1d87e4;}
+.m-cnt .inputbox.error-color {border-color: #f33;}
+.m-cnt .u-input {padding-left: 3px;}
+.m-cnt .u-input input {height: 44px;line-height: 44px;color: #666;}
+.m-cnt .u-input input {padding-left: 17px;font-weight: normal;}
+.m-cnt .u-success {margin-top: 14px;}
+.m-cnt .m-sug {width: 298px;left: 0;top: 5px;background: #fff;}
+.m-cnt #login-form .m-sug {left: -1px; top: 55px;border-color: #e5e5e5;background-color:#fff;}
+.m-cnt .m-sug .itm {height: 32px;padding-left: 35px;color: #666;line-height: 32px;font-size: 16px;}
+.m-cnt .m-sug .js-selected {height: 32px;background: #f6f6f6;line-height: 32px;}
+.m-cnt .ckin {width: 298px;}
+.m-cnt .ckimgbox {position: absolute;left: 220px;top: 241px;margin-left: 0;border: none;}
+.m-cnt .ckimg {width: 110px;height: 34px;margin: 6px 0;border: none;}
+.m-cnt .m-nerror {margin-top: 9px;}
+.m-cnt .m-nerror .ferrorhead, .m-cnt .m-nerror .ferrorhead2 {width: 300px;font-size: 14px;line-height: 18px;    text-indent: 18px;margin-top: -18px;}
+.m-cnt .m-nerror .ferrortail2 {width: 14px;height: 14px;margin-top: 1px;margin-right: 4px;background: url(http://img6.cache.netease.com/tie/images/sdk/urs_err.png) no-repeat;}
+.m-cnt .m-nerror .ferrorhead2 a {color: #ff3333 !important;text-decoration: none !important;margin-left: 5px;}
+.m-cnt .m-nerror .ferrorhead2 a:hover {text-decoration: underline !important;}
+.loginbox {margin-bottom: 4px;}
+.u-loginbtn {background-color: #ff3333;border-radius: 5px;height: 50px;line-height: 48px;}
+.u-loginbtn:hover {background-color: #ff5758;}
+.m-cnt .m-unlogin {font-family: "\5B8B\4F53";}
+.m-cnt .m-unlogin .b-unlogn {float: right;margin-right: 0;border-right: none;width: 96px;}
+.m-cnt .m-unlogin .forgetpwd {margin-right: 8px;}
+.m-cnt .m-unlogin .forgetpwd:hover {color: #ff3333;text-decoration: underline;}
+.m-cnt .m-unlogin .u-regbtn {float: left;display: inline-block;width: 34px;padding-left: 10px;border-left: solid 1px #e5e5e5; }
+.m-cnt .m-unlogin .u-regbtn.bgcolor:hover {color: #ff3333;text-decoration: underline;}
+.w-exception {width: 100%;}
+.w-exception .cnt {padding: 50px 40px 58px;}
+.w-exception .cnt .note {font-size: 20px;line-height: 30px;color: #404040;margin-top: 13px;margin-bottom: 45px;}
+.w-exception .warnlogo {width: 53px;height: 53px;background: url(http://img6.cache.netease.com/tie/images/sdk/urs_warn.png) no-repeat;}
+.u-btn-middle3, .u-btn.bgcolor {width: 140px;height: 50px;line-height: 48px;border-radius: 4px;box-sizing: border-box;}
+.u-btn.bgcolor {border-color: #77b7ef;color: #1d87e4;line-height: 46px;}
+.u-btn-middle3.btncolor {background-color: #1d87e4;color: #fff;box-sizing: border-box;}

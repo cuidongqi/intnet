@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Use Js</title>
+<link href="./res/extjs/resources/css/ext-all.css" rel="stylesheet" />
+<link href="./theme/gray/css/base.css" rel="stylesheet" />
+<link href="./theme/gray/css/ext/ext.css" rel="stylesheet" />
+<link href="./theme/gray/css/main.css" rel="stylesheet" />
+<script type="text/javascript"
+   src="./res/jquery/jquery-1.6.4.min.js"></script>
+<script type="text/javascript"
+   src="./res/jquery/plugins/jquery.validate.min.js"></script>
+<script type="text/javascript"
+   src="./res/jquery/plugins/jquery.validate.message_cn.js"></script>
+<script type="text/javascript">
+	// 二、jqueryValidate的默认配置
+	$.validator.setDefaults({
+		// 当表单的时候，执行回调方法
+		submitHandler: function(form) {
+			alert("submitted!");
+			
+			// 通过回调函数的参数进行表单的提交
+			//form.submit();
+		}
+	});
+
+	// 自定义校验规则
+	// 回调的三个参数
+	$.validator.addMethod("af", function(value, element, params) {
+		// ① 只能输入一个字符
+		if (value.length > 1) {
+			return false;
+		}
+		// ② 只能输入a-f之间的字符
+		if (value >= params[0] && value <= params[1]) {
+			return true;
+		} else {
+			return false;
+		}
+	}, "必须是一个字母，且a-f");
+	
+	// 一、页面加载完毕后
+	$().ready(function() {
+		// 当表单提交的时候执行校验
+		$("#fbean").validate({
+			// 禁用提交时验证,注意提交表单的回调方法submitHandler就会失效
+			//onsubmit : false,
+			/* // 禁用失去焦点时验证
+			onfocusout : false,
+			// 禁用按键抬起时验证
+			onkeyup : false, */
+			
+			errorClass : 'ver-error',
+			validClass : 'ver-right',
+			// 成功验证后的回调
+			success : function(label){
+				label.addClass("checked");
+			},
+			rules : {
+				username : {
+					required : true,
+					af : 'af'
+				},
+				// 默认的校验规则
+				email : {
+					required : true,
+					email : true
+				},
+				url : {
+					required : true,
+					url : true
+				},
+				sex : {
+					required : true
+				}
+			},
+			messages : {
+				username : {
+					required : "请输入用户名",
+					af : '只能输入a-f直接的一个字符'
+				},
+				// 默认的校验规则
+				email : {
+					required : "请输入邮箱哦",
+					email : "邮箱格式不正确哦"
+				}
+			}
+		});
+	});
+</script>
+</head>
+<body>
+	<!-- 使用标签验证的缺点：
+		改变了html原始标签的样子
+		校验规则加在标签上造成代码的可读性差，维护难
+	 -->
+	<form id="fbean" action="" >
+		<h4>用户名：</h4><input class="input-text" type="text" name="username" id="username" >
+		<br><br>
+		<h4>邮箱：</h4><input class="input-text" type="text" name="email" id="email" >
+		<br><br>
+		<h4>url：</h4><input class="input-text" type="text" name="url" id="url" >
+		<br><br>
+		<h4>性别：</h4><input type="radio" name="sex" value="1">男
+		<input type="radio" name="sex" value="2">女
+		<br><br>
+		<input type="submit" value="Submit">
+	</form>
+</body>
+</html>

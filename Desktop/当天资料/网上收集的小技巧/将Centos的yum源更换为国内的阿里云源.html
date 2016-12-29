@@ -1,0 +1,325 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0055)http://linux.it.net.cn/CentOS/fast/2015/0417/14545.html -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=GBK">
+
+<title>将Centos的yum源更换为国内的阿里云源</title>
+<!--<base target="_blank">--><base href="." target="_blank">
+<meta name="keywords" content="将Centos的yum源更换为国内的阿里云源">
+<meta name="description" content="阿里云Linux安装软件镜像源 阿里云是最近新出的一个镜像源。得益与阿里云的高速发展，这么大的需求，肯定会推出自己的镜像源。 阿里云Linux安装镜像源地址：http://mirrors.aliyun.com/ CentOS系统更换软件安装源 第一步：备份你的原镜像文件，以免出错后可以">
+<link href="./将Centos的yum源更换为国内的阿里云源_files/dedecms.css" rel="stylesheet" media="screen" type="text/css">
+<meta http-equiv="mobile-agent" content="format=xhtml;url=/m/view.php?aid=14545">
+<script src="./将Centos的yum源更换为国内的阿里云源_files/ca-pub-6339733486259761.js"></script><script type="text/javascript" async="" src="./将Centos的yum源更换为国内的阿里云源_files/lcxm"></script><script type="text/javascript">if(window.location.toString().indexOf('pref=padindex') != -1){}else{if(/AppleWebKit.*Mobile/i.test(navigator.userAgent) || (/MIDP|SymbianOS|NOKIA|SAMSUNG|LG|NEC|TCL|Alcatel|BIRD|DBTEL|Dopod|PHILIPS|HAIER|LENOVO|MOT-|Nokia|SonyEricsson|SIE-|Amoi|ZTE/.test(navigator.userAgent))){if(window.location.href.indexOf("?mobile")<0){try{if(/Android|Windows Phone|webOS|iPhone|iPod|BlackBerry/i.test(navigator.userAgent)){window.location.href="/m/view.php?aid=14545";}else if(/iPad/i.test(navigator.userAgent)){}else{}}catch(e){}}}}</script>
+<script language="javascript" type="text/javascript" src="./将Centos的yum源更换为国内的阿里云源_files/dedeajax2.js"></script>
+
+
+</head>
+<body class="articleview"><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="./将Centos的yum源更换为国内的阿里云源_files/o.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div>
+<div class="header_top">  
+    <div class="w960 center">  
+     <span id="time" class="time"></span>
+     <div class="toplinks"><a href="http://linux.it.net.cn/plus/heightsearch.php" target="_blank">高级搜索</a>|<a href="http://linux.it.net.cn/data/sitemap.html" target="_blank">网站地图</a>|<a href="http://linux.it.net.cn/tags.php">TAG标签</a><a href="http://linux.it.net.cn/data/rssmap.html" class="rss">RSS订阅</a><span>[<a href="http://linux.it.net.cn/CentOS/fast/2015/0417/14545.html" onclick="this.style.behavior=&#39;url(#default#homepage)&#39;;this.setHomePage(&#39;http://linux.it.net.cn&#39;);">设为首页</a>] [<a href="javascript:window.external.AddFavorite(&#39;http://linux.it.net.cn&#39;,&#39;Linux学习 - IT网专注Linux、Centos、Redhat、Ubuntu技术&#39;)">加入收藏</a>]</span></div>
+    </div> 
+</div>
+<div class="header">
+	<div class="top w960 center">
+      <div class="title">
+        <h1><a href="http://linux.it.net.cn/"><img src="./将Centos的yum源更换为国内的阿里云源_files/logo.gif" height="54" width="216" alt="Linux学习 - IT网专注Linux、Centos、Redhat、Ubuntu技术"></a> </h1>
+      </div>
+      <div class="banner"></div>
+      <div class="banner2"></div>
+       
+	</div><!-- //top -->
+	<!-- //菜单 -->
+	<div class="module blue mT10 wrapper w963">
+  	<div class="top">
+    	<!-- //如果不使用currentstyle，可以在channel标签加入 cacheid='channeltoplist' 属性提升性能 -->
+    <div id="navMenu">
+    	<ul>
+      	<li><a href="http://linux.it.net.cn/"><span>首页</span></a></li>
+      	
+      	<li><a href="http://linux.it.net.cn/e/news/"><span>Linux新闻</span></a></li>
+      	
+      	<li><a href="http://linux.it.net.cn/e/Linuxit/" rel="dropmenu2"><span>Linux教程</span></a></li>
+      	
+      	<li><a href="http://linux.it.net.cn/e/Linuxcode/"><span>Linux编程</span></a></li>
+      	
+      	<li><a href="http://linux.it.net.cn/e/safe/"><span>Linux安全</span></a></li>
+      	
+      	<li><a href="http://linux.it.net.cn/e/server/" rel="dropmenu16"><span>Linux服务器</span></a></li>
+      	
+      	<li><a href="http://linux.it.net.cn/e/command/"><span>Linux命令</span></a></li>
+      	<li class="hover"><a href="http://linux.it.net.cn/CentOS/" rel="dropmenu5"><span>CentOS</span></a></li>
+      	<li><a href="http://linux.it.net.cn/e/bug/"><span>Linux故障</span></a></li>
+      	
+      	<li><a href="http://linux.it.net.cn/e/shell/"><span>shell编程</span></a></li>
+      	
+    	</ul>
+    </div>	
+    <div class="search">
+      <form name="formsearch" action="http://linux.it.net.cn/plus/search.php">
+        <div class="form">
+          <h4>搜索</h4>
+           <input type="hidden" name="kwtype" value="0">
+           <input name="q" type="text" class="search-keyword" id="search-keyword" value="在这里搜索..." onfocus="if(this.value==&#39;在这里搜索...&#39;){this.value=&#39;&#39;;}" onblur="if(this.value==&#39;&#39;){this.value=&#39;在这里搜索...&#39;;}">
+           <select name="searchtype" class="search-option" id="search-option">
+               <option value="title" selected="1">检索标题</option>
+               <option value="titlekeyword">智能模糊</option>
+           </select>
+          <button type="submit" class="search-submit">搜索</button>
+        </div>
+        </form>
+        <div class="tags">
+          <h4>热门标签:</h4>
+          <ul>
+          
+            <li><a href="http://linux.it.net.cn/tags.php?/%B0%B2%D7%B0/">安装</a></li>
+          
+            <li><a href="http://linux.it.net.cn/tags.php?/shell/">shell</a></li>
+          
+            <li><a href="http://linux.it.net.cn/tags.php?/nginx/">nginx</a></li>
+          
+            <li><a href="http://linux.it.net.cn/tags.php?/vpn/">vpn</a></li>
+          
+            <li><a href="http://linux.it.net.cn/tags.php?/%C4%BE%C2%ED/">木马</a></li>
+          
+            <li><a href="http://linux.it.net.cn/tags.php?/1/">1</a></li>
+          
+            <li><a href="http://linux.it.net.cn/tags.php?/recognized/">recognized</a></li>
+          
+            <li><a href="http://linux.it.net.cn/tags.php?/%D6%A4%CA%E9%C8%CF%D6%A4/">证书认证</a></li>
+          
+            <li><a href="http://linux.it.net.cn/tags.php?/awk/">awk</a></li>
+          
+            <li><a href="http://linux.it.net.cn/tags.php?/%CF%E0%D3%A6%C3%FC%C1%EE/">相应命令</a></li>
+          
+          </ul>
+        </div>
+    </div><!-- //search -->
+		</div>
+	</div>
+</div><!-- //header -->
+
+<!-- /header -->
+<div class="w960 center clear mt1">
+
+ 
+<center>
+
+
+ 
+<script type="text/javascript"> 
+    /*960*90 创建于 2014-11-30*/
+    var cpro_id = "u1836384";
+</script>
+<script src="./将Centos的yum源更换为国内的阿里云源_files/c.js" type="text/javascript"></script><div id="BAIDU_SSP__wrapper_u1836384_0"><iframe id="iframeu1836384_0" src="./将Centos的yum源更换为国内的阿里云源_files/lcxm.html" width="960" height="90" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0; vertical-align:bottom;margin:0;" allowtransparency="true"></iframe></div>
+
+
+ 
+<br>
+
+
+
+
+<script async="" src="./将Centos的yum源更换为国内的阿里云源_files/adsbygoogle.js"></script>
+<!-- kkk -->
+<ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px" data-ad-client="ca-pub-6339733486259761" data-ad-slot="5423594301" data-adsbygoogle-status="done"><ins id="aswift_0_expand" style="display:inline-table;border:none;height:90px;margin:0;padding:0;position:relative;visibility:visible;width:728px;background-color:transparent"><ins id="aswift_0_anchor" style="display:block;border:none;height:90px;margin:0;padding:0;position:relative;visibility:visible;width:728px;background-color:transparent"><iframe width="728" height="90" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_0" name="aswift_0" style="left:0;position:absolute;top:0;" src="./将Centos的yum源更换为国内的阿里云源_files/saved_resource.html"></iframe></ins></ins></ins>
+<script> 
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+
+
+</center>
+
+
+
+<div class="pleft">
+ <div class="place"> <strong>当前位置:</strong> <a href="http://linux.it.net.cn/">首页</a> &gt; <a href="http://linux.it.net.cn/CentOS/">CentOS</a> &gt; <a href="http://linux.it.net.cn/CentOS/fast/">CentOS入门</a> &gt;  </div>
+ <!-- /place -->
+ <div class="viewbox">
+  <div class="title">
+   <h2>将Centos的yum源更换为国内的阿里云源</h2>
+  </div>
+  <!-- /title -->
+  <div class="info"> <small>时间:</small>2015-04-17 16:16<small>来源:</small>blog.csdn.net <small>作者:</small>codemanship</div>
+  <!-- /info -->
+  <div class="content">
+   <table width="100%">
+    <tbody><tr>
+     <td><div id="contentMidPicAD" style="float:right; clear:both; top:0; vertical-align:top;"></div>
+      阿里云Linux安装软件镜像源<br>
+<br>
+阿里云是最近新出的一个镜像源。得益与阿里云的高速发展，这么大的需求，肯定会推出自己的镜像源。<br>
+阿里云Linux安装镜像源地址：http://mirrors.aliyun.com/<br>
+<br>
+CentOS系统更换软件安装源<br>
+第一步：备份你的原镜像文件，以免出错后可以恢复。<br>
+<br>
+mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup<br>
+第二步：下载新的CentOS-Base.repo 到/etc/yum.repos.d/<br>
+CentOS 5<br>
+<br>
+wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-5.repo<br>
+CentOS 6<br>
+<br>
+wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-6.repo<br>
+第三步：运行yum makecache生成缓存<br>
+<br>
+yum clean all<br>
+<br>
+yum makecache<br>
+<br>
+
+      
+      (责任编辑：IT)</td>
+    </tr>
+   </tbody></table>
+
+<center>
+ 
+<div id="contentMidPicAD" style="float:left; clear:both; top:0; vertical-align:top;"><script async="" src="./将Centos的yum源更换为国内的阿里云源_files/adsbygoogle.js"></script>
+<ins class="adsbygoogle" style="display: inline-block; width: 300px; height: 250px;" data-ad-client="ca-pub-6339733486259761" data-ad-slot="2609728701" data-adsbygoogle-status="done"><ins id="aswift_1_expand" style="display:inline-table;border:none;height:250px;margin:0;padding:0;position:relative;visibility:visible;width:300px;background-color:transparent"><ins id="aswift_1_anchor" style="display:block;border:none;height:250px;margin:0;padding:0;position:relative;visibility:visible;width:300px;background-color:transparent"><iframe width="300" height="250" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_1" name="aswift_1" style="left:0;position:absolute;top:0;" src="./将Centos的yum源更换为国内的阿里云源_files/saved_resource(1).html"></iframe></ins></ins></ins>
+<script> 
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script></div>
+ 
+</center>
+
+
+  <!-- /content -->
+  <div class="dede_pages">
+   <ul class="pagelist">
+    
+   </ul>
+  </div>
+
+
+  <!-- /pages -->
+
+
+
+  </div>
+
+
+  <div class="boxoff"> <strong>------分隔线----------------------------</strong> </div>
+  <div class="handle">
+   <div class="context">
+    <ul>
+     <li>上一篇：<a href="http://linux.it.net.cn/CentOS/fast/2015/0417/14544.html">CentOS下yum下载软件的存放位置</a> </li>
+     <li>下一篇：<a href="http://linux.it.net.cn/CentOS/fast/2015/0419/14547.html">CentOS7 Firewall防火墙详解</a> </li>
+    </ul>
+   </div>
+   <!-- /context -->
+   
+  </div>
+  <!-- /handle -->
+ </div>
+ <!-- /viewbox -->
+  </div>
+<!-- //左边内容结束 -->
+<!-- //右边内容开始 -->
+<div class="pright"> 
+ <div class="pright">
+  <div>
+   <dl class="tbox">
+    <dt><strong>栏目列表</strong></dt>
+    <dd>
+     <ul class="d6">
+      <li><a href="http://linux.it.net.cn/CentOS/fast/" class="thisclass">CentOS入门</a></li>
+      <li><a href="http://linux.it.net.cn/CentOS/course/">CentOS教程</a></li>
+      
+      <li><a href="http://linux.it.net.cn/CentOS/server/">CentOS服务器</a></li>
+      
+      <li><a href="http://linux.it.net.cn/CentOS/CentosBug/">CentOS故障</a></li>
+      
+      <li><a href="http://linux.it.net.cn/CentOS/safe/">CentOS安全</a></li>
+      
+      <li><a href="http://linux.it.net.cn/CentOS/operation/">CentOS运维</a></li>
+      
+     </ul>
+    </dd>
+   </dl>
+  </div>
+  <div id="contentRtPicAD" style="margin:10px auto"></div>
+  <div class="commend mt1">
+   <dl class="tbox light">
+    <dt class="light"><strong>推荐内容</strong></dt>
+    <dd class="light">
+     <ul class="d4">
+      <li><a href="http://linux.it.net.cn/CentOS/fast/2014/1219/10561.html">CentOS下测试硬盘坏道</a>
+       <p>硬盘状态测试工具：smartctl、Badblocks、hdparm 感觉用smartctl挺快的，也能快速看到...</p>
+      </li>
+<li><a href="http://linux.it.net.cn/CentOS/fast/2014/0720/3212.html">CentOS 7.0 服务管理 – systemctl 命令</a>
+       <p>CentOS 7.0中已经没有service命令，而是启用了systemctl服务器命令 摘要 systemctl 是...</p>
+      </li>
+<li><a href="http://linux.it.net.cn/CentOS/fast/2014/0711/2879.html">图文讲解CentOS破解系统密码（CentOS就是Linu</a>
+       <p>centos破解系统密码（CentOS就是linux系统）有两种方法： 一Grub无密码的情况下破解（...</p>
+      </li>
+<li><a href="http://linux.it.net.cn/CentOS/fast/2014/0710/2850.html">CentOS下使用iftop按IP查看网卡带宽使用情况</a>
+       <p>1、安装编译组件 yum install -y gcc flex byacc libpcap ncurses ncurses-devel libp...</p>
+      </li>
+<li><a href="http://linux.it.net.cn/CentOS/fast/2014/0707/2625.html">阿里云服务器硬盘挂载教程</a>
+       <p>阿里云提供云服务器的硬盘由两块组成，一块是系统盘，一块是数据盘，默认数据盘是没有...</p>
+      </li>
+<li><a href="http://linux.it.net.cn/CentOS/fast/2014/0516/1231.html">CentOS安装netperf</a>
+       <p>简介 netperf是测试网络带宽和延迟的利器，可以测试TCP和UDP的性能。 安装环境 操作系...</p>
+      </li>
+
+     </ul>
+    </dd>
+   </dl>
+  </div>
+  <!-- /commend -->
+  <div class="hot mt1">
+   <dl class="tbox light">
+    <dt class="light"><strong>热点内容</strong></dt>
+    <dd class="light">
+     <ul class="c1 ico2">
+      <li><a href="http://linux.it.net.cn/CentOS/fast/2015/0110/11567.html">centos7 关闭firewall安装iptabl</a></li>
+<li><a href="http://linux.it.net.cn/CentOS/fast/2014/0221/58.html">Centos 中的LVM详解</a></li>
+<li><a href="http://linux.it.net.cn/CentOS/fast/2014/0625/1827.html">CentOS查看系统信息命令和方法</a></li>
+<li><a href="http://linux.it.net.cn/CentOS/fast/2015/0116/12045.html">查看centos服务器硬盘状态信息</a></li>
+<li><a href="http://linux.it.net.cn/CentOS/fast/2014/0708/2631.html">CentOS查看UUID</a></li>
+<li><a href="http://linux.it.net.cn/CentOS/fast/2014/1230/10972.html">CentOS下找出占用CPU资源最多的</a></li>
+<li><a href="http://linux.it.net.cn/CentOS/fast/2014/1102/7635.html"> centos 7 中防火墙的关闭问题</a></li>
+<li><a href="http://linux.it.net.cn/CentOS/fast/2014/1030/7423.html">CentOS 7 安装无线网卡驱动</a></li>
+<li><a href="http://linux.it.net.cn/CentOS/fast/2015/0201/12761.html">CentOS6.5升级为CentOS7.0</a></li>
+<li><a href="http://linux.it.net.cn/CentOS/fast/2015/0202/12829.html">CentOS7 增加tomcat 启动，停止</a></li>
+
+     </ul>
+    </dd>
+   </dl>
+  </div>
+  <div id="contentRtPicAD2" style="margin:10px auto"></div>
+ </div>
+ <!-- /pright -->
+</div>
+<div id="innerfooterAD2" style="margin:10px auto; width:726px"></div>
+<!-- //底部模板 -->
+<div class="footer w960 center mt1 clear">
+	<!-- 
+		更多更全Linux学习资讯尽在IT网!
+	-->
+    <div class="footer_left"></div>
+    <div class="footer_body">
+
+<a target="_blank" href="http://linux.it.net.cn/e/news/2015/0412/14455.html">免责申明</a> -
+ 
+<a target="_blank" href="http://linux.it.net.cn/e/news/2015/0412/14455.html">版权申明</a>
+
+	<p class="powered"> 
+		</p><div class="copyright">Copyright &#169; 2015 <a href="http://www.it.net.cn/">IT网</a> 版权所有   www.it.net.cn    <a href="http://www.xn--it-1r3f.com/" target="_blank" title="IT网.com" alt="IT网.com">IT网.com</a>    <a href="http://www.xn--it-1r3f.cn/" target="_blank" title="IT网.cn" alt="IT网.cn">IT网.cn</a>
+ <a href="http://linux.it.net.cn/" target="‘_blank&#39;">Linux学习</a>   
+  
+ </div><p></p>
+
+<!-- /powered -->
+   </div>
+   <div class="footer_right"></div>
+</div>
+
+<script type="text/javascript">var cnzz_protocol = (("https:" == document.location.protocol) ? " https://" : " http://");document.write(unescape("%3Cspan id='cnzz_stat_icon_5795268'%3E%3C/span%3E%3Cscript src='" + cnzz_protocol + "s13.cnzz.com/stat.php%3Fid%3D5795268%26show%3Dpic1' type='text/javascript'%3E%3C/script%3E"));</script><span id="cnzz_stat_icon_5795268"><a href="http://www.cnzz.com/stat/website.php?web_id=5795268" target="_blank" title="站长统计"><img border="0" hspace="0" vspace="0" src="./将Centos的yum源更换为国内的阿里云源_files/pic1.gif"></a></span><script src="./将Centos的yum源更换为国内的阿里云源_files/stat.php" type="text/javascript"></script><script src="./将Centos的yum源更换为国内的阿里云源_files/core.php" charset="utf-8" type="text/javascript"></script>
+<!-- /footer -->
+
+
+</div></body></html>

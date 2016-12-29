@@ -1,0 +1,1 @@
+latestInstantNews(1471748791);

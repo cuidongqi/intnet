@@ -1,0 +1,1 @@
+document.write('<li><a href="http://www.csdn.net/article/2016-10-20/2826663" target=_blank>大数据技术人年度盛事! BDTC 2016将于12月8-10日在京举行</a></li><li><a href="http://www.csdn.net/article/2016-10-10/2826660" target=_blank>七牛云北美存储区域上线，聚焦一站式数据管理</a></li>');

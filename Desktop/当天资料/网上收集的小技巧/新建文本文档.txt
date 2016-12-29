@@ -1,0 +1,57 @@
+C:\Users\liuya\.m2\settings.xml
+
+Entry element:		URI
+Location:			C:\Users\liuya\Desktop\PPT\张宇_Struts2HibernateMavenSurvey项目\01-Struts2框架课件\LibrarySupport\struts-2.3.15.3\src\core\src\main\resources\struts-2.3.dtd
+URI:   				file:///C:/Users/liuya/Desktop/PPT/张宇_Struts2HibernateMavenSurvey项目/01-Struts2框架课件/LibrarySupport/struts-2.3.15.3/src/core/src/main/resources/struts-2.3.dtd
+Key type:			URI
+Key:				http://struts.apache.org/dtds/struts-2.3.dtd
+
+
+Entry element:		URI
+Location:			C:\Users\liuya\Desktop\PPT\雷丰阳_SpringSpingMVCMyBatis\Mybatis课件\mybatis-3-mapper.dtd
+URI:   				file:///C:/Users/liuya/Desktop/PPT/雷丰阳_SpringSpingMVCMyBatis/Mybatis课件/mybatis-3-mapper.dtd
+Key type:			URI
+Key:				http://mybatis.org/dtd/mybatis-3-mapper.dtd
+
+
+Entry element:		URI
+Location:			C:\Users\liuya\Desktop\PPT\雷丰阳_SpringSpingMVCMyBatis\Mybatis课件\mybatis-3-mapper.dtd
+URI:   				file:///C:/Users/liuya/Desktop/PPT/雷丰阳_SpringSpingMVCMyBatis/Mybatis课件/mybatis-3-mapper.dtd
+Key type:			URI
+Key:				http://mybatis.org/dtd/mybatis-3-config.dtd
+
+
+
+
+JRebel: Starting logging to file: C:\Users\liuya\.jrebel\jrebel.log
+2016-11-21 21:37:13 JRebel:  
+2016-11-21 21:37:13 JRebel:  #############################################################
+2016-11-21 21:37:13 JRebel:  
+2016-11-21 21:37:13 JRebel:  JRebel Legacy Agent 6.5.2 (201610171405)
+2016-11-21 21:37:13 JRebel:  (c) Copyright ZeroTurnaround AS, Estonia, Tartu.
+2016-11-21 21:37:13 JRebel:  
+2016-11-21 21:37:13 JRebel:  Over the last 1 days JRebel prevented
+2016-11-21 21:37:13 JRebel:  at least 0 redeploys/restarts saving you about 0 hours.
+2016-11-21 21:37:13 JRebel:  
+2016-11-21 21:37:13 JRebel:  UNABLE TO INITIALIZE LICENSING - NO LICENSE FOUND
+2016-11-21 21:37:13 JRebel:  
+2016-11-21 21:37:13 JRebel:  If you think this is an error, contact support@zeroturnaround.com.
+2016-11-21 21:37:13 JRebel:  
+2016-11-21 21:37:13 JRebel:  
+2016-11-21 21:37:13 JRebel:  #############################################################
+2016-11-21 21:37:13 JRebel:  
+2016-11-21 21:37:13 JRebel: 
+2016-11-21 21:37:13 JRebel: A newer version '7.0.0' is available for download 
+2016-11-21 21:37:13 JRebel: from http://zeroturnaround.com/software/jrebel/download/
+2016-11-21 21:37:13 JRebel: 
+
+
+SpringMVC_Exception
+
+
+<servlet-mapping>
+	<servlet-name>springDispatcherServlet</servlet-name>
+	<url-pattern>/</url-pattern>
+</servlet-mapping>
+
+eclipse怎么调眼睛最舒服的色调

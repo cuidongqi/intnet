@@ -1,0 +1,30 @@
+<!--1、配置SpringMVC用来处理所有请求的前端控制器  -->
+  <!-- The front controller of this Spring Web application, responsible for handling all application requests 
+  	这个前端控制器用来处理所有的请求
+  -->
+	<servlet>
+		<servlet-name>springDispatcherServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<!--配置初始化参数  
+			contextConfigLocation：指定SpringMVC配置文件位置
+			-->
+			<param-name>contextConfigLocation</param-name>
+			<param-value>classpath:springmvc.xml</param-value>
+		</init-param>
+		<!--定义启动顺序：数值越小优先级越高，越早创建。  -->
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<!-- Map all requests to the DispatcherServlet for handling -->
+	<servlet-mapping>
+		<servlet-name>springDispatcherServlet</servlet-name>
+		<!--
+		/：也是处理所有请求，不会拦截所有*.jsp的请求
+		/*：也是处理所有请求
+		区别。/* 不仅是所有请求，连 *.jsp的请求都会由这个Servlet处理.
+		*.jsp的请求应该交给服务器自己处理
+		为了后面来支持rest风格的编程
+		 -->
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>

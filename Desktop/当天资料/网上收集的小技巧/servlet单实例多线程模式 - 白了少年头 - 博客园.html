@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<!-- saved from url=(0049)http://www.cnblogs.com/yxnchinahlj/p/4132917.html -->
+<html lang="zh-cn"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>servlet单实例多线程模式 - 白了少年头 - 博客园</title>
+<link type="text/css" rel="stylesheet" href="./servlet单实例多线程模式 - 白了少年头 - 博客园_files/blog-common.css">
+<link id="MainCss" type="text/css" rel="stylesheet" href="./servlet单实例多线程模式 - 白了少年头 - 博客园_files/bundle-ThinkInside.css">
+<link id="mobile-style" media="only screen and (max-device-width: 980px)" type="text/css" rel="stylesheet" href="./servlet单实例多线程模式 - 白了少年头 - 博客园_files/bundle-ThinkInside-mobile.css">
+<link title="RSS" type="application/rss+xml" rel="alternate" href="http://www.cnblogs.com/yxnchinahlj/rss">
+<link title="RSD" type="application/rsd+xml" rel="EditURI" href="http://www.cnblogs.com/yxnchinahlj/rsd.xml">
+<link type="application/wlwmanifest+xml" rel="wlwmanifest" href="http://www.cnblogs.com/yxnchinahlj/wlwmanifest.xml">
+<script src="./servlet单实例多线程模式 - 白了少年头 - 博客园_files/jquery.js" type="text/javascript"></script>  
+<script type="text/javascript">var currentBlogApp = 'yxnchinahlj', cb_enable_mathjax=false;var isLogined=false;</script>
+<script src="./servlet单实例多线程模式 - 白了少年头 - 博客园_files/blog-common.js" type="text/javascript"></script>
+</head>
+<body>
+<a name="top"></a>
+
+<!--done-->
+<div id="home">
+<div id="header">
+	<div id="blogTitle">
+	<a id="lnkBlogLogo" href="http://www.cnblogs.com/yxnchinahlj/"><img id="blogLogo" src="./servlet单实例多线程模式 - 白了少年头 - 博客园_files/logo.gif" alt="返回主页"></a>			
+		
+<!--done-->
+<h1><a id="Header1_HeaderTitle" class="headermaintitle" href="http://www.cnblogs.com/yxnchinahlj/">白了少年头</a></h1>
+<h2></h2>
+
+
+
+		
+	</div><!--end: blogTitle 博客的标题和副标题 -->
+	<div id="navigator">
+		
+<ul id="navList">
+<li><a id="blog_nav_sitehome" class="menu" href="http://www.cnblogs.com/">博客园</a></li>
+<li><a id="blog_nav_myhome" class="menu" href="http://www.cnblogs.com/yxnchinahlj/">首页</a></li>
+<li><a id="blog_nav_newpost" class="menu" rel="nofollow" href="https://i.cnblogs.com/EditPosts.aspx?opt=1">新随笔</a></li>
+<li><a id="blog_nav_contact" class="menu" rel="nofollow" href="https://msg.cnblogs.com/send/%E7%99%BD%E4%BA%86%E5%B0%91%E5%B9%B4%E5%A4%B4">联系</a></li>
+<li><a id="blog_nav_rss" class="menu" href="http://www.cnblogs.com/yxnchinahlj/rss">订阅</a>
+<!--<a id="blog_nav_rss_image" class="aHeaderXML" href="http://www.cnblogs.com/yxnchinahlj/rss"><img src="//www.cnblogs.com/images/xml.gif" alt="订阅" /></a>--></li>
+<li><a id="blog_nav_admin" class="menu" rel="nofollow" href="https://i.cnblogs.com/">管理</a></li>
+</ul>
+		<div class="blogStats">
+			
+			<div id="blog_stats">
+<span id="stats_post_count">随笔 - 142&nbsp; </span>
+<span id="stats_article_count">文章 - 3&nbsp; </span>
+<span id="stats-comment_count">评论 - 49</span>
+</div>
+			
+		</div><!--end: blogStats -->
+	</div><!--end: navigator 博客导航栏 -->
+</div><!--end: header 头部 -->
+
+<div id="main">
+	<div id="mainContent">
+	<div class="forFlow">
+		
+<div id="post_detail">
+<!--done-->
+<div id="topics">
+	<div class="post">
+		<h1 class="postTitle">
+			<a id="cb_post_title_url" class="postTitle2" href="http://www.cnblogs.com/yxnchinahlj/p/4132917.html">servlet单实例多线程模式</a>
+		</h1>
+		<div class="clear"></div>
+		<div class="postBody">
+			<div id="cnblogs_post_body"><p><strong>前言：</strong>Servlet/JSP技术和ASP、PHP等相比，由于其多线程运行而具有很高的执行效率。由于Servlet/JSP默认是以多线程模式执行的，所以，在编写代码时需要非常细致地考虑多线程的安全性问题。</p>
+<p>&nbsp;<br>JSP的中存在的多线程问题：&nbsp;<br>当客户端第一次请求某一个JSP文件时，服务端把该JSP编译成一个CLASS文件，并创建一个该类的实例，然后创建一个线程处理CLIENT端的请求。如果有多个客户端同时请求该JSP文件，则服务端会创建多个线程。每个客户端请求对应一个线程。以多线程方式执行可大大降低对系统的资源需求,提高系统的并发量及响应时间.&nbsp;<br><br>对JSP中可能用的的变量说明如下:&nbsp;<br>实例变量: 实例变量是在堆中分配的,并被属于该实例的所有线程共享，所以不是线程安全的.&nbsp;<br>JSP系统提供的8个类变量&nbsp;<br>JSP中用到的OUT,REQUEST,RESPONSE,SESSION,CONFIG,PAGE,PAGECONXT是线程安全的(<strong>因为每个线程对应的request，respone对象都是不一样的，不存在共享问题),</strong>&nbsp;APPLICATION在整个系统内被使用,所以不是线程安全的.&nbsp;<br><br>局部变量: 局部变量在堆栈中分配,因为每个线程都有它自己的堆栈空间,所以是线程安全的.&nbsp;<br>静态类: 静态类不用被实例化,就可直接使用,也不是线程安全的.&nbsp;<br><br>外部资源: 在程序中可能会有多个线程或进程同时操作同一个资源(如:多个线程或进程同时对一个文件进行写操作).此时也要注意同步问题.&nbsp;<br><br>使它以单线程方式执行,这时，仍然只有一个实例，所有客户端的请求以串行方式执行。这样会降低系统的性能&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br><strong>问题&nbsp;<br>问题一.</strong>&nbsp;说明其Servlet容器如何采用单实例多线程的方式来处理请求&nbsp;<br><strong>问题二.</strong>&nbsp;如何在开发中保证servlet是单实例多线程的方式来工作(也就是说如何开发线程安全的servelt)。&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br><strong>一. Servlet容器如何同时来处理多个请求&nbsp;</strong>&nbsp;&nbsp;&nbsp;&nbsp;<br><br>Java的内存模型JMM（Java Memory Model）&nbsp;<br>JMM主要是为了规定了线程和内存之间的一些关系。根据JMM的设计，系统存在一个主内存(Main Memory)，Java中所有实例变量都储存在主存中，对于所有线程都是共享的。每条线程都有自己的工作内存(Working Memory)，工作内存由缓存和堆栈两部分组成，缓存中保存的是主存中变量的拷贝，缓存可能并不总和主存同步，也就是缓存中变量的修改可能没有立刻写到主存中；堆栈中保存的是线程的局部变量，线程之间无法相互直接访问堆栈中的变量。根据JMM，我们可以将论文中所讨论的Servlet实例的内存模型抽象为图所示的模型。&nbsp;<br><br><iframe id="iframe_0.5833496073666646" src="./servlet单实例多线程模式 - 白了少年头 - 博客园_files/saved_resource.html" style="border: none; width: 282px; height: 193px;" frameborder="0" scrolling="no"></iframe><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 工作者线程Work Thread:执行代码的一组线程。&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 调度线程Dispatcher Thread：每个线程都具有分配给它的线程优先级,线程是根据优先级调度执行的。&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Servlet采用多线程来处理多个请求同时访问。servlet依赖于一个线程池来服务请求。线程池实际上是一系列的工作者线程集合。Servlet使用一个调度线程来管理工作者线程。&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 当容器收到一个Servlet请求，调度线程从线程池中选出一个工作者线程,将请求传递给该工作者线程，然后由该线程来执行Servlet的service方法。当这个线程正在执行的时候,容器收到另外一个请求,调度线程同样从线程池中选出另一个工作者线程来服务新的请求,容器并不关心这个请求是否访问的是同一个Servlet.当容器同时收到对同一个Servlet的多个请求的时候，那么这个Servlet的service()方法将在多线程中并发执行。&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Servlet容器默认采用单实例多线程的方式来处理请求，这样减少产生Servlet实例的开销，提升了对请求的响应时间，对于Tomcat可以在server.xml中通过&lt;Connector&gt;元素设置线程池中线程的数目。&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 就实现来说：&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 调度者线程类所担负的责任如其名字，该类的责任是调度线程，只需要利用自己的属性完成自己的责任。所以该类是承担了责任的，并且该类的责任又集中到唯一的单体对象中。而其他对象又依赖于该特定对象所承担的责任，我们就需要得到该特定对象。那该类就是一个单例模式的实现了。&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;<br><br>注意：服务器可以使用多个实例来处理请求，代替单个实例的请求排队带来的效益问题。服务器创建一个Servlet类的多个Servlet实例组成的实例池，对于每个请求分配Servlet实例进行响应处理，之后放回到实例池中等待下此请求。这样就造成并发访问的问题。&nbsp;<br>此时,局部变量(字段)也是安全的，但对于全局变量和共享数据是不安全的，需要进行同步处理。而对于这样多实例的情况SingleThreadModel接口并不能解决并发访问问题。 SingleThreadModel接口在servlet规范中已经被废弃了。</p>
+<p><br><strong>二 如何开发线程安全的Servlet</strong></p>
+<p>&nbsp;</p>
+<p>　　1、实现 SingleThreadModel 接口&nbsp;<br><br>　　该接口指定了系统如何处理对同一个Servlet的调用。如果一个Servlet被这个接口指定,那么在这个Servlet中的service方法将不会有两个线程被同时执行，当然也就不存在线程安全的问题。这种方法只要将前面的Concurrent Test类的类头定义更改为：&nbsp;<br><br>Public class Concurrent Test extends HttpServlet implements SingleThreadModel {&nbsp;<br>…………&nbsp;<br>}&nbsp;&nbsp;<br><br>　　2、同步对共享数据的操作&nbsp;<br><br>　　使用synchronized 关键字能保证一次只有一个线程可以访问被保护的区段，在本论文中的Servlet可以通过同步块操作来保证线程的安全。同步后的代码如下：&nbsp;<br><br>…………&nbsp;<br>Public class Concurrent Test extends HttpServlet { …………&nbsp;<br>Username = request.getParameter ("username");&nbsp;<br><strong>Synchronized (this){&nbsp;<br></strong>Output = response.getWriter ();&nbsp;<br>Try {&nbsp;<br>Thread. Sleep (5000);&nbsp;<br>} Catch (Interrupted Exception e){}&nbsp;<br>output.println("用户名:"+Username+"&lt;BR&gt;");&nbsp;<br>}&nbsp;<br>}&nbsp;<br>}&nbsp;<br><br>　　3、避免使用实例变量&nbsp;<br><br>　　本实例中的线程安全问题是由实例变量造成的，只要在Servlet里面的任何方法里面都不使用实例变量，那么该Servlet就是线程安全的。&nbsp;<br><br>　　修正上面的Servlet代码，将实例变量改为局部变量实现同样的功能，代码如下：&nbsp;<br><br>……&nbsp;<br>Public class Concurrent Test extends HttpServlet {public void service (HttpServletRequest request, HttpServletResponse&nbsp;<br>Response) throws ServletException, IOException {&nbsp;<br>Print Writer output;&nbsp;<br>String username;&nbsp;<br>Response.setContentType ("text/html; charset=gb2312");&nbsp;<br>……&nbsp;<br>}&nbsp;<br>}&nbsp;<br><br><br>　**　对上面的三种方法进行测试，可以表明用它们都能设计出线程安全的Servlet程序。但是，如果一个Servlet实现了SingleThreadModel接口，Servlet引擎将为每个新的请求创建一个单独的Servlet实例，这将引起大量的系统开销。SingleThreadModel在Servlet2.4中已不再提倡使用；同样如果在程序中使用同步来保护要使用的共享的数据，也会使系统的性能大大下降。这是因为被同步的代码块在同一时刻只能有一个线程执行它，使得其同时处理客户请求的吞吐量降低，而且很多客户处于阻塞状态。另外为保证主存内容和线程的工作内存中的数据的一致性，要频繁地刷新缓存,这也会大大地影响系统的性能。所以在实际的开发中也应避免或最小化 Servlet 中的同步代码；<strong>在Serlet中避免使用实例变量是保证Servlet线程安全的最佳选择。</strong>从Java 内存模型也可以知道，方法中的临时变量是在栈上分配空间，而且每个线程都有自己私有的栈空间，所以它们不会影响线程的安全。</p>
+<p>&nbsp;</p>
+<p><strong>更加详细的说明：</strong></p>
+<p><br>&nbsp;&nbsp; 1，变量的线程安全：这里的变量指字段和共享数据(如表单参数值)。&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a，将 参数变量 本地化。多线程并不共享局部变量.所以我们要尽可能的在servlet中使用局部变量。&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 例如：String user = "";&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; user = request.getParameter("user");&nbsp;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b，使用同步块Synchronized，防止可能异步调用的代码块。这意味着线程需要排队处理。在使用同板块的时候要尽可能的缩小同步代码的范围，不要直接在sevice方法和响应方法上使用同步，这样会严重影响性能。&nbsp;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2,属性的线程安全：ServletContext，HttpSession，ServletRequest对象中属性。&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ServletContext：（线程是不安全的）&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ServletContext是可以多线程同时读/写属性的，线程是不安全的。要对属性的读写进行同步处理或者进行深度Clone()。所以在Servlet上下文中尽可能少量保存会被修改（写）的数据，可以采取其他方式在多个Servlet中共享，比方我们可以使用单例模式来处理共享数据。&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HttpSession：（线程是不安全的）&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HttpSession对象在用户会话期间存在，只能在处理属于同一个Session的请求的线程中被访问，因此Session对象的属性访问理论上是线程安全的。&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 当用户打开多个同属于一个进程的浏览器窗口，在这些窗口的访问属于同一个Session，会出现多次请求，需要多个工作线程来处理请求，可能造成同时多线程读写属性。这时我们需要对属性的读写进行同步处理：使用同步块Synchronized和使用读/写器来解决。&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ServletRequest：（线程是安全的）&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 对于每一个请求，由一个工作线程来执行，都会创建有一个新的ServletRequest对象，所以ServletRequest对象只能在一个线程中被访问。ServletRequest是线程安全的。注意：ServletRequest对象在service方法的范围内是有效的，不要试图在service方法结束后仍然保存请求对象的引用。&nbsp;<br><br>3，使用同步的集合类：&nbsp;<br>&nbsp; 使用Vector代替ArrayList，使用Hashtable代替HashMap。&nbsp;<br><br>4，不要在Servlet中创建自己的线程来完成某个功能。&nbsp;<br>&nbsp; Servlet本身就是多线程的，在Servlet中再创建线程，将导致执行情况复杂化，出现多线程安全问题。&nbsp;<br><br>5，在多个servlet中对外部对象(比方文件)进行修改操作一定要加锁，做到互斥的访问。&nbsp;<br>&nbsp;&nbsp;&nbsp;<br>6，javax.servlet.SingleThreadModel接口是一个标识接口，如果一个Servlet实现了这个接口，那Servlet容器将保证在一个时刻仅有一个线程可以在给定的servlet实例的service方法中执行。将其他所有请求进行排队。</p>
+<p><br><br><strong>PS：</strong></p>
+<p>Servlet<strong>并非只是</strong>单例的. 当container开始启动,或是客户端发出请求服务时,Container会按照容器的配置负责加载和实例化一个Servlet（也可以配置为多个，不过一般不这么干）.不过一般来说一个servlet只会有一个实例。</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>1) Struts2的Action是原型，非单实例的；会对每一个请求,产生一个Action的实例来处理。&nbsp;<br>2) Struts1的Action,Spring的Ioc容器管理的bean 默认是单实例的.</p>
+<p><br>Struts1 Action是单实例的，spring mvc的controller也是如此。因此开发时要求必须是线程安全的，因为仅有Action的一个实例来处理所有的请求。单例策略限制了Struts1 Action能作的事，并且要在开发时特别小心。Action资源必须是线程安全的或同步的。</p>
+<p>&nbsp;</p>
+<p>Spring的Ioc容器管理的bean 默认是单实例的。</p>
+<p>Struts2 Action对象为每一个请求产生一个实例，因此没有线程安全问题。（实际上，servlet容器给每个请求产生许多可丢弃的对象，并且不会导致性能和垃圾回收问题）。</p>
+<p>当Spring管理Struts2的Action时，bean默认是单实例的，可以通过配置参数将其设置为原型。(scope="prototype ）</p></div><div id="MySignature"></div>
+<div class="clear"></div>
+<div id="blog_post_info_block">
+<div id="BlogPostCategory">分类: <a href="http://www.cnblogs.com/yxnchinahlj/category/262007.html" target="_blank">Java</a></div>
+<div id="EntryTag"></div>
+<div id="blog_post_info"><div id="green_channel">
+        <a href="javascript:void(0);" id="green_channel_digg" onclick="DiggIt(4132917,cb_blogId,1);green_channel_success(this,&#39;谢谢推荐！&#39;);">好文要顶</a>
+            <a id="green_channel_follow" onclick="follow(&#39;88d07e39-3272-df11-ba8f-001cf0cd104b&#39;);" href="javascript:void(0);">关注我</a>
+    <a id="green_channel_favorite" onclick="AddToWz(cb_entryId);return false;" href="javascript:void(0);">收藏该文</a>
+    <a id="green_channel_weibo" href="javascript:void(0);" title="分享至新浪微博" onclick="ShareToTsina()"><img src="./servlet单实例多线程模式 - 白了少年头 - 博客园_files/icon_weibo_24.png" alt=""></a>
+    <a id="green_channel_wechat" href="javascript:void(0);" title="分享至微信" onclick="shareOnWechat()"><img src="./servlet单实例多线程模式 - 白了少年头 - 博客园_files/wechat.png" alt=""></a>
+</div>
+<div id="author_profile">
+    <div id="author_profile_info" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/yxnchinahlj/" target="_blank"><img src="./servlet单实例多线程模式 - 白了少年头 - 博客园_files/u138388.jpg" class="author_avatar" alt=""></a>
+        <div id="author_profile_detail" class="author_profile_info">
+            <a href="http://home.cnblogs.com/u/yxnchinahlj/">白了少年头</a><br>
+            <a href="http://home.cnblogs.com/u/yxnchinahlj/followees">关注 - 13</a><br>
+            <a href="http://home.cnblogs.com/u/yxnchinahlj/followers">粉丝 - 173</a>
+        </div>
+    </div>
+    <div class="clear"></div>
+    <div id="author_profile_honor"></div>
+    <div id="author_profile_follow">
+                <a href="javascript:void(0);" onclick="follow(&#39;88d07e39-3272-df11-ba8f-001cf0cd104b&#39;);return false;">+加关注</a>
+    </div>
+</div>
+<div id="div_digg">
+    <div class="diggit" onclick="votePost(4132917,&#39;Digg&#39;)">
+        <span class="diggnum" id="digg_count">0</span>
+    </div>
+    <div class="buryit" onclick="votePost(4132917,&#39;Bury&#39;)">
+        <span class="burynum" id="bury_count">0</span>
+    </div>
+    <div class="clear"></div>
+    <div class="diggword" id="digg_tips">
+    </div>
+</div>
+</div>
+<div class="clear"></div>
+<div id="post_next_prev"><a href="http://www.cnblogs.com/yxnchinahlj/p/4096484.html" class="p_n_p_prefix">« </a> 上一篇：<a href="http://www.cnblogs.com/yxnchinahlj/p/4096484.html" title="发布于2014-11-14 09:35">MySQL中如何实现select top n</a><br><a href="http://www.cnblogs.com/yxnchinahlj/p/4247880.html" class="p_n_p_prefix">» </a> 下一篇：<a href="http://www.cnblogs.com/yxnchinahlj/p/4247880.html" title="发布于2015-01-25 10:37">session 之session混乱解决方法(转)</a><br></div>
+</div>
+
+
+		</div>
+		<div class="postDesc">posted @ <span id="post-date">2014-11-30 11:40</span> <a href="http://www.cnblogs.com/yxnchinahlj/">白了少年头</a> 阅读(<span id="post_view_count">345</span>) 评论(<span id="post_comment_count">0</span>)  <a href="https://i.cnblogs.com/EditPosts.aspx?postid=4132917" rel="nofollow">编辑</a> <a href="http://www.cnblogs.com/yxnchinahlj/p/4132917.html#" onclick="AddToWz(4132917);return false;">收藏</a></div>
+	</div>
+	<script type="text/javascript">var allowComments=true,cb_blogId=74717,cb_entryId=4132917,cb_blogApp=currentBlogApp,cb_blogUserGuid='88d07e39-3272-df11-ba8f-001cf0cd104b',cb_entryCreatedDate='2014/11/30 11:40:00';loadViewCount(cb_entryId);</script>
+	
+</div><!--end: topics 文章、评论容器-->
+</div><a name="!comments"></a><div id="blog-comments-placeholder"></div><script type="text/javascript">var commentManager = new blogCommentManager();commentManager.renderComments(0);</script>
+<div id="comment_form" class="commentform">
+<a name="commentform"></a>
+<div id="divCommentShow"></div>
+<div id="comment_nav"><span id="span_refresh_tips"></span><a href="javascript:void(0);" onclick="return RefreshCommentList();" id="lnk_RefreshComments" runat="server" clientidmode="Static">刷新评论</a><a href="http://www.cnblogs.com/yxnchinahlj/p/4132917.html#" onclick="return RefreshPage();">刷新页面</a><a href="http://www.cnblogs.com/yxnchinahlj/p/4132917.html#top">返回顶部</a></div>
+<div id="comment_form_container"><div class="login_tips">注册用户登录后才能发表评论，请 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return login(&#39;commentform&#39;);">登录</a> 或 <a rel="nofollow" href="javascript:void(0);" class="underline" onclick="return register();">注册</a>，<a href="http://www.cnblogs.com/">访问</a>网站首页。</div></div>
+<div class="ad_text_commentbox" id="ad_text_under_commentbox"></div>
+<div id="ad_t2"><a href="http://www.ucancode.com/index.htm" target="_blank">【推荐】50万行VC++源码: 大型组态工控、电力仿真CAD与GIS源码库</a><br><a href="https://group.cnblogs.com/topic/75389.html" target="_blank">【活动】优达学城正式发布“无人驾驶车工程师”课程</a><br><a href="http://www.rongcloud.cn/live" target="_blank">【推荐】移动直播百强八成都在用融云即时通讯云</a><br><a href="http://www.gcpowertools.com.cn/products/componentone_studio_enterprise.htm?utm_source=cnblogs&amp;utm_medium=blogpage&amp;utm_term=bottom&amp;utm_content=C1&amp;utm_campaign=community" target="_blank">【推荐】别再闷头写代码！找对工具，事半功倍，全能开发工具包用起来</a><br><a href="http://netease.im/promotion/1013?hmsr=bky10&amp;from=bky10" target="_blank">【福利】网易云信1周年接入开发者突破10万，送红包活动火热开展中</a><br></div>
+<div id="opt_under_post"></div>
+<div id="ad_c1" class="c_ad_block"><a href="http://q.cnblogs.com/" target="_blank"><img width="300" height="250" src="./servlet单实例多线程模式 - 白了少年头 - 博客园_files/q-cnblogs-com-20160923.png" alt=""></a></div>
+<div id="under_post_news"><div class="itnews c_ad_block"><b>最新IT新闻</b>:<br> ·  <a href="http://news.cnblogs.com/n/555191/" target="_blank">Oculus首席执行官揭秘：未来VR将往这7个方向发展</a><br> ·  <a href="http://news.cnblogs.com/n/555190/" target="_blank">科技繁荣带来了一切，唯独没有带来足够就业</a><br> ·  <a href="http://news.cnblogs.com/n/555189/" target="_blank">月球表面遭太空陨石撞击频繁 每8万年换个面貌</a><br> ·  <a href="http://news.cnblogs.com/n/555188/" target="_blank">乐视网称前三季度营收增幅超100%</a><br> ·  <a href="http://news.cnblogs.com/n/555187/" target="_blank">网易严选宣布为供应商压款支付利息 颠覆传统采购规则</a><br>» <a href="http://news.cnblogs.com/" title="IT新闻" target="_blank">更多新闻...</a></div></div>
+<div id="ad_c2" class="c_ad_block"><a href="https://www.jiguang.cn/devservice/?from=cnblogs01" target="_blank"><img width="468" height="60" src="./servlet单实例多线程模式 - 白了少年头 - 博客园_files/24442-20161011141820868-1378717477.jpg" alt=""></a></div>
+<div id="under_post_kb"><div class="itnews c_ad_block" id="kb_block"><b>最新知识库文章</b>:<br><div id="kb_recent"> ·  <a href="http://kb.cnblogs.com/page/553682/" target="_blank">陈皓：什么是工程师文化？</a><br> ·  <a href="http://kb.cnblogs.com/page/551422/" target="_blank">没那么难，谈CSS的设计模式</a><br> ·  <a href="http://kb.cnblogs.com/page/550625/" target="_blank">程序猿媳妇儿注意事项</a><br> ·  <a href="http://kb.cnblogs.com/page/540529/" target="_blank">可是姑娘，你为什么要编程呢？</a><br> ·  <a href="http://kb.cnblogs.com/page/549631/" target="_blank">知其所以然（以算法学习为例）</a><br></div>» <a href="http://kb.cnblogs.com/" target="_blank">更多知识库文章...</a></div></div>
+<div id="HistoryToday" class="c_ad_block"><b>历史上的今天:</b><br>2011-11-30 <a href="http://www.cnblogs.com/yxnchinahlj/archive/2011/11/30/2269076.html">2011年11月30日学习总结</a><br></div>
+<script type="text/javascript">
+    fixPostBody();
+    setTimeout(function () { incrementViewCount(cb_entryId); }, 50);
+    deliverAdT2();
+    deliverAdC1();
+    deliverAdC2();    
+    loadNewsAndKb();
+    loadBlogSignature();
+    LoadPostInfoBlock(cb_blogId, cb_entryId, cb_blogApp, cb_blogUserGuid);
+    GetPrevNextPost(cb_entryId, cb_blogId, cb_entryCreatedDate);
+    loadOptUnderPost();
+    GetHistoryToday(cb_blogId, cb_blogApp, cb_entryCreatedDate);   
+</script>
+</div>
+
+
+	</div><!--end: forFlow -->
+	</div><!--end: mainContent 主体内容容器-->
+
+	<div id="sideBar">
+		<div id="sideBarMain">
+			
+<!--done-->
+<div class="newsItem">
+<h3 class="catListTitle">公告</h3>
+	<div id="blog-news"><div id="profile_block">昵称：<a href="http://home.cnblogs.com/u/yxnchinahlj/">白了少年头</a><br>园龄：<a href="http://home.cnblogs.com/u/yxnchinahlj/" title="入园时间：2010-06-07">6年4个月</a><br>粉丝：<a href="http://home.cnblogs.com/u/yxnchinahlj/followers/">173</a><br>关注：<a href="http://home.cnblogs.com/u/yxnchinahlj/followees/">13</a><div id="p_b_follow"><a href="javascript:void(0);" onclick="follow(&#39;88d07e39-3272-df11-ba8f-001cf0cd104b&#39;)">+加关注</a></div></div></div><script type="text/javascript">loadBlogNews();</script>
+</div>
+
+			<div id="blog-calendar" style=""><table id="blogCalendar" class="Cal" cellspacing="0" cellpadding="0" title="Calendar">
+	<tbody><tr><td colspan="7"><table class="CalTitle" cellspacing="0">
+		<tbody><tr><td class="CalNextPrev"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2016/09/01&#39;);return false;">&lt;</a></td><td align="center">2016年10月</td><td class="CalNextPrev" align="right"><a href="javascript:void(0);" onclick="loadBlogCalendar(&#39;2016/11/01&#39;);return false;">&gt;</a></td></tr>
+	</tbody></table></td></tr><tr><th class="CalDayHeader" align="center" abbr="日" scope="col">日</th><th class="CalDayHeader" align="center" abbr="一" scope="col">一</th><th class="CalDayHeader" align="center" abbr="二" scope="col">二</th><th class="CalDayHeader" align="center" abbr="三" scope="col">三</th><th class="CalDayHeader" align="center" abbr="四" scope="col">四</th><th class="CalDayHeader" align="center" abbr="五" scope="col">五</th><th class="CalDayHeader" align="center" abbr="六" scope="col">六</th></tr><tr><td class="CalOtherMonthDay" align="center">25</td><td class="CalOtherMonthDay" align="center">26</td><td class="CalOtherMonthDay" align="center">27</td><td class="CalOtherMonthDay" align="center">28</td><td class="CalOtherMonthDay" align="center">29</td><td class="CalOtherMonthDay" align="center">30</td><td class="CalWeekendDay" align="center">1</td></tr><tr><td class="CalWeekendDay" align="center">2</td><td align="center">3</td><td align="center">4</td><td align="center">5</td><td align="center">6</td><td align="center">7</td><td class="CalWeekendDay" align="center"><a href="http://www.cnblogs.com/yxnchinahlj/archive/2016/10/08.html"><u>8</u></a></td></tr><tr><td class="CalWeekendDay" align="center">9</td><td align="center">10</td><td align="center">11</td><td align="center">12</td><td align="center">13</td><td class="CalTodayDay" align="center">14</td><td class="CalWeekendDay" align="center">15</td></tr><tr><td class="CalWeekendDay" align="center">16</td><td align="center">17</td><td align="center">18</td><td align="center">19</td><td align="center">20</td><td align="center">21</td><td class="CalWeekendDay" align="center">22</td></tr><tr><td class="CalWeekendDay" align="center">23</td><td align="center">24</td><td align="center">25</td><td align="center">26</td><td align="center">27</td><td align="center">28</td><td class="CalWeekendDay" align="center">29</td></tr><tr><td class="CalWeekendDay" align="center">30</td><td align="center">31</td><td class="CalOtherMonthDay" align="center">1</td><td class="CalOtherMonthDay" align="center">2</td><td class="CalOtherMonthDay" align="center">3</td><td class="CalOtherMonthDay" align="center">4</td><td class="CalOtherMonthDay" align="center">5</td></tr>
+</tbody></table></div><script type="text/javascript">loadBlogDefaultCalendar();</script>
+			
+			<div id="leftcontentcontainer">
+				<div id="blog-sidecolumn"><div id="sidebar_search" class="sidebar-block">
+<div id="sidebar_search" class="mySearch">
+<h3 class="catListTitle">搜索</h3>
+<div id="sidebar_search_box">
+<div id="widget_my_zzk" class="div_my_zzk"><input type="text" id="q" onkeydown="return zzk_go_enter(event);" class="input_my_zzk">&nbsp;<input onclick="zzk_go()" type="button" value="找找看" id="btnZzk" class="btn_my_zzk"></div>
+<div id="widget_my_google" class="div_my_zzk"><input type="text" name="google_q" id="google_q" onkeydown="return google_go_enter(event)" class="input_my_zzk">&nbsp;<input onclick="google_go()" type="button" value="谷歌搜索" class="btn_my_zzk"></div>
+</div>
+</div>
+
+</div><div id="sidebar_shortcut" class="sidebar-block">
+<div class="catListLink">
+<h3 class="catListTitle">常用链接</h3>
+<ul>
+<li><a href="http://www.cnblogs.com/yxnchinahlj/p/" title="我的博客的随笔列表">我的随笔</a></li><li><a href="http://www.cnblogs.com/yxnchinahlj/MyComments.html" title="我发表过的评论列表">我的评论</a></li><li><a href="http://www.cnblogs.com/yxnchinahlj/OtherPosts.html" title="我评论过的随笔列表">我的参与</a></li><li><a href="http://www.cnblogs.com/yxnchinahlj/RecentComments.html" title="我的博客的评论列表">最新评论</a></li><li><a href="http://www.cnblogs.com/yxnchinahlj/tag/" title="我的博客的标签列表">我的标签</a></li>
+</ul>
+<div id="itemListLin_con" style="display:none;">
+<ul>
+
+</ul>
+</div>
+</div></div><div id="sidebar_toptags" class="sidebar-block"></div><div id="sidebar_categories">
+<div id="sidebar_postcategory" class="catListPostCategory sidebar-block">
+<h3 class="catListTitle">随笔分类</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_0_Link_0" href="http://www.cnblogs.com/yxnchinahlj/category/450183.html">数据库原理(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_1" href="http://www.cnblogs.com/yxnchinahlj/category/336614.html">08计算机软件(10)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_2" href="http://www.cnblogs.com/yxnchinahlj/category/588523.html">3d打印(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_3" href="http://www.cnblogs.com/yxnchinahlj/category/673466.html">android(7)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_4" href="http://www.cnblogs.com/yxnchinahlj/category/703730.html">c#</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_5" href="http://www.cnblogs.com/yxnchinahlj/category/267691.html">C++(13)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_6" href="http://www.cnblogs.com/yxnchinahlj/category/287985.html">Directx(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_7" href="http://www.cnblogs.com/yxnchinahlj/category/262007.html">Java(35)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_8" href="http://www.cnblogs.com/yxnchinahlj/category/267543.html">Java3D(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_9" href="http://www.cnblogs.com/yxnchinahlj/category/590188.html">Jquery(3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_10" href="http://www.cnblogs.com/yxnchinahlj/category/581533.html">linux(7)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_11" href="http://www.cnblogs.com/yxnchinahlj/category/317230.html">matlab(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_12" href="http://www.cnblogs.com/yxnchinahlj/category/404505.html">Oracle(3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_13" href="http://www.cnblogs.com/yxnchinahlj/category/703729.html">php(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_14" href="http://www.cnblogs.com/yxnchinahlj/category/264965.html">VTk(5)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_15" href="http://www.cnblogs.com/yxnchinahlj/category/354450.html">电信crm(5)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_16" href="http://www.cnblogs.com/yxnchinahlj/category/411496.html">分布式数据库</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_17" href="http://www.cnblogs.com/yxnchinahlj/category/574350.html">服务器(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_18" href="http://www.cnblogs.com/yxnchinahlj/category/262085.html">计算机理论(4)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_19" href="http://www.cnblogs.com/yxnchinahlj/category/411497.html">计算机软件工程(1)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_20" href="http://www.cnblogs.com/yxnchinahlj/category/451882.html">计算机史</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_21" href="http://www.cnblogs.com/yxnchinahlj/category/364292.html">生活与编程(3)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_22" href="http://www.cnblogs.com/yxnchinahlj/category/289997.html">体绘制(2)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_23" href="http://www.cnblogs.com/yxnchinahlj/category/289996.html">体绘制（volume render）</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_24" href="http://www.cnblogs.com/yxnchinahlj/category/260317.html">图形学(26)</a> </li>
+
+<li><a id="CatList_LinkList_0_Link_25" href="http://www.cnblogs.com/yxnchinahlj/category/417198.html">未来的程序员</a> </li>
+
+</ul>
+
+</div>
+
+<div id="sidebar_postarchive" class="catListPostArchive sidebar-block">
+<h3 class="catListTitle">随笔档案</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_1_Link_0" href="http://www.cnblogs.com/yxnchinahlj/archive/2016/10.html">2016年10月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_1" href="http://www.cnblogs.com/yxnchinahlj/archive/2015/10.html">2015年10月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_2" href="http://www.cnblogs.com/yxnchinahlj/archive/2015/08.html">2015年8月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_3" href="http://www.cnblogs.com/yxnchinahlj/archive/2015/07.html">2015年7月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_4" href="http://www.cnblogs.com/yxnchinahlj/archive/2015/06.html">2015年6月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_5" href="http://www.cnblogs.com/yxnchinahlj/archive/2015/05.html">2015年5月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_6" href="http://www.cnblogs.com/yxnchinahlj/archive/2015/04.html">2015年4月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_7" href="http://www.cnblogs.com/yxnchinahlj/archive/2015/02.html">2015年2月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_8" href="http://www.cnblogs.com/yxnchinahlj/archive/2015/01.html">2015年1月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_9" href="http://www.cnblogs.com/yxnchinahlj/archive/2014/11.html">2014年11月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_10" href="http://www.cnblogs.com/yxnchinahlj/archive/2014/10.html">2014年10月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_11" href="http://www.cnblogs.com/yxnchinahlj/archive/2014/07.html">2014年7月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_12" href="http://www.cnblogs.com/yxnchinahlj/archive/2014/06.html">2014年6月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_13" href="http://www.cnblogs.com/yxnchinahlj/archive/2014/05.html">2014年5月 (7)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_14" href="http://www.cnblogs.com/yxnchinahlj/archive/2014/04.html">2014年4月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_15" href="http://www.cnblogs.com/yxnchinahlj/archive/2014/01.html">2014年1月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_16" href="http://www.cnblogs.com/yxnchinahlj/archive/2013/12.html">2013年12月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_17" href="http://www.cnblogs.com/yxnchinahlj/archive/2013/01.html">2013年1月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_18" href="http://www.cnblogs.com/yxnchinahlj/archive/2012/10.html">2012年10月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_19" href="http://www.cnblogs.com/yxnchinahlj/archive/2012/09.html">2012年9月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_20" href="http://www.cnblogs.com/yxnchinahlj/archive/2012/08.html">2012年8月 (9)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_21" href="http://www.cnblogs.com/yxnchinahlj/archive/2012/06.html">2012年6月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_22" href="http://www.cnblogs.com/yxnchinahlj/archive/2012/05.html">2012年5月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_23" href="http://www.cnblogs.com/yxnchinahlj/archive/2012/04.html">2012年4月 (3)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_24" href="http://www.cnblogs.com/yxnchinahlj/archive/2012/03.html">2012年3月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_25" href="http://www.cnblogs.com/yxnchinahlj/archive/2012/02.html">2012年2月 (6)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_26" href="http://www.cnblogs.com/yxnchinahlj/archive/2011/12.html">2011年12月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_27" href="http://www.cnblogs.com/yxnchinahlj/archive/2011/11.html">2011年11月 (9)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_28" href="http://www.cnblogs.com/yxnchinahlj/archive/2011/08.html">2011年8月 (2)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_29" href="http://www.cnblogs.com/yxnchinahlj/archive/2011/06.html">2011年6月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_30" href="http://www.cnblogs.com/yxnchinahlj/archive/2011/04.html">2011年4月 (4)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_31" href="http://www.cnblogs.com/yxnchinahlj/archive/2011/03.html">2011年3月 (10)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_32" href="http://www.cnblogs.com/yxnchinahlj/archive/2011/02.html">2011年2月 (5)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_33" href="http://www.cnblogs.com/yxnchinahlj/archive/2011/01.html">2011年1月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_34" href="http://www.cnblogs.com/yxnchinahlj/archive/2010/12.html">2010年12月 (1)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_35" href="http://www.cnblogs.com/yxnchinahlj/archive/2010/11.html">2010年11月 (13)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_36" href="http://www.cnblogs.com/yxnchinahlj/archive/2010/10.html">2010年10月 (16)</a> </li>
+
+<li><a id="CatList_LinkList_1_Link_37" href="http://www.cnblogs.com/yxnchinahlj/archive/2010/09.html">2010年9月 (13)</a> </li>
+
+</ul>
+
+</div>
+
+<div id="sidebar_articlecategory" class="catListArticleCategory sidebar-block">
+<h3 class="catListTitle">文章分类</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_2_Link_0" href="http://www.cnblogs.com/yxnchinahlj/category/268226.html">数学(3)</a> </li>
+
+</ul>
+
+</div>
+
+<div id="sidebar_imagecategory" class="catListImageCategory sidebar-block">
+<h3 class="catListTitle">相册</h3>
+
+<ul>
+
+<li><a id="CatList_LinkList_3_Link_0" href="http://www.cnblogs.com/yxnchinahlj/gallery/267569.html" rel="nofollow">JOGL(1)</a> </li>
+
+<li><a id="CatList_LinkList_3_Link_1" href="http://www.cnblogs.com/yxnchinahlj/gallery/267875.html" rel="nofollow">opengl(1)</a> </li>
+
+</ul>
+
+</div>
+
+</div><div id="sidebar_recentcomments" class="sidebar-block"><div id="recent_comments_wrap">
+<div class="catListComment">
+<h3 class="catListTitle">最新评论</h3>
+
+	<div id="RecentCommentsBlock"><ul>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/yxnchinahlj/archive/2011/08/19/2146006.html#3477778">1. Re:Matlab曲线拟合工具箱</a></li>
+        <li class="recent_comment_body">一直都在学习matlab</li>
+        <li class="recent_comment_author">--wang_yuan</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/yxnchinahlj/archive/2010/11/19/1881600.html#3413562">2. Re:OpenGL像素操作</a></li>
+        <li class="recent_comment_body">我试了读取GL_RGB类型，glReadPixel函数是在后缓存读取数据的</li>
+        <li class="recent_comment_author">--smallpi小派</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/yxnchinahlj/archive/2011/08/19/2146006.html#3353925">3. Re:Matlab曲线拟合工具箱</a></li>
+        <li class="recent_comment_body">这位牛人你好，本人最近正在研究matlab的参数拟合，遇到问题了，我要拟合的这个模型不是matlaab工具箱里面的一种，需要自定义，但是我自定义之后，matlab无法识别，请问楼主能否帮忙解答是何原因......</li>
+        <li class="recent_comment_author">--tianlp2016</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/yxnchinahlj/archive/2010/09/27/1836556.html#3333757">4. Re:Java中的equals()</a></li>
+        <li class="recent_comment_body">正为此疑惑,受教了</li>
+        <li class="recent_comment_author">--码农小强</li>
+        <li class="recent_comment_title"><a href="http://www.cnblogs.com/yxnchinahlj/archive/2011/04/06/2006581.html#3323993">5. Re:编译性语言、解释性语言和脚本语言</a></li>
+        <li class="recent_comment_body">补上缺的图片 不知是不是，但是原文已经找不到了，希望博主可以给出</li>
+        <li class="recent_comment_author">--抓小偷的贼</li>
+</ul>
+</div>
+</div>
+</div></div><div id="sidebar_topviewedposts" class="sidebar-block"><div id="topview_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">阅读排行榜</h3>
+	<div id="TopViewPostsBlock"><ul><li><a href="http://www.cnblogs.com/yxnchinahlj/archive/2011/03/06/1972435.html">1. std::vector介绍(51322)</a></li><li><a href="http://www.cnblogs.com/yxnchinahlj/archive/2011/08/19/2146006.html">2. Matlab曲线拟合工具箱(47633)</a></li><li><a href="http://www.cnblogs.com/yxnchinahlj/archive/2010/09/27/1836556.html">3. Java中的equals()(40131)</a></li><li><a href="http://www.cnblogs.com/yxnchinahlj/archive/2010/09/20/1831615.html">4. JAVA深复制(深克隆)与浅复制(浅克隆)(37905)</a></li><li><a href="http://www.cnblogs.com/yxnchinahlj/archive/2010/10/30/1865298.html">5. glViewport()函数和glOrtho()函数的理解(转)(28403)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topcommentedposts" class="sidebar-block"><div id="topfeedback_posts_wrap">
+<div class="catListFeedback">
+<h3 class="catListTitle">评论排行榜</h3>
+	<div id="TopFeedbackPostsBlock"><ul><li><a href="http://www.cnblogs.com/yxnchinahlj/archive/2010/09/20/1831615.html">1. JAVA深复制(深克隆)与浅复制(浅克隆)(9)</a></li><li><a href="http://www.cnblogs.com/yxnchinahlj/archive/2010/11/23/1885579.html">2. OpenGL总结(9)</a></li><li><a href="http://www.cnblogs.com/yxnchinahlj/archive/2010/10/30/1865298.html">3. glViewport()函数和glOrtho()函数的理解(转)(9)</a></li><li><a href="http://www.cnblogs.com/yxnchinahlj/archive/2010/10/28/1863624.html">4. 使用Eclipse RCP进行桌面程序开发(2)</a></li><li><a href="http://www.cnblogs.com/yxnchinahlj/archive/2011/08/19/2146006.html">5. Matlab曲线拟合工具箱(2)</a></li></ul></div>
+</div>
+</div></div><div id="sidebar_topdiggedposts" class="sidebar-block"><div id="topdigg_posts_wrap">
+<div class="catListView">
+<h3 class="catListTitle">推荐排行榜</h3>
+<div id="TopDiggPostsBlock"><ul><li><a href="http://www.cnblogs.com/yxnchinahlj/archive/2010/10/30/1865298.html">1. glViewport()函数和glOrtho()函数的理解(转)(12)</a></li><li><a href="http://www.cnblogs.com/yxnchinahlj/archive/2010/11/23/1885579.html">2. OpenGL总结(8)</a></li><li><a href="http://www.cnblogs.com/yxnchinahlj/archive/2010/09/27/1836556.html">3. Java中的equals()(6)</a></li><li><a href="http://www.cnblogs.com/yxnchinahlj/archive/2011/02/12/1952550.html">4. c++中string的用法(4)</a></li><li><a href="http://www.cnblogs.com/yxnchinahlj/archive/2011/08/19/2146006.html">5. Matlab曲线拟合工具箱(3)</a></li></ul></div>
+</div></div></div></div><script type="text/javascript">loadBlogSideColumn();</script>
+			</div>
+			
+		</div><!--end: sideBarMain -->
+	</div><!--end: sideBar 侧边栏容器 -->
+	<div class="clear"></div>
+	</div><!--end: main -->
+	<div class="clear"></div>
+	<div id="footer">
+		
+<!--done-->
+Copyright ©2016 白了少年头
+	</div><!--end: footer -->
+</div><!--end: home 自定义的最大容器 -->
+
+
+</body></html>

@@ -1,0 +1,549 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0040)http://zhouhaitao.iteye.com/blog/1998979 -->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="zh-CN" dir="ltr"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站</title>
+    <meta name="description" content=" 经常在使用tomcat服务器的时候 总会发生一些莫名其妙的错误。  就像下面这个错误： 在配置文件中存在多个/MyWeb的配置，导致不能发布服务。     错误信息：  Could not publish server configuration for Tomcat v6.0 Server at localhost.Multiple Contexts have a path of &quot;/ ...">
+    <meta name="keywords" content=" Could not publish server configuration for Tomcat v6.0 Server at localhost.">
+    <link rel="shortcut icon" href="http://zhouhaitao.iteye.com/images/favicon.ico" type="image/x-icon">
+    <link rel="search" type="application/opensearchdescription+xml" href="http://zhouhaitao.iteye.com/open_search.xml" title="ITeye">
+    <link href="http://zhouhaitao.iteye.com/rss" rel="alternate" title="我为了你的一切的一切." type="application/rss+xml">
+    <link href="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/blog.css" media="screen" rel="stylesheet" type="text/css">
+<link href="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/green.css" media="screen" rel="stylesheet" type="text/css">
+    <script type="text/javascript" async="" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/dynamicFloat.js"></script><script src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/ca-pub-8990951720398508.js"></script><script type="text/javascript" async="" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/ycgm"></script><script type="text/javascript" async="" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/ycgm(1)"></script><script type="text/javascript" async="" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/ycgm(2)"></script><script src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/hm.js"></script><script type="text/javascript" async="" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/ga.js"></script><script src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/application.js" type="text/javascript"></script>    
+    <script type="text/javascript">
+
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-535605-1']);
+  _gaq.push(['_setDomainName', 'iteye.com']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+
+
+      <link href="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/SyntaxHighlighter.css" media="screen" rel="stylesheet" type="text/css">
+  <script src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/shCoreCommon.js" type="text/javascript"></script>
+<script src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/hotkey.js" type="text/javascript"></script>
+  <script src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/code_favorites.js" type="text/javascript"></script>
+<script src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/weiboshare.js" type="text/javascript"></script>
+  <script>
+		var _hmt = _hmt || [];
+		(function() {
+		 var hm = document.createElement("script");
+		 hm.src = "//hm.baidu.com/hm.js?e19a8b00cf63f716d774540875007664";
+		 var s = document.getElementsByTagName("script")[0]; 
+		 s.parentNode.insertBefore(hm, s);
+		})();
+	</script>
+    
+  <script src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/get_ads.php" type="text/javascript"></script></head>
+  <body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/o.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div>
+    <div id="header">
+	      <div id="blog_site_nav">
+  <a href="http://www.iteye.com/" class="homepage">首页</a>
+  <a href="http://www.iteye.com/news">资讯</a>
+  <a href="http://www.iteye.com/magazines">精华</a>
+  <a href="http://www.iteye.com/forums">论坛</a>
+  <a href="http://www.iteye.com/ask">问答</a>
+  <a href="http://www.iteye.com/blogs">博客</a>
+  <a href="http://www.iteye.com/blogs/subjects">专栏</a>
+  <a href="http://www.iteye.com/groups">群组</a>
+  <a href="http://zhouhaitao.iteye.com/blog/1998979#" onclick="return false;" id="msna"><u>更多</u> <small>▼</small></a>
+  <div class="quick_menu" style="display:none;">
+    <a target="_blank" href="http://job.iteye.com/iteye">知识库</a>
+    <a href="http://www.iteye.com/search">搜索</a>
+  </div>
+</div>
+
+	      <div id="user_nav">
+      <a href="http://zhouhaitao.iteye.com/login" class="welcome" title="登录">您还未登录 !</a>
+    <a href="http://zhouhaitao.iteye.com/login">登录</a>
+    <a href="http://zhouhaitao.iteye.com/signup" class="nobg">注册</a>
+  </div>
+
+	    
+    </div>
+
+    <div id="page">
+        <div id="branding" class="clearfix" style="overflow: hidden;background: none;padding:0 0 2px;">
+        	<div class="J_adv" data-view="true" data-mod="ad_popu_184" data-mtp="34" data-order="92" data-con="ad_content_1127" style="width: 960px; height: 90px;"><!-- 广告占位容器 --><div id="cpro_u2720131"><iframe id="iframeu2720131_0" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/ycgm.html" width="960" height="90" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0; vertical-align:bottom;margin:0;" allowtransparency="true"></iframe></div><!-- 投放代码 --><script type="text/javascript">   /*服务器频道首页置顶Banner960*90，创建于2014-7-3*/    (window.cproArray = window.cproArray || []).push({        id: 'u2720131'      });  </script>  <script src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/c.js" type="text/javascript"></script></div>
+        </div>
+      <div id="branding" class="clearfix">
+        <div id="blog_name">
+          <h1><a href="http://zhouhaitao.iteye.com/">我为了你的一切的一切.</a></h1>
+        </div>
+        <div id="fd"></div>
+        <div id="blog_navbar">
+          <ul>
+            <li class="blog_navbar_for"><a href="http://zhouhaitao.iteye.com/"><strong>博客</strong></a></li>
+            <li><a href="http://zhouhaitao.iteye.com/weibo">微博</a></li>
+            <li><a href="http://zhouhaitao.iteye.com/album">相册</a></li>
+            <li><a href="http://zhouhaitao.iteye.com/link">收藏</a></li>
+            <li><a href="http://zhouhaitao.iteye.com/blog/guest_book">留言</a></li>
+            <li><a href="http://zhouhaitao.iteye.com/blog/profile">关于我</a></li>
+          </ul>
+    
+          <div class="search">
+            <form action="http://zhouhaitao.iteye.com/blog/search" method="get">
+              <input class="search_text" id="query" name="query" style="margin-left: 10px;width: 110px;" type="text" value="">
+              <input class="submit_search" type="submit" value="">
+            </form>
+          </div> 
+          <div id="fd"></div>         
+        </div>
+      </div>
+      
+      <div id="content" class="clearfix">
+        <div id="main">
+          
+
+
+
+          
+
+
+<div class="h-entry" style="display:none">
+  <a href="http://zhouhaitao.iteye.com/" class="p-author" target="_blank">zhou363667565</a>
+</div>
+
+
+<div class="blog_main">
+  <div class="blog_title">
+    <h3>
+      <a href="http://zhouhaitao.iteye.com/blog/1998979">Could not publish server configuration for Tomcat v6.0 Server at localhost.</a>
+      <em class="actions">      </em>
+    </h3>
+    <ul class="blog_categories"><strong>博客分类：</strong> <li><a href="http://zhouhaitao.iteye.com/category/130349">Tomcat 服务器</a></li> </ul>
+        <div class="news_tag">&nbsp;</div>
+    	  
+    	
+    	
+  		
+      </div>
+
+  <div id="blog_content" class="blog_content">
+    <div style="font-size: 14px;" class="iteye-blog-content-contain">
+<p>经常在使用tomcat服务器的时候&nbsp;总会发生一些莫名其妙的错误。</p>
+<p>就像下面这个错误： 在配置文件中存在多个/MyWeb的配置，导致不能发布服务。</p>
+<p>&nbsp;</p>
+<p>错误信息：</p>
+<p>Could not publish server configuration for Tomcat v6.0 Server at localhost.<br>Multiple Contexts have a path of "/MyWeb".</p>
+<p>&nbsp;</p>
+<p><br><img alt="" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/81b8e40b-91e8-3206-b353-0a6e98ad682b.jpg" title="点击查看原始大小图片" class="magplus" width="700" height="460"><br>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="color: #ff0000;">解决方案：</span></p>
+<p><span style="color: #000000;">如果是使用的eclipse tomcat 插件，需要在你的工作空间 找到如下文件：</span></p>
+<p><span style="color: #000000;">${WoskSpace}/.metadata\.plugins\org.eclipse.wst.server.cor\e\tmp0\conf\server.xml文件。</span></p>
+<p>&nbsp;</p>
+<p><span style="color: #000000;">如果是Tomcat单独服务器就需要找Tomcat的安装目录：</span></p>
+<p><span style="color: #000000;">${Tomcat_home}\apache-tomcat-6.0.37\conf\server.xml</span></p>
+<p>&nbsp;</p>
+<p><span style="color: #000000;">然后打开此文件：</span></p>
+<p><span style="color: #ff0000;"><br><img alt="" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/9a27053c-87c1-33f6-a9b0-679e4a09c047.jpg" title="点击查看原始大小图片" class="magplus" width="700" height="137"><br><span style="color: #000000;">&nbsp;看到了吧 存在2个相同的path=“/MyWeb” 。 移除其中一个就OK了，然后 重新启动Tomcat服务！</span></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</div>
+  </div>
+
+  
+  <div class="attachments">
+    
+      
+        <ul style="display:none;">
+          <li><a href="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/81b8e40b-91e8-3206-b353-0a6e98ad682b.jpg" target="_blank"><img src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/81b8e40b-91e8-3206-b353-0a6e98ad682b-thumb.jpg" class="magplus" title="点击查看原始大小图片"></a></li>
+          
+          <li>大小: 167.8 KB</li>
+        </ul>
+      
+    
+      
+        <ul style="display:none;">
+          <li><a href="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/9a27053c-87c1-33f6-a9b0-679e4a09c047.jpg" target="_blank"><img src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/9a27053c-87c1-33f6-a9b0-679e4a09c047-thumb.jpg" class="magplus" title="点击查看原始大小图片"></a></li>
+          
+          <li>大小: 109.8 KB</li>
+        </ul>
+      
+    
+    
+      <ul>
+        <li><a href="http://zhouhaitao.iteye.com/blog/1998979#" onclick="$$(&#39;div.attachments ul&#39;).invoke(&#39;show&#39;);$(this).up(1).hide();return false;">查看图片附件</a></li>
+      </ul>
+    
+  </div>
+
+
+  
+  <div class="J_adv" data-view="true" data-mod="ad_popu_171" data-mtp="43" data-order="93" data-con="ad_content_488" style="width: 680px; height: 90px;"><script src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/adsbygoogle.js"></script><ins class="adsbygoogle" style="display:inline-block;width:468px;height:60px" data-ad-client="ca-pub-8990951720398508" data-ad-slot="8267689356/1918544322" data-adsbygoogle-status="done"><ins id="aswift_0_expand" style="display:inline-table;border:none;height:60px;margin:0;padding:0;position:relative;visibility:visible;width:468px;background-color:transparent"><ins id="aswift_0_anchor" style="display:block;border:none;height:60px;margin:0;padding:0;position:relative;visibility:visible;width:468px;background-color:transparent"><iframe width="468" height="60" frameborder="0" marginwidth="0" marginheight="0" vspace="0" hspace="0" allowtransparency="true" scrolling="no" allowfullscreen="true" onload="var i=this.id,s=window.google_iframe_oncopy,H=s&amp;&amp;s.handlers,h=H&amp;&amp;H[i],w=this.contentWindow,d;try{d=w.document}catch(e){}if(h&amp;&amp;d&amp;&amp;(!d.body||!d.body.firstChild)){if(h.call){setTimeout(h,0)}else if(h.match){try{h=s.upd(h,i)}catch(e){}w.location.replace(h)}}" id="aswift_0" name="aswift_0" style="left:0;position:absolute;top:0;" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/saved_resource.html"></iframe></ins></ins></ins><script>(adsbygoogle=window.adsbygoogle || []).push({});</script></div>
+  
+
+  <div id="bottoms" class="clearfix">
+    
+    <div id="share_weibo">分享到：
+      <a data-type="sina" href="javascript:;" title="分享到新浪微博"><img src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/sina.jpg"></a>
+      <a data-type="qq" href="javascript:;" title="分享到腾讯微博"><img src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/tec.jpg"></a>
+    </div>
+  </div>
+
+  <div class="blog_nav">
+    <div class="pre_next">
+      <a href="http://zhouhaitao.iteye.com/blog/1999161" class="next" title="解决Maven中Jetty插件在控制台乱码的问题">解决Maven中Jetty插件在控制台乱码的问题</a>
+      |
+      <a href="http://zhouhaitao.iteye.com/blog/1998515" class="pre" title="使用mvn 命令创建java项目时报错。">使用mvn 命令创建java项目时报错。</a>
+    </div>
+  </div>
+  <div class="blog_bottom">
+    <ul>
+      <li>2014-01-04 15:50</li>
+      <li>浏览 38033</li>
+      <li><a href="http://zhouhaitao.iteye.com/blog/1998979#comments">评论(2)</a></li>
+      
+      
+      <li>分类:<a href="http://www.iteye.com/blogs/category/language">编程语言</a></li>      
+      <li class="last"><a href="http://www.iteye.com/wiki/blog/1998979" target="_blank" class="more">相关推荐</a></li>
+    </ul>    
+  </div>
+  
+		    
+		 		
+      
+  <div class="blog_comment">
+    <h5>评论</h5>
+    <a id="comments" name="comments"></a>
+    <div id="bc2385640">
+  <div class="comment_title">
+    2 楼
+    <a href="http://jia1208.iteye.com/" target="_blank" title="jia1208">jia1208</a>
+    2016-02-27&nbsp;&nbsp;
+    
+    
+  </div>
+  <div class="comment_content"><img src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/icon_idea.gif"> </div>
+</div>
+
+<div id="bc2353854">
+  <div class="comment_title">
+    1 楼
+    <a href="http://guoranaccp.iteye.com/" target="_blank" title="guoranaccp">guoranaccp</a>
+    2014-07-16&nbsp;&nbsp;
+    
+    
+  </div>
+  <div class="comment_content"><img src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/icon_idea.gif"> </div>
+</div>
+
+
+    
+    
+  </div>
+
+  <div class="blog_comment">
+    <h5>发表评论</h5>
+            <p style="text-align:center; margin-top:30px;margin-bottom:0px;"><a href="http://zhouhaitao.iteye.com/login" style="background-color:white;"> <img src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/login_icon.png" style="vertical-align:middle; margin-right: 10px;"></a><a href="http://zhouhaitao.iteye.com/login">  您还没有登录,请您登录后再发表评论 </a></p>
+      </div>
+</div>
+
+
+<script type="text/javascript">
+  dp.SyntaxHighlighter.HighlightAll('code', true, true);
+
+  $$('#main .blog_content pre[name=code]').each(function(pre, index){ // blog content
+    var post_id = 1998979;
+    var location = window.location;
+    source_url = location.protocol + "//" + location.host + location.pathname + location.search;
+    pre.writeAttribute('codeable_id', post_id);
+    pre.writeAttribute('codeable_type', "Blog");
+    pre.writeAttribute('source_url', source_url);
+    pre.writeAttribute('pre_index', index);
+    pre.writeAttribute('title', 'Could not publish server configuration for Tomcat v6.0 Server at localhost.');
+  });
+
+  fix_image_size($$('div.blog_content img'), 700);
+
+  function processComment() {
+    $$('#main .blog_comment > div').each(function(comment){// comment
+      var post_id = comment.id.substr(2);
+      $$("#"+comment.id+" pre[name=code]").each(function(pre, index){
+        var location = window.location;
+        source_url = location.protocol + "//" + location.host + location.pathname + location.search;
+        source_url += "#" + comment.id;
+        pre.writeAttribute('codeable_id', post_id);
+        pre.writeAttribute('codeable_type', "BlogComment");
+        pre.writeAttribute('source_url', source_url);
+        pre.writeAttribute('pre_index', index);
+        pre.writeAttribute('title', 'Could not publish server configuration for Tomcat v6.0 Server at localhost.');
+      });
+    });
+  }
+
+  function quote_comment(id) {
+    new Ajax.Request('/editor/quote', {
+      parameters: {'id':id, 'type':'BlogComment'},
+      onSuccess:function(response){editor.bbcode_editor.textarea.insertAfterSelection(response.responseText);
+        Element.scrollTo(editor.bbcode_editor.textarea.element);}
+    });
+  }
+
+  code_favorites_init();
+  processComment();
+  new WeiboShare({share_buttons: $('share_weibo'), img_scope: $('blog_content')});
+</script>
+
+
+
+
+        </div>
+
+        <div id="local">
+          <div class="local_top"></div>
+          <div id="blog_owner">
+  <div id="blog_owner_logo"><a href="http://zhouhaitao.iteye.com/"><img alt="zhou363667565的博客" class="logo" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/7616c7f8-8ab9-3fc7-a5e2-a2a84d0faf77.png" title="zhou363667565的博客: 我为了你的一切的一切." width=""></a></div>
+  <div id="blog_owner_name">zhou363667565</div>
+</div>
+
+          <div id="blog_actions">
+            <ul>
+              <li>浏览: 1101916 次</li>
+              <li>性别: <img alt="Icon_minigender_1" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/icon_minigender_1.gif" title="男"></li>
+              <li>来自: 深圳</li>
+              <li><img src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/offline.gif"></li>
+              
+            </ul>
+          </div>
+          <div id="user_visits" class="clearfix">
+            <h5>最近访客 <span style="font-weight:normal;font-size:12px;padding-left:30px;"><a href="http://zhouhaitao.iteye.com/blog/user_visits">更多访客&gt;&gt;</a></span></h5>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://gaowangyizutang.iteye.com/" target="_blank"><img alt="gaowangyizuTang的博客" class="logo" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/user-logo-thumb.gif" title="gaowangyizuTang的博客: " width="48px"></a></div>
+                <div class="left"><a href="http://gaowangyizutang.iteye.com/" target="_blank" title="gaowangyizuTang">gaowangyizuTang</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://gds-fighting.iteye.com/" target="_blank"><img alt="gds_fighting的博客" class="logo" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/2566cf49-7613-3bb0-b76f-b82d4fc88059-thumb.png" title="gds_fighting的博客: " width="48px"></a></div>
+                <div class="left"><a href="http://gds-fighting.iteye.com/" target="_blank" title="gds_fighting">gds_fighting</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://wang-z-p2007.iteye.com/" target="_blank"><img alt="wang_zhi_peng2007的博客" class="logo" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/user-logo-thumb.gif" title="wang_zhi_peng2007的博客: 五月天的博客" width="48px"></a></div>
+                <div class="left"><a href="http://wang-z-p2007.iteye.com/" target="_blank" title="wang_zhi_peng2007">wang_zhi_peng2007</a></div>
+              </div>
+            
+              <div class="user_visit">
+                <div class="logo"><a href="http://jjyy778899.iteye.com/" target="_blank"><img alt="jjyy778899的博客" class="logo" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/user-logo-thumb.gif" title="jjyy778899的博客: " width="48px"></a></div>
+                <div class="left"><a href="http://jjyy778899.iteye.com/" target="_blank" title="jjyy778899">jjyy778899</a></div>
+              </div>
+            
+          </div>
+
+          
+
+                      <div id="blog_menu">
+              <h5>文章分类</h5>
+              <ul>
+                <li><a href="http://zhouhaitao.iteye.com/">全部博客 (509)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/129386">JavaEE (122)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/129388">Oracle数据库 (29)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/129402">JavaScript (37)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/129387">SAP (5)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/129389">MySql数据库 (7)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/129392">JavaSE (4)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/129395">Ajax (1)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/129396">jQuery (13)</a></li>
+                
+                  <li class="selected"><a href="http://zhouhaitao.iteye.com/category/129403">SSH框架 (36)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/129401">Web Service (10)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/129404">JSF框架 (2)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/129405">JBPM (0)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/130343">ireport报表 (2)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/130344">ibatis (5)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/130345">Hibernate (31)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/130348">JSP (11)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/130349">Tomcat 服务器 (20)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/130350">Other (19)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/132441">JavaWeb (4)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/134420">Maven (11)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/136666">OSWorkFlow (10)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/152559">HTML (13)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/152560">Exception汇总 (7)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/154216">SVN (2)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/154221">笑话 (1)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/154222">JSTL (1)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/157047">WebSphere Message Broker (13)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/160590">ANT命令 (3)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/161247">Liunx (12)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/160700">Struts2 (26)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/174186">Eclipse (6)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/165374">DOS (3)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/180225">Flex (11)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/190617">WebSphere (1)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/199314">开发常用工具 (3)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/199846">Junit (2)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/225309">EJB (4)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/227537">Struts1.2 (2)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/232687">Jboss (1)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/270903">Android (2)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/272891">Java框架源码解析 (1)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/290581">Spring (4)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/301913">MyBatis (6)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/302919">SpringMVC (4)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/303410">Jetty (2)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/322632">数据库表设计 (1)</a></li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/category/362867">SSO (4)</a></li>
+                
+              </ul>
+            </div>
+            <div id="month_blogs">
+              <h5>社区版块</h5>
+              <ul>
+                <li><a href="http://zhouhaitao.iteye.com/blog/news">我的资讯</a> (0)</li>
+                <li>
+                  <a href="http://zhouhaitao.iteye.com/blog/post">我的论坛</a> (29)
+                </li>
+                <li><a href="http://zhouhaitao.iteye.com/blog/answered_problems">我的问答</a> (7)</li>
+              </ul>
+            </div>
+            <div id="month_blogs">
+              <h5>存档分类</h5>
+              <ul>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/blog/monthblog/2016-09">2016-09</a> (1)</li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/blog/monthblog/2016-03">2016-03</a> (1)</li>
+                
+                  <li><a href="http://zhouhaitao.iteye.com/blog/monthblog/2015-12">2015-12</a> (2)</li>
+                
+                <li><a href="http://zhouhaitao.iteye.com/blog/monthblog_more">更多存档...</a></li>
+              </ul>
+            </div>
+            
+            
+
+            <div id="guest_books">
+              <h5>最新评论</h5>
+              <ul>
+                
+                <li>
+                  <a href="http://jia1208.iteye.com/" target="_blank" title="jia1208">jia1208</a>： 
+                   ...<br>
+                  <a href="http://zhouhaitao.iteye.com/blog/1998979#bc2385640">Could not publish server configuration for Tomcat v6.0 Server at localhost.</a>
+                </li>
+                
+                <li>
+                  <a href="http://u011274527.iteye.com/" target="_blank" title="u011274527">u011274527</a>： 
+                   赞<br>
+                  <a href="http://zhouhaitao.iteye.com/blog/861792#bc2385197">java.io.EOFException java.io.ObjectInputStream$PeekInputStream.readFully 错误</a>
+                </li>
+                
+                <li>
+                  <a href="http://1040798027.iteye.com/" target="_blank" title="旭旭小牛啦">旭旭小牛啦</a>： 
+                  怎么没哟了，继续赛<br>
+                  <a href="http://zhouhaitao.iteye.com/blog/1150460#bc2382099">jQuery 选择器 </a>
+                </li>
+                
+                <li>
+                  <a href="http://wzw3919.iteye.com/" target="_blank" title="wzw3919">wzw3919</a>： 
+                  100行会报空指针<br>
+                  <a href="http://zhouhaitao.iteye.com/blog/1863435#bc2381881">Java 解压缩zip文件</a>
+                </li>
+                
+                <li>
+                  <a href="http://johntsu.iteye.com/" target="_blank" title="johntsu">johntsu</a>： 
+                  问题确实解决，好使！<br>
+                  <a href="http://zhouhaitao.iteye.com/blog/1164736#bc2381511">java.lang.NullPointerException at org.apache.jsp.index_jsp._jspInit(index_jsp.ja</a>
+                </li>
+                
+              </ul>
+            </div>
+
+            <div class="local_bottom"></div>
+          
+        </div>
+        <div style="margin-top: 10px;float: left;clear: left;">
+					<div class="J_adv" data-view="true" data-mod="ad_popu_185" data-mtp="36" data-order="92" data-con="ad_content_1129" style="width: 200px; height: 200px;"><!-- 广告占位容器 --><div id="cpro_u2720202" style="width: 200px; height: 200px; display: inline-block;"><iframe id="iframeu2720202_0" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/ycgm(3).html" width="200" height="200" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0; vertical-align:bottom;margin:0;" allowtransparency="true"></iframe></div><!-- 投放代码 --><script type="text/javascript">(window['cproStyleApi'] = window['cproStyleApi'] ||{})['u2720202']={at:'3',rsi0:'200',rsi1:'200',pat:'6',tn:'baiduCustNativeAD',rss1:'#FFFFFF',conBW:'1',adp:'1',ptt:'0',titFF:'%E5%BE%AE%E8%BD%AF%E9%9B%85%E9%BB%91',titFS:'',rss2:'#000000',titSU:'0',ptbg:'90',piw:'0',pih:'0',ptp:'0'};/*服务器频道首页置顶Banner960*90，创建于2014-7-3*/(window.cproArray = window.cproArray || []).push({id:'u2720202'});  </script>  <script src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/c.js" type="text/javascript"></script></div>
+				</div>
+      </div>    
+
+      <div id="footer" class="clearfix">
+        <div id="copyright">
+          <hr>
+          声明：ITeye文章版权属于作者，受法律保护。没有作者书面许可不得转载。若作者同意转载，必须以超链接形式标明文章原始出处和作者。<br>
+          © 2003-2016 ITeye.com.   All rights reserved.  [ 京ICP证110151号  京公网安备110105010620 ]
+        </div>
+        <div class="J_adv" data-view="true" data-mod="ad_popu_186" data-mtp="40" data-order="92" data-con="ad_content_1132" style="width: 1px; height: 1px; position: fixed; right: 10px; bottom: 10px; z-index: 999; background-color: transparent;"><div id="location_parent"></div><script>document.getElementById('location_parent').parentNode.style.height='1px';document.getElementById('location_parent').parentNode.style.width='1px';document.getElementById('location_parent').parentNode.style.position='fixed';document.getElementById('location_parent').parentNode.style.right='10px';document.getElementById('location_parent').parentNode.style.bottom='10px';document.getElementById('location_parent').parentNode.style.zIndex=999;document.getElementById('location_parent').parentNode.style.backgroundColor='transparent';</script><!-- 广告占位容器 --><!-- 投放代码 --><script type="text/javascript">(window['cproStyleApi'] = window['cproStyleApi'] || {})['u2720296']={at:'3',rsi0:'300',rsi1:'250',pat:'17',tn:'baiduCustNativeAD_xuanfu',rss1:'#FFFFFF',conBW:'1',adp:'1',ptt:'0',titFF:'%E5%BE%AE%E8%BD%AF%E9%9B%85%E9%BB%91',titFS:'14',rss2:'#000000',titSU:'0'};/*服务器频道首页置顶Banner960*90，创建于2014-7-3*/(window.cproArray = window.cproArray || []).push({id:'u2720296'});  </script>  <script src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/f.js" type="text/javascript"></script></div>
+      </div>
+    </div>
+    <script type="text/javascript">
+  document.write("<img src='http://stat.iteye.com/?url="+ encodeURIComponent(document.location.href) + "&referrer=" + encodeURIComponent(document.referrer) + "&user_id=' width='0' height='0' />");
+</script><img src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/saved_resource" width="0" height="0">
+
+<script src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/tracking.js" type="text/javascript"></script>
+
+    
+<script type="text/javascript" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/tongji.js"></script>
+      
+    
+    <script language="javascript" type="text/javascript" src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/async_new.js"></script>
+<script src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/jquery-1.11.1.min.js" type="text/javascript"></script>
+<script type="text/javascript">var $csdn_iteye_jq = jQuery.noConflict();// 解决jq与prototype.js命名空间冲突的问题</script>
+<script src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/tracking(1).js" type="text/javascript"></script>
+    
+	    
+	    <script src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/web-storage-cache.min.js" type="text/javascript"></script>
+	    <script src="./Could not publish server configuration for Tomcat v6.0 Server at localhost. - 我为了你的一切的一切. - ITeye技术网站_files/replace.min.js" type="text/javascript"></script>
+    
+    
+  
+
+</body></html>

@@ -1,0 +1,14 @@
+/*
+[name]S2[/name]
+[iconbgcolor]url(template/comeing_city/style/t2/cover.gif)[/iconbgcolor]
+Powered by Comeing!
+*/
+body{ background:url(http://fj.ikafan.com//template/comeing_city/style/t2/bg.jpg) repeat-x 0 0 #f1f0f0;}
+
+
+
+/*Ö÷µ¼º½*/
+#comeing_nv{ background:url(http://fj.ikafan.com//template/comeing_city/style/t2/nv.gif) repeat-x 0 0;}
+#comeing_nv li{ background:url(http://fj.ikafan.com//template/comeing_city/style/t2/nv.gif) no-repeat 100% -48px;}
+#comeing_nv li a:hover,#comeing_nv li.first a:hover{ background:url(http://fj.ikafan.com//template/comeing_city/style/t2/nv.gif) repeat-x 0 -144px;}
+#comeing_nv li.a a,#comeing_nv li.first_a a{ background:url(http://fj.ikafan.com//template/comeing_city/style/t2/nv.gif) repeat-x 0 -96px;}

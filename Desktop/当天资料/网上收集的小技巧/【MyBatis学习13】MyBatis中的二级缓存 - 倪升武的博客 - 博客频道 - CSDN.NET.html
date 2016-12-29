@@ -1,0 +1,1394 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<!-- saved from url=(0053)http://blog.csdn.net/eson_15/article/details/51669608 -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><script type="text/javascript" async="" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/dynamicFloat.js"></script><script type="text/javascript" async="" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/xclm"></script><script type="text/javascript" async="" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/xclm(1)"></script><script type="text/javascript" async="" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/xclm(2)"></script>   
+   
+
+    <script src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/hm.js"></script><script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/tracking.js" charset="utf-8"></script>  
+
+    <script type="text/javascript">
+        var protocol = window.location.protocol;
+        document.write('<script type="text/javascript" src="' + protocol + '//csdnimg.cn/pubfooter/js/repoAddr2.js?v=' + Math.random() + '"></' + 'script>');
+    </script><script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/repoAddr2.js"></script>
+
+  
+ <meta http-equiv="Cache-Control" content="no-siteapp"><link rel="alternate" media="handheld" href="http://blog.csdn.net/eson_15/article/details/51669608#">
+
+    <title>【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客
+        - 博客频道 - CSDN.NET</title>
+    
+    <meta name="description" content="接着上一次的一元线性回归http://blog.csdn.net/lulei1217/article/details/49385531往下讲，这篇文章要讲解的多元线性回归。1、什么是多元线性回归模型？当y值的影响因素不唯一时,采用多元线性回归模型。  y =y=β0+β1x1+β2x2+...+βnxn 例如商品的销售额可能不电视广告投入,收音机广告">
+    <script src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/jquery.js" type="text/javascript"></script>
+      <script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/jquery-version.js"></script>
+    <script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/ad.js"></script>
+        <!--new top-->
+       
+        <link rel="stylesheet" href="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/index.css">
+        <!--new top-->
+    
+      <!-- ad begin -->
+         <script language="javascript" type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/tracking(1).js"></script>
+    <!-- ad end-->
+
+    <link rel="Stylesheet" type="text/css" href="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/style.css">
+    <link id="RSSLink" title="RSS" type="application/rss+xml" rel="alternate" href="http://blog.csdn.net/eson_15/rss/list">
+    <link rel="shortcut icon" href="http://c.csdnimg.cn/public/favicon.ico">
+    <link type="text/css" rel="stylesheet" href="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/default.css">
+ 
+
+
+<script>
+    var _hmt = _hmt || [];
+    (function () {
+        var hm = document.createElement("script");
+        hm.src = "//hm.baidu.com/hm.js?6bcd52f51e9b3dce32bec4a3997715ac";
+        var s = document.getElementsByTagName("script")[0];
+        s.parentNode.insertBefore(hm, s);
+    })();
+</script>
+
+<script src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/share.js"></script><link rel="stylesheet" type="text/css" href="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/job_reco.css"><style type="text/css">.MathJax_Hover_Frame {border-radius: .25em; -webkit-border-radius: .25em; -moz-border-radius: .25em; -khtml-border-radius: .25em; box-shadow: 0px 0px 15px #83A; -webkit-box-shadow: 0px 0px 15px #83A; -moz-box-shadow: 0px 0px 15px #83A; -khtml-box-shadow: 0px 0px 15px #83A; border: 1px solid #A6D ! important; display: inline-block; position: absolute}
+.MathJax_Hover_Arrow {position: absolute; width: 15px; height: 11px; cursor: pointer}
+</style><style type="text/css">#MathJax_About {position: fixed; left: 50%; width: auto; text-align: center; border: 3px outset; padding: 1em 2em; background-color: #DDDDDD; color: black; cursor: default; font-family: message-box; font-size: 120%; font-style: normal; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; border-radius: 15px; -webkit-border-radius: 15px; -moz-border-radius: 15px; -khtml-border-radius: 15px; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_Menu {position: absolute; background-color: white; color: black; width: auto; padding: 2px; border: 1px solid #CCCCCC; margin: 0; cursor: default; font: menu; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; z-index: 201; box-shadow: 0px 10px 20px #808080; -webkit-box-shadow: 0px 10px 20px #808080; -moz-box-shadow: 0px 10px 20px #808080; -khtml-box-shadow: 0px 10px 20px #808080; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+.MathJax_MenuItem {padding: 2px 2em; background: transparent}
+.MathJax_MenuArrow {position: absolute; right: .5em; color: #666666}
+.MathJax_MenuActive .MathJax_MenuArrow {color: white}
+.MathJax_MenuArrow.RTL {left: .5em; right: auto}
+.MathJax_MenuCheck {position: absolute; left: .7em}
+.MathJax_MenuCheck.RTL {right: .7em; left: auto}
+.MathJax_MenuRadioCheck {position: absolute; left: 1em}
+.MathJax_MenuRadioCheck.RTL {right: 1em; left: auto}
+.MathJax_MenuLabel {padding: 2px 2em 4px 1.33em; font-style: italic}
+.MathJax_MenuRule {border-top: 1px solid #CCCCCC; margin: 4px 1px 0px}
+.MathJax_MenuDisabled {color: GrayText}
+.MathJax_MenuActive {background-color: Highlight; color: HighlightText}
+.MathJax_Menu_Close {position: absolute; width: 31px; height: 31px; top: -15px; left: -15px}
+</style><style type="text/css">#MathJax_Zoom {position: absolute; background-color: #F0F0F0; overflow: auto; display: block; z-index: 301; padding: .5em; border: 1px solid black; margin: 0; font-weight: normal; font-style: normal; text-align: left; text-indent: 0; text-transform: none; line-height: normal; letter-spacing: normal; word-spacing: normal; word-wrap: normal; white-space: nowrap; float: none; box-shadow: 5px 5px 15px #AAAAAA; -webkit-box-shadow: 5px 5px 15px #AAAAAA; -moz-box-shadow: 5px 5px 15px #AAAAAA; -khtml-box-shadow: 5px 5px 15px #AAAAAA; filter: progid:DXImageTransform.Microsoft.dropshadow(OffX=2, OffY=2, Color='gray', Positive='true')}
+#MathJax_ZoomOverlay {position: absolute; left: 0; top: 0; z-index: 300; display: inline-block; width: 100%; height: 100%; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+#MathJax_ZoomFrame {position: relative; display: inline-block; height: 0; width: 0}
+#MathJax_ZoomEventTrap {position: absolute; left: 0; top: 0; z-index: 302; display: inline-block; border: 0; padding: 0; margin: 0; background-color: white; opacity: 0; filter: alpha(opacity=0)}
+</style><style type="text/css">.MathJax_Preview {color: #888}
+#MathJax_Message {position: fixed; left: 1em; bottom: 1.5em; background-color: #E6E6E6; border: 1px solid #959595; margin: 0px; padding: 2px 8px; z-index: 102; color: black; font-size: 80%; width: auto; white-space: nowrap}
+#MathJax_MSIE_Frame {position: absolute; top: 0; left: 0; width: 0px; z-index: 101; border: 0px; margin: 0px; padding: 0px}
+.MathJax_Error {color: #CC0000; font-style: italic}
+</style><link href="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/bdsstyle.css" rel="stylesheet" type="text/css"><link rel="stylesheet" type="text/css" href="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/style(1).css"><link type="text/css" rel="stylesheet" href="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/style(2).css"><script src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/get_ads.php" type="text/javascript"></script><script src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/logger.js"></script><link rel="stylesheet" href="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/share_style0_16.css"></head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/o.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div><div id="MathJax_Message" style="display: none;"></div><iframe frameborder="0" style="display: none;" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/saved_resource.html"></iframe>
+    <!-- 广告位开始 -->
+        <ins data-revive-zoneid="149" data-revive-id="8c38e720de1c90a6f6ff52f3f89c4d57" id="revive-0-0"></ins>
+    <!-- 广告位结束 -->
+
+    
+   
+      <!--new top-->
+    <script id="toolbar-tpl-scriptId" fixed="true" prod="blog" skin="black" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/html.js" type="text/javascript"></script><div class="csdn-toolbar csdn-toolbar-skin-black ">        <div class="container row center-block ">          <div class="col-md-3 pull-left logo clearfix"><a href="http://www.csdn.net/?ref=toolbar" title="CSDN首页" target="_blank" class="icon"></a><a title="频道首页" href="http://blog.csdn.net/?ref=toolbar_logo" class="img blog-icon"></a></div>          <div class="pull-right login-wrap unlogin">            <ul class="btns">              <li class="loginlink"><a href="https://passport.csdn.net/account/login?ref=toolbar" target="_top">登录&nbsp;</a>|<a target="_top" href="http://passport.csdn.net/account/mobileregister?ref=toolbar&amp;action=mobileRegister">&nbsp;注册</a></li>              <li class="search">                <div class="icon on-search-icon">                  <div class="wrap">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <form action="http://so.csdn.net/search" method="get" target="_blank">                      <input type="hidden" value="toolbar" name="ref" accesskey="2">                      <div class="border">                        <input placeholder="搜索" type="text" value="" name="q" accesskey="2"><span class="icon-enter-sm"></span>                      </div>                    </form>                  </div>                </div>              </li>              <li class="favor">                <div class="icon on-favor-icon">                  <div class="wrap">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <div style="display:none;" class="favor-success"><span class="msg">收藏成功</span>                      <div class="btns"><span class="btn btn-primary ok">确定</span></div>                    </div>                    <div style="display:none;" class="favor-failed"><span class="icon-danger-lg"></span><span class="msg">收藏失败，请重新收藏</span>                      <div class="btns"><span class="btn btn-primary ok">确定</span></div>                    </div>                    <form role="form" class="form-horizontal favor-form">                      <div class="form-group">                        <div class="clearfix">                          <label for="input-title" class="col-sm-2 control-label">标题</label>                          <div class="col-sm-10">                            <input id="inputTitle" type="text" placeholder="" class="title form-control">                          </div>                        </div>                        <div class="alert alert-danger"><strong></strong>标题不能为空</div>                      </div>                      <div class="form-group">                        <label for="input-url" class="col-sm-2 control-label">网址</label>                        <div class="col-sm-10">                          <input id="input-url" type="text" placeholder="" class="url form-control">                        </div>                      </div>                      <div class="form-group">                        <label for="input-tag" class="col-sm-2 tag control-label">标签</label>                        <div class="col-sm-10">                          <input id="input-tag" type="text" class="form-control tag">                        </div>                      </div>                      <div class="form-group">                        <label for="input-description" class="description col-sm-2 control-label">摘要</label>                        <div class="col-sm-10">                          <textarea id="input-description" class="form-control description"></textarea>                        </div>                      </div>                      <div class="form-group">                        <div class="col-sm-offset-2 col-sm-10 ft">                          <div class="col-sm-4 pull-left">                            <div class="checkbox">                              <label>                                <input type="checkbox" name="share" checked="checked" class="share">公开                              </label>                            </div>                          </div>                          <div class="col-sm-8 pull-right favor-btns">                            <button type="button" class="cancel btn btn-default">取消</button>                            <button type="submit" class="submit btn btn-primary">收藏</button>                          </div>                        </div>                      </div>                    </form>                  </div>                </div>              </li>              <li class="notify">                <div style="display:none" class="number"></div>                <div style="display:none" class="icon-hasnotes-sm"></div>                <div id="header_notice_num"></div>                <div class="icon on-notify-icon">                  <div class="wrap">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <div id="note1" class="csdn_note">                      <div class="box"></div>                    <iframe src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/saved_resource(1).html" frameborder="0" allowtransparency="true" style="z-index:-1;position:absolute;top:0;left:0;width:100%;height:100%;background:transparent"></iframe></div>                  </div>                </div>              </li>              <li class="ugc">                <div class="icon on-ugc-icon">                  <div class="wrap clearfix">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <dl>                      <dt><a href="http://geek.csdn.net/news/expert?ref=toolbar" target="_blank" class="p-news clearfix" style="display:none;"><em class="icon"></em><span>分享资讯</span></a></dt>                      <dt style="border: none;"><a href="http://u.download.csdn.net/upload?ref=toolbar" target="_blank" class="p-doc clearfix"><em class="icon"></em><span>传PPT/文档</span></a></dt>                      <dt><a href="http://bbs.csdn.net/topics/new?ref=toolbar" target="_blank" class="p-ask clearfix"><em class="icon"></em><span>提问题</span></a></dt>                      <dt><a href="http://write.blog.csdn.net/postedit?ref=toolbar" target="_blank" class="p-blog clearfix"><em class="icon"></em><span>写博客</span></a></dt>                      <dt><a href="http://u.download.csdn.net/upload?ref=toolbar" target="_blank" class="p-src clearfix"><em class="icon"></em><span>传资源</span></a></dt>                      <dt><a href="https://code.csdn.net/projects/new?ref=toolbar" target="_blank" class="c-obj clearfix"><em class="icon"></em><span>创建项目</span></a></dt>                      <dt><a href="https://code.csdn.net/snippets/new?ref=toolbar" target="_blank" class="c-code clearfix"><em class="icon"></em><span>创建代码片</span></a></dt>                    </dl>                  </div>                </div>              </li>              <li class="profile">                <div class="icon on-profile-icon"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/100x100.jpg" class="curr-icon-img">                  <div class="wrap clearfix">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                    <div class="bd">                      <dl class="clearfix">                        <dt class="pull-left img"><a target="_blank" href="http://my.csdn.net/?ref=toolbar" class="avatar"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/100x100.jpg"></a></dt>                        <dd class="info" style="border: none;"><a target="_blank" href="http://my.csdn.net/?ref=toolbar" class="nickname"></a><a class="set-nick" href="https://passport.csdn.net/account/profile">设置昵称<span class="write-icon"></span></a><span class="dec"><a class="fill-dec" href="http://my.csdn.net/" target="_blank">编辑自我介绍，让更多人了解你<span class="write-icon"></span></a></span></dd>                      </dl>                    </div>                    <div class="ft clearfix"><a target="_blank" href="http://my.csdn.net/my/account/changepwd?ref=toolbar" class="pull-left"><span class="icon-cog"></span>帐号设置</a><a href="https://passport.csdn.net/account/logout?ref=toolbar" target="_top" class="pull-left" style="margin-left:132px; width:18px; height:27px; white-space:nowrap; overflow:hidden;"><span class="icon-signout"></span><span class="out">退出</span></a></div>                  </div>                </div>              </li>              <li class="apps">                <div id="chasnew123" class="hasnew" style="display: none;"></div>                <div id="cappsarea123" class="icon on-apps-icon">                  <div class="wrap clearfix">                    <div class="curr-icon-wrap">                      <div class="curr-icon"></div>                    </div>                  <div class="detail">                    <dl>                      <dt>                        <h5>社区</h5>                      </dt>                      <dd> <a href="http://blog.csdn.net/?ref=toolbar" target="_blank">博客</a></dd>                      <dd> <a href="http://bbs.csdn.net/?ref=toolbar" target="_blank">论坛</a></dd>                      <dd> <a href="http://download.csdn.net/?ref=toolbar" target="_blank">下载</a></dd>                      <dd> <a href="http://lib.csdn.net/?ref=toolbar" target="_blank">知识库</a></dd>                      <dd><a href="http://ask.csdn.net/?ref=toolbar" target="_blank">技术问答</a></dd>                      <dd><a href="http://geek.csdn.net/?ref=toolbar" target="_blank">极客头条</a></dd>                      <dd style="display:none"> <a href="http://hero.csdn.net/?ref=toolbar" target="_blank">英雄会</a></dd>                    </dl>                  </div>                  <div class="detail">                    <dl>                      <dt>                        <h5>服务</h5>                      </dt>                      <dd style="display:none"> <a href="http://job.csdn.net/?ref=toolbar" target="_blank">JOB<img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/new.gif" style="display: none; margin-top: -26px; width: 23px;"></a></dd>                      <dd> <a href="http://edu.csdn.net/?ref=toolbar" target="_blank">学院<img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/new.gif" style="display: none; margin-top: -26px; width: 23px;"></a></dd>                      <dd> <a href="https://code.csdn.net/?ref=toolbar" target="_blank">CODE</a></dd>                      <dd> <a href="http://huiyi.csdn.net/?ref=toolbar" target="_blank">活动</a></dd>                      <dd> <a href="http://www.csto.com/?ref=toolbar" target="_blank">CSTO</a></dd>                      <dd> <a href="http://mall.csdn.net/?ref=toolbar" target="_blank">C币兑换<img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/new.gif" style="display: none; margin-top: -26px; width: 23px;"></a></dd>                    </dl>                  </div>                  <div class="detail last">                    <dl>                      <dt>                        <h5>俱乐部</h5>                      </dt>                      <dd> <a href="http://cto.csdn.net/?ref=toolbar" target="_blank">CTO俱乐部</a></dd>                      <dd> <a href="http://student.csdn.net/?ref=toolbar" target="_blank">高校俱乐部</a></dd>                    </dl>                  </div>                </div>              </div>            </li>            </ul>          </div>        </div>    </div>
+     <!--new top-->
+    <div id="container">
+        <div id="header">
+    <div class="header">
+        <div id="blog_title">
+            <h2>
+                <a href="http://blog.csdn.net/eson_15">倪升武的博客</a></h2>
+            <h3>这世上天才很少，懒蛋却很多，你若对得起时间，时间便对得起你！</h3>
+            <div class="clear">
+            </div>
+        </div>
+        <div class="clear">
+        </div>
+        
+     
+    </div>
+</div>
+<div id="navigator">
+    <div class="navigator_bg">
+    </div>
+    <div class="navigator">
+        <ul>           
+                <li id="btnContents"><a href="http://blog.csdn.net/eson_15?viewmode=contents"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_mulu&#39;])">
+                    <img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/ico_list.gif">目录视图</span></a></li>
+                <li id="btnView"><a href="http://blog.csdn.net/eson_15?viewmode=list"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_zhaiyao&#39;])">
+                    <img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/ico_summary.gif">摘要视图</span></a></li>
+                <li id="btnRss"><a href="http://blog.csdn.net/eson_15/rss/list"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_RSS&#39;])">
+                    <img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/ico_rss.gif">订阅</span></a></li>                
+            
+
+            </ul>
+    </div>
+</div>
+<script type="text/javascript">
+    var username = "eson_15";
+    var _blogger = username;
+    var blog_address = "http://blog.csdn.net/eson_15";
+    var static_host = "http://static.blog.csdn.net";
+    var currentUserName = "";  
+</script>
+
+        <div id="body">
+            <div id="main">
+                <div class="main">
+                        <div class="ad_class">
+<div class="notice tracking-ad" data-mod="popu_3"> 
+
+<a href="http://huiyi.csdn.net/activity/product/goods_list?project_id=3252" target="_blank">
+<font color="blue">移动信息安全的漏洞和逆向原理
+</font></a>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://blog.csdn.net/turingbooks/article/details/53079366" target="_blank">
+<font color="red">程序员11月书讯，评论得书啦 
+</font></a>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+<a href="http://geek.csdn.net/news/detail/110921" target="_blank">
+<font color="blue">Get IT技能知识库，50个领域一键直达
+</font></a>
+
+
+
+
+</div>                        </div>
+                        
+
+
+<!-- 广告位开始 -->
+<div class="J_adv" data-view="true" data-mod="ad_popu_72" data-mtp="40" data-order="40" data-con="ad_content_217" style="width: 1px; height: 1px; position: fixed; right: 10px; bottom: 10px; z-index: 999; background-color: transparent;"><div id="location_parent"></div><script>document.getElementById('location_parent').parentNode.style.height='1px';document.getElementById('location_parent').parentNode.style.width='1px';document.getElementById('location_parent').parentNode.style.position='fixed';document.getElementById('location_parent').parentNode.style.right='10px';document.getElementById('location_parent').parentNode.style.bottom='10px';document.getElementById('location_parent').parentNode.style.zIndex=999;document.getElementById('location_parent').parentNode.style.backgroundColor='transparent';</script><!-- 广告占位容器 --><!-- 投放代码 --><script type="text/javascript">(window['cproStyleApi'] = window['cproStyleApi'] || {})['u2392861']={at:'3',rsi0:'300',rsi1:'250',pat:'17',tn:'baiduCustNativeAD_xuanfu',rss1:'#FFFFFF',conBW:'1',adp:'1',ptt:'0',titFF:'%E5%BE%AE%E8%BD%AF%E9%9B%85%E9%BB%91',titFS:'14',rss2:'#000000',titSU:'0'};/*服务器频道首页置顶Banner960*90，创建于2014-7-3*/(window.cproArray = window.cproArray || []).push({id:'u2392861'});  </script>  <script src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/f.js" type="text/javascript"></script></div>
+<!-- 广告位结束 -->
+
+  
+<link href="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/comment1.css" type="text/css" rel="stylesheet">
+<link href="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/style1.css" type="text/css" rel="stylesheet">
+<script language="JavaScript" type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/jquery.cookie.js"></script>
+<script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/main.js"></script>
+<link rel="stylesheet" href="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/markdown_views.css">
+<link rel="stylesheet" href="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/category.css">
+<script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/MathJax.js"></script>
+<script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/web-storage-cache.min.js"></script>
+<script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/replace.min.js"></script>
+
+
+
+
+  <script type="text/ecmascript">
+      window.quickReplyflag = true;
+           
+            var isBole = false;
+            
+          
+    </script>
+<div id="article_details" class="details">
+    <div class="article_title">   
+         <span class="ico ico_type_Original"></span>
+
+
+    <h1>
+        <span class="link_title"><a href="http://blog.csdn.net/eson_15/article/details/51669608">
+        【MyBatis学习13】MyBatis中的二级缓存            
+        </a></span>
+    </h1>
+</div>
+
+   
+
+        <div class="article_manage clearfix">
+        <div class="article_l">
+            <span class="link_categories">
+            标签：
+              <a href="http://www.csdn.net/tag/mybatis" target="_blank" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_tag&#39;]);">mybatis</a><a href="http://www.csdn.net/tag/%e4%ba%8c%e7%ba%a7%e7%bc%93%e5%ad%98" target="_blank" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_tag&#39;]);">二级缓存</a><a href="http://www.csdn.net/tag/java" target="_blank" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_tag&#39;]);">java</a><a href="http://www.csdn.net/tag/web%e6%a1%86%e6%9e%b6" target="_blank" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_tag&#39;]);">web框架</a><a href="http://www.csdn.net/tag/%e7%bc%93%e5%ad%98" target="_blank" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_tag&#39;]);">缓存</a>
+            </span>
+        </div>
+        <div class="article_r">
+            <span class="link_postdate">2016-06-16 07:26</span>
+            <span class="link_view" title="阅读次数">3810人阅读</span>
+            <span class="link_comments" title="评论次数"> <a href="http://blog.csdn.net/eson_15/article/details/51669608#comments" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_pinglun&#39;])">评论</a>(7)</span>
+            <span class="link_collect tracking-ad" data-mod="popu_171"> <a href="javascript:void(0);" onclick="javascript:collectArticle(&#39;【MyBatis学习13】MyBatis中的二级缓存&#39;,&#39;51669608&#39;);return false;" title="收藏" target="_blank">收藏</a></span>
+             <span class="link_report"> <a href="http://blog.csdn.net/eson_15/article/details/51669608#report" onclick="javascript:report(51669608,2);return false;" title="举报">举报</a></span>
+
+        </div>
+    </div>
+    <div class="embody" style="display:none" id="embody">
+        <span class="embody_t">本文章已收录于：</span>
+        <div class="embody_c" id="lib" value="{&quot;err&quot;:0,&quot;msg&quot;:&quot;ok&quot;,&quot;data&quot;:[]}"></div>
+    </div>
+    <style type="text/css">        
+            .embody{
+                padding:10px 10px 10px;
+                margin:0 -20px;
+                border-bottom:solid 1px #ededed;                
+            }
+            .embody_b{
+                margin:0 ;
+                padding:10px 0;
+            }
+            .embody .embody_t,.embody .embody_c{
+                display: inline-block;
+                margin-right:10px;
+            }
+            .embody_t{
+                font-size: 12px;
+                color:#999;
+            }
+            .embody_c{
+                font-size: 12px;
+            }
+            .embody_c img,.embody_c em{
+                display: inline-block;
+                vertical-align: middle;               
+            }
+             .embody_c img{               
+                width:30px;
+                height:30px;
+            }
+            .embody_c em{
+                margin: 0 20px 0 10px;
+                color:#333;
+                font-style: normal;
+            }
+    </style>
+    <script type="text/javascript">
+        $(function () {
+            try
+            {
+                var lib = eval("("+$("#lib").attr("value")+")");
+                var html = "";
+                if (lib.err == 0) {
+                    $.each(lib.data, function (i) {
+                        var obj = lib.data[i];
+                        //html += '<img src="' + obj.logo + '"/>' + obj.name + "&nbsp;&nbsp;";
+                        html += ' <a href="' + obj.url + '" target="_blank">';
+                        html += ' <img src="' + obj.logo + '">';
+                        html += ' <em><b>' + obj.name + '</b></em>';
+                        html += ' </a>';
+                    });
+                    if (html != "") {
+                        setTimeout(function () {
+                            $("#lib").html(html);                      
+                            $("#embody").show();
+                        }, 100);
+                    }
+                }      
+            } catch (err)
+            { }
+            
+        });
+    </script>
+      <div class="category clearfix">
+        <div class="category_l">
+           <img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/category_icon.jpg">
+            <span>分类：</span>
+        </div>
+        <div class="category_r">
+                    <label onclick="GetCategoryArticles(&#39;6228418&#39;,&#39;eson_15&#39;,&#39;top&#39;,&#39;51669608&#39;);">
+                        <span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_fenlei&#39;]);">●  框架技术<em>（45）</em></span>
+                      <img class="arrow-down" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/arrow_triangle _down.jpg" style="display:inline;">
+                      <img class="arrow-up" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/arrow_triangle_up.jpg" style="display:none;">
+                        <div class="subItem">
+                            <div class="subItem_t"><a href="http://blog.csdn.net/eson_15/article/category/6228418" target="_blank">作者同类文章</a><i class="J_close">X</i></div>
+                            <ul class="subItem_l" id="top_6228418">                            
+                            </ul>
+                        </div>
+                    </label>                    
+                    <label onclick="GetCategoryArticles(&#39;6241029&#39;,&#39;eson_15&#39;,&#39;top&#39;,&#39;51669608&#39;);">
+                        <span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_fenlei&#39;]);">------【MyBatis】<em>（15）</em></span>
+                      <img class="arrow-down" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/arrow_triangle _down.jpg" style="display:inline;">
+                      <img class="arrow-up" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/arrow_triangle_up.jpg" style="display:none;">
+                        <div class="subItem">
+                            <div class="subItem_t"><a href="http://blog.csdn.net/eson_15/article/category/6241029" target="_blank">作者同类文章</a><i class="J_close">X</i></div>
+                            <ul class="subItem_l" id="top_6241029">                            
+                            </ul>
+                        </div>
+                    </label>                    
+        </div>
+    </div>
+    <script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/category.js"></script>  
+        <div class="bog_copyright">         
+            <p class="copyright_p">版权声明：尊重博主原创文章，转载请注明出处</p>
+        </div>
+
+  
+
+  
+  
+     
+
+<div style="clear:both"></div><div style="border:solid 1px #ccc; background:#eee; float:left; min-width:200px;padding:4px 10px;"><p style="text-align:right;margin:0;"><span style="float:left;">目录<a href="http://blog.csdn.net/eson_15/article/details/51669608#" title="系统根据文章中H1到H6标签自动生成文章目录">(?)</a></span><a href="http://blog.csdn.net/eson_15/article/details/51669608#" onclick="javascript:return openct(this);" title="展开">[+]</a></p><ol style="display:none;margin-left:14px;padding-left:14px;line-height:160%;"><li><a href="http://blog.csdn.net/eson_15/article/details/51669608#t0">二级缓存的原理</a></li><li><a href="http://blog.csdn.net/eson_15/article/details/51669608#t1">二级缓存的使用</a></li><ol><li><a href="http://blog.csdn.net/eson_15/article/details/51669608#t2">1 开启二级缓存</a></li><li><a href="http://blog.csdn.net/eson_15/article/details/51669608#t3">2 将po类实现Serializable接口</a></li><li><a href="http://blog.csdn.net/eson_15/article/details/51669608#t4">3 测试mybatis的二级缓存</a></li><li><a href="http://blog.csdn.net/eson_15/article/details/51669608#t5">4 其他配置useCache和flushCache</a></li></ol><li><a href="http://blog.csdn.net/eson_15/article/details/51669608#t6">MyBatis整合ehcache分布式缓存框架</a></li><ol><li><a href="http://blog.csdn.net/eson_15/article/details/51669608#t7">1 问题的由来</a></li><li><a href="http://blog.csdn.net/eson_15/article/details/51669608#t8">2 整合方法</a></li></ol><li><a href="http://blog.csdn.net/eson_15/article/details/51669608#t9">二级缓存的应用场景和局限性</a></li></ol></div><div style="clear:both"></div><div id="article_content" class="article_content">
+        <div class="markdown_views"><h2 id="1-二级缓存的原理"><a name="t0"></a><strong>1. 二级缓存的原理</strong></h2>
+
+<p>　　<font size="3">前面介绍了，mybatis中的二级缓存是mapper级别的缓存，值得注意的是，不同的mapper都有一个二级缓存，也就是说，不同的mapper之间的二级缓存是互不影响的。为了更加清楚的描述二级缓存，先来看一个示意图： <br>
+<img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160614105455733" alt="二级缓存" title=""> <br>
+　　<font size="3">从图中可以看出：</font></font></p>
+
+<blockquote>
+  <ol>
+  <li>sqlSession1去查询用户id为1的用户信息，查询到用户信息会将查询数据存储到该UserMapper的二级缓存中。</li>
+  <li>如果SqlSession3去执行相同 mapper下sql，执行commit提交，则会清空该UserMapper下二级缓存区域的数据。</li>
+  <li>sqlSession2去查询用户id为1的用户信息，去缓存中找是否存在数据，如果存在直接从缓存中取出数据。</li>
+  </ol>
+</blockquote>
+
+<p>　　<font size="3">缓存的执行原理和前面提到的一级缓存是差不多的，二级缓存与一级缓存区别在于二级缓存的范围更大，多个sqlSession可以共享一个mapper中的二级缓存区域。mybatis是如何区分不同mapper的二级缓存区域呢？它是按照不同mapper有不同的namespace来区分的，也就是说，如果两个mapper的namespace相同，即使是两个mapper，那么这两个mapper中执行sql查询到的数据也将存在相同的二级缓存区域中。</font></p>
+
+
+
+<h2 id="2-二级缓存的使用"><a name="t1"></a><strong>2. 二级缓存的使用</strong></h2>
+
+<p>　　<font size="3">明白了mybatis中二级缓存的原理后，接下来就是如何使用二级缓存了。在使用之前，首先得开启二级缓存的开关。</font></p>
+
+
+
+<h3 id="21-开启二级缓存"><a name="t2"></a><strong><font size="４">2.1 开启二级缓存</font></strong></h3>
+
+<p>　　<font size="3">由于mybaits的二级缓存是mapper范围级别，所以除了在SqlMapConfig.xml设置二级缓存的总开关外，还要在具体的mapper.xml中开启二级缓存。设置如下： <br>
+<img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160614110339815" alt="开启二级缓存" title=""> <br>
+　　<font size="3">这是在SqlMapConfig.xml中设置的，还得在具体的mapper.xml中设置，如下： <br>
+<img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160614110618819" alt="mapper中的二级缓存" title=""> <br>
+　　<font size="3">可以看到，具体的mapper中仅仅就一个<code>&lt;cache&gt;</code>标签，并没有配置啥东西，这是因为mybatis中有默认的实现，我们如果不配置，那么就默认使用那个默认的实现。在mybatis的核心包里有cache的接口和这个默认的实现，我截个图： <br>
+<img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160614111358194" alt="二级缓存默认实现类" title=""> <br>
+　　<font size="3">所以就明白了，为啥不用配置都可以使用，mybatis中也就只有这一个默认实现类，如果不使用mybatis的默认二级缓存的话，就需要自己实现cache接口，然后再在mapper.xml中配置一下了，关于这个我在下面再谈，现在先把二级缓存用起来！</font></font></font></font></p>
+
+
+
+<h3 id="22-将po类实现serializable接口"><a name="t3"></a><strong><font size="４">2.2 将po类实现Serializable接口</font></strong></h3>
+
+<p>　　<font size="3">开启了二级缓存后，还需要将要缓存的pojo实现Serializable接口，为了将缓存数据取出执行反序列化操作，因为二级缓存数据存储介质多种多样，不一定只存在内存中，有可能存在硬盘中，如果我们要再取这个缓存的话，就需要反序列化了。所以建议mybatis中的pojo都去实现Serializable接口。下面以User为例截个图： <br>
+<img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160614112135026" alt="序列化" title=""></font></p>
+
+
+
+<h3 id="23-测试mybatis的二级缓存"><a name="t4"></a><strong><font size="４">2.3 测试mybatis的二级缓存</font></strong></h3>
+
+
+
+<pre class="prettyprint" name="code"><code class="language-java hljs  has-numbering"><span class="hljs-annotation">@Test</span>
+<span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">testCache2</span>() <span class="hljs-keyword">throws</span> Exception {
+    SqlSession sqlSession1 = sqlSessionFactory.openSession();
+    SqlSession sqlSession2 = sqlSessionFactory.openSession();
+    SqlSession sqlSession3 = sqlSessionFactory.openSession();
+    <span class="hljs-comment">// 创建代理对象</span>
+    UserMapper userMapper1 = sqlSession1.getMapper(UserMapper.class);
+    <span class="hljs-comment">// 第一次发起请求，查询id为1的用户</span>
+    User user1 = userMapper1.findUserById(<span class="hljs-number">1</span>);
+    System.out.println(user1);  
+    <span class="hljs-comment">//这里执行关闭操作，将sqlsession中的数据写到二级缓存区域</span>
+    sqlSession1.close();
+
+    <span class="hljs-comment">//sqlSession3用来清空缓存的，如果要测试二级缓存，需要把该部分注释掉</span>
+    <span class="hljs-comment">//使用sqlSession3执行commit()操作</span>
+    UserMapper userMapper3 = sqlSession3.getMapper(UserMapper.class);
+    User user  = userMapper3.findUserById(<span class="hljs-number">1</span>);
+    user.setUsername(<span class="hljs-string">"倪升武"</span>);
+    userMapper3.updateUser(user);
+    <span class="hljs-comment">//执行提交，清空UserMapper下边的二级缓存</span>
+    sqlSession3.commit();
+    sqlSession3.close();
+
+    UserMapper userMapper2 = sqlSession2.getMapper(UserMapper.class);
+    <span class="hljs-comment">// 第二次发起请求，查询id为1的用户</span>
+    User user2 = userMapper2.findUserById(<span class="hljs-number">1</span>);
+    System.out.println(user2);
+
+    sqlSession2.close();
+
+}</code><ul class="pre-numbering"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li><li>11</li><li>12</li><li>13</li><li>14</li><li>15</li><li>16</li><li>17</li><li>18</li><li>19</li><li>20</li><li>21</li><li>22</li><li>23</li><li>24</li><li>25</li><li>26</li><li>27</li><li>28</li><li>29</li><li>30</li><li>31</li></ul><div class="save_code tracking-ad" data-mod="popu_249" style="display: none;"><a href="javascript:;" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div><ul class="pre-numbering"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li><li>11</li><li>12</li><li>13</li><li>14</li><li>15</li><li>16</li><li>17</li><li>18</li><li>19</li><li>20</li><li>21</li><li>22</li><li>23</li><li>24</li><li>25</li><li>26</li><li>27</li><li>28</li><li>29</li><li>30</li><li>31</li></ul></pre>
+
+<p>　　<font size="3">我们先把sqlSession3部分注释掉来<a href="http://lib.csdn.net/base/softwaretest" class="replace_word" title="软件测试知识库" target="_blank" style="color:#df3434; font-weight:bold;">测试</a>一下二级缓存的结果： <br>
+<img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160614135639431" alt="二级缓存" title=""> <br>
+　　<font size="3">当我们把sqlSession3部分加上后，再测试一下二级缓存结果： <br>
+<img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160614140559779" alt="二级缓存2" title=""> <br>
+　　<font size="3">到这里，就明白了mybatis中二级缓存的执行原理了，这个跟<a href="http://lib.csdn.net/base/javaee" class="replace_word" title="Java EE知识库" target="_blank" style="color:#df3434; font-weight:bold;">hibernate</a>还是有点像的。也可以对照着我写的<a href="http://blog.csdn.net/eson_15/article/details/51405911">hibernate的二级缓存</a>的博文看（不过建议把下面的ehcache部分看完再对照hibernate看）。</font></font></font></p>
+
+
+
+<h3 id="24-其他配置usecache和flushcache"><a name="t5"></a><strong><font size="4">2.4 其他配置（useCache和flushCache）</font></strong></h3>
+
+<p>　　<font size="3">mybatis中还可以配置userCache和flushCache等配置项，userCache是用来<strong>设置是否禁用二级缓存</strong>的，在statement中设置useCache=false可以禁用当前select语句的二级缓存，即每次查询都会发出sql去查询，默认情况是true，即该sql使用二级缓存。</font></p>
+
+
+
+<pre class="prettyprint" name="code"><code class="language-xml hljs  has-numbering"><span class="hljs-tag">&lt;<span class="hljs-title">select</span> <span class="hljs-attribute">id</span>=<span class="hljs-value">"findOrderListResultMap"</span> <span class="hljs-attribute">resultMap</span>=<span class="hljs-value">"ordersUserMap"</span> <span class="hljs-attribute">useCache</span>=<span class="hljs-value">"false"</span>&gt;</span></code><ul class="pre-numbering"><li>1</li></ul><div class="save_code tracking-ad" data-mod="popu_249"><a href="javascript:;" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div><ul class="pre-numbering"><li>1</li></ul></pre>
+
+<p>　　<font size="3">这种情况是针对每次查询都需要最新的数据sql，要设置成useCache=false，禁用二级缓存，直接从<a href="http://lib.csdn.net/base/mysql" class="replace_word" title="MySQL知识库" target="_blank" style="color:#df3434; font-weight:bold;">数据库</a>中获取。 <br>
+在mapper的同一个namespace中，如果有其它insert、update、delete操作数据后需要刷新缓存，如果不执行刷新缓存会出现脏读。 设置statement配置中的flushCache=”true” 属性，默认情况下为true，即刷新缓存，如果改成false则不会刷新。使用缓存时如果手动修改数据库表中的查询数据会出现脏读。</font></p>
+
+
+
+<pre class="prettyprint" name="code"><code class="language-xml hljs  has-numbering"><span class="hljs-tag">&lt;<span class="hljs-title">insert</span> <span class="hljs-attribute">id</span>=<span class="hljs-value">"insertUser"</span> <span class="hljs-attribute">parameterType</span>=<span class="hljs-value">"cn.itcast.mybatis.po.User"</span> <span class="hljs-attribute">flushCache</span>=<span class="hljs-value">"true"</span>&gt;</span></code><ul class="pre-numbering"><li>1</li></ul><div class="save_code tracking-ad" data-mod="popu_249"><a href="javascript:;" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div><ul class="pre-numbering"><li>1</li></ul></pre>
+
+<p>　　<font size="3">一般下执行完commit操作都需要刷新缓存，flushCache=true表示刷新缓存，这样可以避免数据库脏读。所以我们不用设置，默认即可，这里只是提一下。</font></p>
+
+
+
+<h2 id="3-mybatis整合ehcache分布式缓存框架"><a name="t6"></a><strong>3. MyBatis整合ehcache分布式缓存框架</strong></h2>
+
+
+
+<h3 id="31-问题的由来"><a name="t7"></a><strong><font size="４">3.1 问题的由来</font></strong></h3>
+
+<p>　　<font size="3">上面的部分主要总结了一下mybatis中二级缓存的使用，但是mybatis中默认自带的二级缓存有个弊端，即无法实现分布式缓存，什么意思呢？就是说缓存的数据在自己的服务器上，假设现在有两个服务器A和B，用户访问的时候访问了A服务器，查询后的缓存就会放在A服务器上，假设现在有个用户访问的是B服务器，那么他在B服务器上就无法获取刚刚那个缓存，如下图所示： <br>
+<img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160614142727547" alt="缓存弊端" title=""> <br>
+　　<font size="3">所以我们为了解决这个问题，就得找一个分布式的缓存，专门用来存储缓存数据的，这样不同的服务器要缓存数据都往它那里存，取缓存数据也从它那里取，如下图所示： <br>
+<img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160614142915959" alt="分布式缓存" title=""> <br>
+　　<font size="3">这样就能解决上面所说的问题，为了提高系统并发性能、我们一般对系统进行上面这种分布式部署（集群部署方式），所以要使用分布式缓存对缓存数据进行集中管理。但是mybatis无法实现分布式缓存，需要和其它分布式缓存框架进行整合，这里主要介绍ehcache。</font></font></font></p>
+
+
+
+<h3 id="32-整合方法"><a name="t8"></a><strong><font size="４">3.2 整合方法</font></strong></h3>
+
+<p>　　<font size="3">上文一开始提到过，mybatis提供了一个cache接口，如果要实现自己的缓存逻辑，实现cache接口开发即可。mybatis本身默认实现了一个，但是这个缓存的实现无法实现分布式缓存，所以我们要自己来实现。ehcache分布式缓存就可以，mybatis提供了一个针对cache接口的ehcache实现类，这个类在mybatis和ehcache的整合包中。所以首先我们需要导入整合包（<a href="http://download.csdn.net/detail/eson_15/9549252">点我下载</a>）。 <br>
+<img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160614144248661" alt="jar包" title=""> <br>
+　　<font size="3">导入了jar包后，配置mapper中cache中的type为ehcache对cache接口的实现类型。ehcache对cache接口有一个实现类为： <br>
+<img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160614145219392" alt="实现类" title=""> <br>
+　　<font size="3">我们将该类的完全限定名写到type属性中即可，如下： <br>
+<img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160614145333597" alt="配置" title=""> <br>
+　　<font size="3">OK，配置完成，现在mybatis就会自动去执行这个ehcache实现类了，就不会使用自己默认的二级缓存了，但是使用ehcache还有一个缓存配置别忘了，在classpath下新建一个ehcache.xml文件：</font></font></font></font></p>
+
+
+
+<pre class="prettyprint" name="code"><code class="language-xml hljs  has-numbering"><span class="hljs-tag">&lt;<span class="hljs-title">ehcache</span> <span class="hljs-attribute">xmlns:xsi</span>=<span class="hljs-value">"http://www.w3.org/2001/XMLSchema-instance"</span> 
+    <span class="hljs-attribute">xsi:noNamespaceSchemaLocation</span>=<span class="hljs-value">"../config/ehcache.xsd"</span>&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-title">diskStore</span> <span class="hljs-attribute">path</span>=<span class="hljs-value">"F:\develop\ehcache"</span>/&gt;</span>
+
+    <span class="hljs-tag">&lt;<span class="hljs-title">defaultCache
+</span>            <span class="hljs-attribute">maxElementsInMemory</span>=<span class="hljs-value">"10000"</span>
+            <span class="hljs-attribute">eternal</span>=<span class="hljs-value">"false"</span>
+            <span class="hljs-attribute">timeToIdleSeconds</span>=<span class="hljs-value">"120"</span>
+            <span class="hljs-attribute">timeToLiveSeconds</span>=<span class="hljs-value">"120"</span>
+            <span class="hljs-attribute">maxElementsOnDisk</span>=<span class="hljs-value">"10000000"</span>
+            <span class="hljs-attribute">diskExpiryThreadIntervalSeconds</span>=<span class="hljs-value">"120"</span>
+            <span class="hljs-attribute">memoryStoreEvictionPolicy</span>=<span class="hljs-value">"LRU"</span>&gt;</span>
+        <span class="hljs-tag">&lt;<span class="hljs-title">persistence</span> <span class="hljs-attribute">strategy</span>=<span class="hljs-value">"localTempSwap"</span>/&gt;</span>
+    <span class="hljs-tag">&lt;/<span class="hljs-title">defaultCache</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-title">ehcache</span>&gt;</span></code><ul class="pre-numbering"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li><li>11</li><li>12</li><li>13</li><li>14</li><li>15</li><li>16</li></ul><div class="save_code tracking-ad" data-mod="popu_249" style="display: none;"><a href="javascript:;" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/save_snippets.png"></a></div><ul class="pre-numbering"><li>1</li><li>2</li><li>3</li><li>4</li><li>5</li><li>6</li><li>7</li><li>8</li><li>9</li><li>10</li><li>11</li><li>12</li><li>13</li><li>14</li><li>15</li><li>16</li></ul></pre>
+
+<p>　　<font size="3">这里面配置的作用跟hibernate差不多，大家可以去参考我那篇hibernate二级缓存的博文。接下来就是测试了，还是用上面的那个测试程序，因为只改掉了缓存，其他没动。到此为止，mybatis的二级缓存差不多就总结完了。</font></p>
+
+
+
+<h2 id="4-二级缓存的应用场景和局限性"><a name="t9"></a><strong>4. 二级缓存的应用场景和局限性</strong></h2>
+
+<p>　　<font size="3">对于访问多的查询请求且用户对查询结果实时性要求不高，此时可采用mybatis二级缓存技术降低数据库访问量，提高访问速度，业务场景比如：耗时较高的统计分析sql、电话账单查询sql等。实现方法如下：通过设置刷新间隔时间，由mybatis每隔一段时间自动清空缓存，根据数据变化频率设置缓存刷新间隔flushInterval，比如设置为30分钟、60分钟、24小时等，根据需求而定。 <br>
+　　mybatis二级缓存对细粒度的数据级别的缓存实现不好，比如如下需求：对商品信息进行缓存，由于商品信息查询访问量大，但是要求用户每次都能查询最新的商品信息，此时如果使用mybatis的二级缓存就无法实现当一个商品变化时只刷新该商品的缓存信息而不刷新其它商品的信息，因为mybaits的二级缓存区域以mapper为单位划分的，当一个商品信息变化会将所有商品信息的缓存数据全部清空。解决此类问题可能需要在业务层根据需求对数据有针对性缓存。 <br>
+　　</font></p>
+
+<p>　　相关阅读：<a href="http://blog.csdn.net/column/details/smybatis.html">http://blog.csdn.net/column/details/smybatis.html</a>  <br>
+　　学习笔记源码下载地址：<a href="https://github.com/eson15/MyBatis_Study">https://github.com/eson15/MyBatis_Study</a></p>
+
+<hr>
+
+<p>—–乐于分享，共同进步！  <br>
+—–我的博客主页：<a href="http://blog.csdn.net/eson_15">http://blog.csdn.net/eson_15</a></p></div>
+        <script type="text/javascript">
+            $(function () {
+                $('pre.prettyprint code').each(function () {
+                    var lines = $(this).text().split('\n').length;
+                    var $numbering = $('<ul></ul>').addClass('pre-numbering').hide();
+                    $(this).addClass('has-numbering').parent().append($numbering);
+                    for (i = 1; i <= lines; i++) {
+                        $numbering.append($('<li></li>').text(i));
+                    };
+                    $numbering.fadeIn(1700);
+                });
+            });
+        </script>
+   
+</div>
+
+
+
+
+<!-- Baidu Button BEGIN -->
+
+
+
+
+<div class="bdsharebuttonbox tracking-ad bdshare-button-style0-16" style="float: right;" data-mod="popu_172" data-bd-bind="1479136809189">
+<a href="http://blog.csdn.net/eson_15/article/details/51669608#" class="bds_more" data-cmd="more" style="background-position:0 0 !important; background-image: url(http://bdimg.share.baidu.com/static/api/img/share/icons_0_16.png?v=d754dcc0.png) !important" target="_blank"></a>
+<a href="http://blog.csdn.net/eson_15/article/details/51669608#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间" style="background-position:0 -52px !important" target="_blank"></a>
+<a href="http://blog.csdn.net/eson_15/article/details/51669608#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博" style="background-position:0 -104px !important" target="_blank"></a>
+<a href="http://blog.csdn.net/eson_15/article/details/51669608#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博" style="background-position:0 -260px !important" target="_blank"></a>
+<a href="http://blog.csdn.net/eson_15/article/details/51669608#" class="bds_renren" data-cmd="renren" title="分享到人人网" style="background-position:0 -208px !important" target="_blank"></a>
+<a href="http://blog.csdn.net/eson_15/article/details/51669608#" class="bds_weixin" data-cmd="weixin" title="分享到微信" style="background-position:0 -1612px !important" target="_blank"></a>
+</div>
+<script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "1", "bdMiniList": false, "bdPic": "", "bdStyle": "0", "bdSize": "16" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+<!-- Baidu Button END -->
+
+   <link rel="stylesheet" href="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/blog_detail.css">
+
+    
+<!--172.16.140.14-->
+
+<!-- Baidu Button BEGIN -->
+<script type="text/javascript" id="bdshare_js" data="type=tools&amp;uid=1536434" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/bds_s_v2.js"></script>
+
+<script type="text/javascript">
+    document.getElementById("bdshell_js").src = "http://bdimg.share.baidu.com/static/js/shell_v2.js?cdnversion=" + Math.ceil(new Date()/3600000)
+</script>
+<!-- Baidu Button END -->
+
+ 
+
+        <div id="digg" articleid="51669608">
+            <dl id="btnDigg" class="digg digg_disable" onclick="btndigga();">
+               
+                 <dt>顶</dt>
+                <dd>8</dd>
+            </dl>
+           
+              
+            <dl id="btnBury" class="digg digg_disable" onclick="btnburya();">
+              
+                  <dt>踩</dt>
+                <dd>1</dd>               
+            </dl>
+            
+        </div>
+     <div class="tracking-ad" data-mod="popu_222"><a href="javascript:void(0);" target="_blank">&nbsp;</a>   </div>
+    <div class="tracking-ad" data-mod="popu_223"> <a href="javascript:void(0);" target="_blank">&nbsp;</a></div>
+    <script type="text/javascript">
+                function btndigga() {
+                    $(".tracking-ad[data-mod='popu_222'] a").click();
+                }
+                function btnburya() {
+                    $(".tracking-ad[data-mod='popu_223'] a").click();
+                }
+            </script>
+
+   <ul class="article_next_prev">
+                <li class="prev_article"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_shangyipian&#39;]);location.href=&#39;/eson_15/article/details/51669021&#39;;">上一篇</span><a href="http://blog.csdn.net/eson_15/article/details/51669021" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_shangyipian&#39;])">【MyBatis学习12】MyBatis中的一级缓存</a></li>
+                <li class="next_article"><span onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_xiayipian&#39;]);location.href=&#39;/eson_15/article/details/51684968&#39;;">下一篇</span><a href="http://blog.csdn.net/eson_15/article/details/51684968" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_xiayipian&#39;])">【MyBatis学习14】MyBatis和Spring整合</a></li>
+    </ul>
+
+    <div style="clear:both; height:10px;"></div>
+
+
+        <div class="similar_article" style="">
+                <h4>我的同类文章</h4>
+                <div class="similar_c" style="margin:20px 0px 0px 0px">
+                    <div class="similar_c_t">
+                                <label class="similar_cur">
+                                    <span style="cursor:pointer" onclick="GetCategoryArticles(&#39;6228418&#39;,&#39;eson_15&#39;,&#39;foot&#39;,&#39;51669608&#39;);">●  框架技术<em>（45）</em></span>
+                                </label>
+                                <label class="">
+                                    <span style="cursor:pointer" onclick="GetCategoryArticles(&#39;6241029&#39;,&#39;eson_15&#39;,&#39;foot&#39;,&#39;51669608&#39;);">------【MyBatis】<em>（15）</em></span>
+                                </label>
+                    </div>
+                   
+                    <div class="similar_wrap tracking-ad" data-mod="popu_141" style="max-height:195px;">
+                        <a href="http://blog.csdn.net/" style="display:none" target="_blank">http://blog.csdn.net</a>
+                        <ul class="similar_list fl"><li><em>•</em><a href="http://blog.csdn.net/eson_15/article/details/52270046" id="foot_aritcle_52270046undefined41017399232268015" target="_blank" title="【MyBatis】MyBatis分页插件PageHelper的使用">【MyBatis】MyBatis分页插件PageHelper的使用</a><span>2016-08-21</span><label><i>阅读</i><b>2784</b></label></li> <li><em>•</em><a href="http://blog.csdn.net/eson_15/article/details/51743514" id="foot_aritcle_51743514undefined2464536666862831" target="_blank" title="【SpringMVC学习10】SpringMVC对RESTfull的支持">【SpringMVC学习10】SpringMVC对RESTfull的支持</a><span>2016-06-26</span><label><i>阅读</i><b>5920</b></label></li> <li><em>•</em><a href="http://blog.csdn.net/eson_15/article/details/51736495" id="foot_aritcle_51736495undefined7543372312234244" target="_blank" title="【SpringMVC学习08】SpringMVC中实现文件上传">【SpringMVC学习08】SpringMVC中实现文件上传</a><span>2016-06-24</span><label><i>阅读</i><b>5552</b></label></li> <li><em>•</em><a href="http://blog.csdn.net/eson_15/article/details/51725470" id="foot_aritcle_51725470undefined9994251016396201" target="_blank" title="【SpringMVC学习06】SpringMVC中的数据校验">【SpringMVC学习06】SpringMVC中的数据校验</a><span>2016-06-22</span><label><i>阅读</i><b>9603</b></label></li> <li><em>•</em><a href="http://blog.csdn.net/eson_15/article/details/51700519" id="foot_aritcle_51700519undefined796495711990856" target="_blank" title="【SpringMVC学习04】Spring、MyBatis和SpringMVC的整合">【SpringMVC学习04】Spring、MyBatis和SpringMVC的整合</a><span>2016-06-20</span><label><i>阅读</i><b>9459</b></label></li> <li><em>•</em><a href="http://blog.csdn.net/eson_15/article/details/51694684" id="foot_aritcle_51694684undefined31217855355036495" target="_blank" title="【MyBatis学习15】MyBatis的逆向工程生成代码">【MyBatis学习15】MyBatis的逆向工程生成代码</a><span>2016-06-17</span><label><i>阅读</i><b>5014</b></label></li> </ul>
+
+                        <ul class="similar_list fr"><li><em>•</em><a href="http://blog.csdn.net/eson_15/article/details/51749880" id="foot_aritcle_51749880undefined6168040981314922" target="_blank" title="【SpringMVC学习11】SpringMVC中的拦截器">【SpringMVC学习11】SpringMVC中的拦截器</a><span>2016-06-28</span><label><i>阅读</i><b>5889</b></label></li> <li><em>•</em><a href="http://blog.csdn.net/eson_15/article/details/51742864" id="foot_aritcle_51742864undefined572382693828499" target="_blank" title="【SpringMVC学习09】SpringMVC与前台的json数据交互">【SpringMVC学习09】SpringMVC与前台的json数据交互</a><span>2016-06-25</span><label><i>阅读</i><b>6553</b></label></li> <li><em>•</em><a href="http://blog.csdn.net/eson_15/article/details/51731567" id="foot_aritcle_51731567undefined9164448679035333" target="_blank" title="【SpringMVC学习07】SpringMVC中的统一异常处理">【SpringMVC学习07】SpringMVC中的统一异常处理</a><span>2016-06-23</span><label><i>阅读</i><b>12470</b></label></li> <li><em>•</em><a href="http://blog.csdn.net/eson_15/article/details/51718633" id="foot_aritcle_51718633undefined3522886903714617" target="_blank" title="【SpringMVC学习05】SpringMVC中的参数绑定总结">【SpringMVC学习05】SpringMVC中的参数绑定总结</a><span>2016-06-21</span><label><i>阅读</i><b>9390</b></label></li> <li><em>•</em><a href="http://blog.csdn.net/eson_15/article/details/51699103" id="foot_aritcle_51699103undefined6477079589438766" target="_blank" title="【SpringMVC学习03】SpringMVC中注解和非注解方式下的映射器和适配器总结">【SpringMVC学习03】SpringMVC中注解和非注解方式下的映射器和适配器总结</a><span>2016-06-19</span><label><i>阅读</i><b>6902</b></label></li> </ul>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6228418" class="MoreArticle">更多文章</a></div>
+                </div>
+            </div>    
+    <script type="text/javascript">
+        $(function () {
+            GetCategoryArticles('6228418', 'eson_15','foot','51669608');
+        });
+    </script>
+      
+</div>
+<div id="suggest">
+
+</div>
+         <script language="javascript" type="text/javascript">     
+             $(function(){
+                 $.get("/eson_15/svc/GetSuggestContent/51669608",function(data){
+                     $("#suggest").html(data);
+                 });     
+             });             
+         </script>  
+
+
+<style>
+.blog-ass-articl dd {
+color: #369;
+width: 99%; /*修改行*/
+float: left;
+overflow: hidden;
+font: normal normal 12px/23px "SimSun";
+height: 23px;
+margin: 0;
+padding: 0 0 0 10px;
+margin-right: 30px;
+background: url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;
+}
+</style>
+
+ <link rel="stylesheet" href="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/replace.css">
+
+<div id="relate" data-mod="popu_218" class="tracking-ad" style="display: block;">
+        <div class="relate_t">
+            <h3><span>参考知识库</span></h3>
+        </div>
+        <div class="relate_c"><dl class="relate_list"><dt><a target="_blank" href="http://lib.csdn.net/base/dotnet"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/1470876331285_285.jpg" alt="img"></a></dt><dd><h4><a target="_blank" href="http://lib.csdn.net/base/dotnet">.NET知识库</a></h4><p><label><span>1655</span><em>关注</em><i>|</i><span>800</span><em>收录</em></label></p></dd></dl><dl class="relate_list"><dt><a target="_blank" href="http://lib.csdn.net/base/softwaretest"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/1467193268346_346.jpg" alt="img"></a></dt><dd><h4><a target="_blank" href="http://lib.csdn.net/base/softwaretest">软件测试知识库</a></h4><p><label><span>2204</span><em>关注</em><i>|</i><span>301</span><em>收录</em></label></p></dd></dl><dl class="relate_list"><dt><a target="_blank" href="http://lib.csdn.net/base/javaee"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/1456818035722_722.jpg" alt="img"></a></dt><dd><h4><a target="_blank" href="http://lib.csdn.net/base/javaee">Java EE知识库</a></h4><p><label><span>9829</span><em>关注</em><i>|</i><span>760</span><em>收录</em></label></p></dd></dl><dl class="relate_list"><dt><a target="_blank" href="http://lib.csdn.net/base/mysql"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/1454051093684_684.jpg" alt="img"></a></dt><dd><h4><a target="_blank" href="http://lib.csdn.net/base/mysql">MySQL知识库</a></h4><p><label><span>15199</span><em>关注</em><i>|</i><span>1428</span><em>收录</em></label></p></dd></dl></div>
+</div>
+ 
+
+<dl class="blog-ass-articl" id="res-relatived"> 
+    <div class="embody embody_b" id="libkeyparent" style="display:none">
+            <span class="embody_t">更多资料请参考：</span>
+            <div class="embody_c" id="libkey"></div>
+    </div>
+
+
+     <dt><span>猜你在找</span></dt>    
+
+
+   
+
+
+    <div id="adCollege" style="width: 42%;float: left;"> 
+        <script src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/job_reco.js" type="text/javascript"></script> 
+        <script type="text/javascript">
+            csdn.position.showEdu({
+                sourceType: "blog",
+                searchType: "detail",
+                searchKey: "51669608",
+                username: "",
+                recordcount: "5",
+                containerId: "adCollege" //容器DIV的id。 
+            });
+        </script> 
+    <div class="tracking-ad" data-mod="popu_84"><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;"><a href="http://edu.csdn.net/course/detail/3061" title="Java分布式架构：EJB+消息中间件+CORBA高级" strategy="v4:content" target="_blank">Java分布式架构：EJB+消息中间件+CORBA高级</a></dd><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;"><a href="http://edu.csdn.net/course/detail/2591" title="Redis（最常用的NoSQL数据库技术，互联网行业Java工程师必备）" strategy="v4:content" target="_blank">Redis（最常用的NoSQL数据库技术，互联网行业Java工程师必备）</a></dd><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;"><a href="http://edu.csdn.net/course/detail/2798" title="大型分布式redis+solr+Linux+nginx+springmvc+mybatis电商项目" strategy="v4:content" target="_blank">大型分布式redis+solr+Linux+nginx+springmvc+mybatis电商项目</a></dd><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;"><a href="http://edu.csdn.net/course/detail/1868" title="[微信公众号_独立知识点]mysql+mybatis+工具" strategy="v4:content" target="_blank">[微信公众号_独立知识点]mysql+mybatis+工具</a></dd><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px; white-space: nowrap;"><a href="http://edu.csdn.net/course/detail/1534" title="基于Maven+Springmvc+Spring+Mybatis+jQueryMobile驴友社区" strategy="v4:content" target="_blank">基于Maven+Springmvc+Spring+Mybatis+jQueryMobile驴友社区</a></dd></div></div>  
+
+    
+     <div id="res" data-mod="popu_36" class="tracking-ad" style="width: 42%; float: left; margin-right: 30px; display: block;"><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="http://blog.csdn.net/boonya/article/details/14643753" title="Github Mybatis深入学习之映射器XML" strategy="SearchAlgorithm" target="_blank">Github Mybatis深入学习之映射器XML</a></dd><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="http://blog.csdn.net/huangqiang12/article/details/39829327" title="Github Mybatis深入学习之映射器XML " strategy="SearchAlgorithm" target="_blank">Github Mybatis深入学习之映射器XML </a></dd><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="http://blog.csdn.net/zxingchao2009/article/details/7622370" title="Spring 3x企业应用开发实战" strategy="SearchAlgorithm" target="_blank">Spring 3x企业应用开发实战</a></dd><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="http://blog.csdn.net/zhousenshan/article/details/50779795" title="AAA spring 集成mybatis使用二级缓存 下篇" strategy="SearchAlgorithm" target="_blank">AAA spring 集成mybatis使用二级缓存 下篇</a></dd><dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="http://blog.csdn.net/TT_DUL/article/details/50388283" title="mybatis 加二级缓存" strategy="SearchAlgorithm" target="_blank">mybatis 加二级缓存</a></dd></div>
+   
+</dl>
+
+
+<script type="text/javascript">
+    $(function () {
+        setTimeout(function () {
+            var searchtitletags = '【MyBatis学习13】MyBatis中的二级缓存' + ',' + $("#tags").html();
+            searchService({
+                index: 'blog',
+                query: searchtitletags,
+                from: 5,
+                size: 5,
+                appendTo: '#res',
+                url: 'recommend',
+                his: 2,
+                client: "blog_cf_enhance",
+                tmpl: '<dd style="background:url(http://static.blog.csdn.net/skin/default/images/blog-dot-red3.gif) no-repeat 0 10px;"><a href="#{ url }" title="#{ title }" strategy="#{ strategy }">#{ title }</a></dd>'
+            });
+        }, 500);
+    });    
+
+ </script>  
+
+    <div id="ad_cen">        
+<!-- 广告位开始 -->
+<div class="J_adv" data-view="true" data-mod="ad_popu_71" data-mtp="36" data-order="339" data-con="ad_content_216" style="width: 728px; height: 90px;"><!-- 广告占位容器 --><div id="cpro_u1607657"><iframe id="iframeu1607657_0" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/xclm.html" width="728" height="90" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0; vertical-align:bottom;margin:0;" allowtransparency="true"></iframe></div><!-- 投放代码 --><script type="text/javascript">(window['cproStyleApi'] = window['cproStyleApi'] ||{})['u1607657']={at:'3',rsi0:'728',rsi1:'90',pat:'6',tn:'baiduCustNativeAD',rss1:'#FFFFFF',conBW:'1',adp:'1',ptt:'0',titFF:'%E5%BE%AE%E8%BD%AF%E9%9B%85%E9%BB%91',titFS:'',rss2:'#000000',titSU:'0',ptbg:'90',piw:'0',pih:'0',ptp:'0'};/*服务器频道首页置顶Banner960*90，创建于2014-7-3*/(window.cproArray = window.cproArray || []).push({id:'u1607657'});  </script>  <script src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/c.js" type="text/javascript"></script></div>
+<!-- 广告位结束 -->    </div>  
+
+<div class="comment_class">
+    <div id="comment_title" class="panel_head">
+        <span class="see_comment">查看评论</span><a name="comments"></a></div>
+    <div id="comment_list"><dl class="comment_item comment_topic" id="comment_item_6086036"><dt class="comment_head" floor="5">5楼 <span class="user"><a class="username" href="http://blog.csdn.net/sinat_34647836" target="_blank">麦芒上的守望</a> <span class="ptime">2016-06-16 20:50发表</span>  <a href="http://blog.csdn.net/eson_15/article/details/51669608#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6086036" username="sinat_34647836"> <a href="http://blog.csdn.net/eson_15/article/details/51669608#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/eson_15/article/details/51669608#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/sinat_34647836" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/3_sinat_34647836.jpg" width="40" height="40"></a></dd><dd class="comment_body">goodjob</dd></dl><dl class="comment_item comment_topic" id="comment_item_6085660"><dt class="comment_head" floor="4">4楼 <span class="user"><a class="username" href="http://blog.csdn.net/jianjiandanadn" target="_blank">jiufangkai</a> <span class="ptime">2016-06-16 16:26发表</span>  <a href="http://blog.csdn.net/eson_15/article/details/51669608#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6085660" username="jianjiandanadn"> <a href="http://blog.csdn.net/eson_15/article/details/51669608#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/eson_15/article/details/51669608#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/jianjiandanadn" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/3_jianjiandanadn.jpg" width="40" height="40"></a></dd><dd class="comment_body">学习了</dd></dl><dl class="comment_item comment_topic" id="comment_item_6085480"><dt class="comment_head" floor="3">3楼 <span class="user"><a class="username" href="http://blog.csdn.net/pangliang_csdn" target="_blank">荒唐的程序猿</a> <span class="ptime">2016-06-16 15:01发表</span>  <a href="http://blog.csdn.net/eson_15/article/details/51669608#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6085480" username="pangliang_csdn"> <a href="http://blog.csdn.net/eson_15/article/details/51669608#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/eson_15/article/details/51669608#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/pangliang_csdn" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/3_pangliang_csdn.jpg" width="40" height="40"></a></dd><dd class="comment_body">学习了</dd></dl><dl class="comment_item comment_topic" id="comment_item_6085478"><dt class="comment_head" floor="2">2楼 <span class="user"><a class="username" href="http://blog.csdn.net/Amazing7" target="_blank">lucky.7</a> <span class="ptime">2016-06-16 15:00发表</span>  <a href="http://blog.csdn.net/eson_15/article/details/51669608#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6085478" username="Amazing7"> <a href="http://blog.csdn.net/eson_15/article/details/51669608#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/eson_15/article/details/51669608#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/Amazing7" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/3_amazing7.jpg" width="40" height="40"></a></dd><dd class="comment_body">good game，well play</dd><dl class="comment_item comment_reply" id="comment_item_6085507"><dt class="comment_head" floor="2">Re: <span class="user"><a class="username" href="http://blog.csdn.net/eson_15" target="_blank">eson_15</a> <span class="ptime">2016-06-16 15:20发表</span>  <a href="http://blog.csdn.net/eson_15/article/details/51669608#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6085507" username="eson_15"> <a href="http://blog.csdn.net/eson_15/article/details/51669608#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/eson_15/article/details/51669608#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/eson_15" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/3_eson_15.jpg" width="40" height="40"></a></dd><dd class="comment_body">回复lucky.7：hahaha</dd></dl></dl><dl class="comment_item comment_topic" id="comment_item_6085146"><dt class="comment_head" floor="1">1楼 <span class="user"><a class="username" href="http://blog.csdn.net/oSayMissyou0" target="_blank">oSayMissyou0</a> <span class="ptime">2016-06-16 10:40发表</span>  <a href="http://blog.csdn.net/eson_15/article/details/51669608#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6085146" username="oSayMissyou0"> <a href="http://blog.csdn.net/eson_15/article/details/51669608#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/eson_15/article/details/51669608#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/oSayMissyou0" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/3_osaymissyou0.jpg" width="40" height="40"></a></dd><dd class="comment_body">good job</dd><dl class="comment_item comment_reply" id="comment_item_6085322"><dt class="comment_head" floor="1">Re: <span class="user"><a class="username" href="http://blog.csdn.net/eson_15" target="_blank">eson_15</a> <span class="ptime">2016-06-16 13:06发表</span>  <a href="http://blog.csdn.net/eson_15/article/details/51669608#reply" class="cmt_btn reply" title="回复">[回复]</a> <span class="comment_manage" style="display:none;" commentid="6085322" username="eson_15"> <a href="http://blog.csdn.net/eson_15/article/details/51669608#quote" class="cmt_btn quote" title="引用">[引用]</a> <a href="http://blog.csdn.net/eson_15/article/details/51669608#report" class="cmt_btn report" title="举报">[举报]</a></span></span></dt><dd class="comment_userface"><a href="http://blog.csdn.net/eson_15" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/3_eson_15.jpg" width="40" height="40"></a></dd><dd class="comment_body">回复oSayMissyou0：谢谢支持！</dd></dl></dl><div class="clear"></div></div>
+    <div id="comment_bar" style="display: none;">
+    </div>
+    <div id="comment_form"><div class="guest_link">您还没有登录,请<a href="javascript:void(0);" onclick="javascript:loginbox();">[登录]</a>或<a href="http://passport.csdn.net/account/register?from=http%3A%2F%2Fblog.csdn.net%2Feson_15%2Farticle%2Fdetails%2F51669608">[注册]</a></div></div>
+    <div class="announce">
+        * 以上用户言论只代表其个人观点，不代表CSDN网站的观点或立场<a name="reply"></a><a name="quote"></a></div>
+</div>
+
+<script type="text/javascript">
+    var fileName = '51669608';
+    var commentscount = 7;
+    var islock = false
+</script>
+<script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/comment.js"></script>
+    <div id="ad_bot">
+    </div>
+<div id="report_dialog">
+</div>
+
+<div id="d-top" style="bottom:60px;">
+        <a id="quick-reply" class="btn btn-top q-reply" title="快速回复" style="display:none;">
+            <img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/blog-icon-reply.png" alt="快速回复">
+        </a>    
+
+    <a id="d-top-a" class="btn btn-top backtop" style="display: none;" title="返回顶部" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_huidaodingbu&#39;])">         
+         <img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/top.png" alt="TOP">
+    </a>
+</div>
+<script type="text/javascript">
+    $(function ()
+    {
+        $("#ad_frm_0").height("90px");
+        
+        setTimeout(function(){
+            $("#ad_frm_2").height("200px");
+        },1000);    
+    });
+  
+</script>
+<style type="text/css">
+    .tag_list
+    {
+        background: none repeat scroll 0 0 #FFFFFF;
+        border: 1px solid #D7CBC1;
+        color: #000000;
+        font-size: 12px;
+        line-height: 20px;
+        list-style: none outside none;
+        margin: 10px 2% 0 1%;
+        padding: 1px;
+    }
+    .tag_list h5
+    {
+        background: none repeat scroll 0 0 #E0DBD3;
+        color: #47381C;
+        font-size: 12px;
+        height: 24px;
+        line-height: 24px;
+        padding: 0 5px;
+        margin: 0;
+    }
+    .tag_list h5 a
+    {
+        color: #47381C;
+    }
+    .classify
+    {
+        margin: 10px 0;
+        padding: 4px 12px 8px;
+    }
+    .classify a
+    {
+        margin-right: 20px;
+        white-space: nowrap;
+    }
+</style>
+
+
+<div class="tag_list" style="">
+
+    <h5>
+        <a href="http://www.csdn.net/tag/" target="_blank">核心技术类目</a></h5>
+    <div class="classify">
+<a title="全部主题" href="http://www.csdn.net/tag" target="_blank" onclick="LogClickCount(this,336);">全部主题</a>
+<a title="Hadoop" href="http://g.csdn.net/5272865" target="_blank" onclick="LogClickCount(this,336);">Hadoop</a>
+<a title="AWS" href="http://g.csdn.net/5272866" target="_blank" onclick="LogClickCount(this,336);">AWS</a>
+<a title="移动游戏" href="http://g.csdn.net/5272870" target="_blank" onclick="LogClickCount(this,336);">移动游戏</a>
+<a title="Java" href="http://g.csdn.net/5272871" target="_blank" onclick="LogClickCount(this,336);">Java</a>
+<a title="Android" href="http://g.csdn.net/5272872" target="_blank" onclick="LogClickCount(this,336);">Android</a>
+<a title="iOS" href="http://g.csdn.net/5272873" target="_blank" onclick="LogClickCount(this,336);">iOS</a>
+<a title="Swift" href="http://g.csdn.net/5272868" target="_blank" onclick="LogClickCount(this,336);">Swift</a>
+<a title="智能硬件" href="http://g.csdn.net/5272869" target="_blank" onclick="LogClickCount(this,336);">智能硬件</a>
+<a title="Docker" href="http://g.csdn.net/5272867" target="_blank" onclick="LogClickCount(this,336);">Docker</a>
+<a title="OpenStack" href="http://g.csdn.net/5272925" target="_blank" onclick="LogClickCount(this,336);">OpenStack</a>
+<a title="VPN" href="http://www.csdn.net/tag/vpn" target="_blank" onclick="LogClickCount(this,336);">VPN</a>
+<a title="Spark" href="http://g.csdn.net/5272924" target="_blank" onclick="LogClickCount(this,336);">Spark</a>
+<a title="ERP" href="http://www.csdn.net/tag/erp" target="_blank" onclick="LogClickCount(this,336);">ERP</a>
+<a title="IE10" href="http://www.csdn.net/tag/ie10" target="_blank" onclick="LogClickCount(this,336);">IE10</a>
+<a title="Eclipse" href="http://www.csdn.net/tag/eclipse" target="_blank" onclick="LogClickCount(this,336);">Eclipse</a>
+<a title="CRM" href="http://www.csdn.net/tag/crm" target="_blank" onclick="LogClickCount(this,336);">CRM</a>
+<a title="JavaScript" href="http://www.csdn.net/tag/javascript" target="_blank" onclick="LogClickCount(this,336);">JavaScript</a>
+<a title="数据库" href="http://www.csdn.net/tag/%E6%95%B0%E6%8D%AE%E5%BA%93" target="_blank" onclick="LogClickCount(this,336);">数据库</a>
+<a title="Ubuntu" href="http://www.csdn.net/tag/ubuntu" target="_blank" onclick="LogClickCount(this,336);">Ubuntu</a>
+<a title="NFC" href="http://www.csdn.net/tag/nfc" target="_blank" onclick="LogClickCount(this,336);">NFC</a>
+<a title="WAP" href="http://www.csdn.net/tag/wap" target="_blank" onclick="LogClickCount(this,336);">WAP</a>
+<a title="jQuery" href="http://www.csdn.net/tag/jquery" target="_blank" onclick="LogClickCount(this,336);">jQuery</a>
+<a title="BI" href="http://www.csdn.net/tag/bi" target="_blank" onclick="LogClickCount(this,336);">BI</a>
+<a title="HTML5" href="http://www.csdn.net/tag/html5" target="_blank" onclick="LogClickCount(this,336);">HTML5</a>
+<a title="Spring" href="http://www.csdn.net/tag/spring" target="_blank" onclick="LogClickCount(this,336);">Spring</a>
+<a title="Apache" href="http://www.csdn.net/tag/apache" target="_blank" onclick="LogClickCount(this,336);">Apache</a>
+<a title=".NET" href="http://www.csdn.net/tag/.net" target="_blank" onclick="LogClickCount(this,336);">.NET</a>
+<a title="API" href="http://www.csdn.net/tag/api" target="_blank" onclick="LogClickCount(this,336);">API</a>
+<a title="HTML" href="http://www.csdn.net/tag/html" target="_blank" onclick="LogClickCount(this,336);">HTML</a>
+<a title="SDK" href="http://www.csdn.net/tag/sdk" target="_blank" onclick="LogClickCount(this,336);">SDK</a>
+<a title="IIS" href="http://www.csdn.net/tag/iis" target="_blank" onclick="LogClickCount(this,336);">IIS</a>
+<a title="Fedora" href="http://www.csdn.net/tag/fedora" target="_blank" onclick="LogClickCount(this,336);">Fedora</a>
+<a title="XML" href="http://www.csdn.net/tag/xml" target="_blank" onclick="LogClickCount(this,336);">XML</a>
+<a title="LBS" href="http://www.csdn.net/tag/lbs" target="_blank" onclick="LogClickCount(this,336);">LBS</a>
+<a title="Unity" href="http://www.csdn.net/tag/unity" target="_blank" onclick="LogClickCount(this,336);">Unity</a>
+<a title="Splashtop" href="http://www.csdn.net/tag/splashtop" target="_blank" onclick="LogClickCount(this,336);">Splashtop</a>
+<a title="UML" href="http://www.csdn.net/tag/uml" target="_blank" onclick="LogClickCount(this,336);">UML</a>
+<a title="components" href="http://www.csdn.net/tag/components" target="_blank" onclick="LogClickCount(this,336);">components</a>
+<a title="Windows Mobile" href="http://www.csdn.net/tag/windowsmobile" target="_blank" onclick="LogClickCount(this,336);">Windows Mobile</a>
+<a title="Rails" href="http://www.csdn.net/tag/rails" target="_blank" onclick="LogClickCount(this,336);">Rails</a>
+<a title="QEMU" href="http://www.csdn.net/tag/qemu" target="_blank" onclick="LogClickCount(this,336);">QEMU</a>
+<a title="KDE" href="http://www.csdn.net/tag/kde" target="_blank" onclick="LogClickCount(this,336);">KDE</a>
+<a title="Cassandra" href="http://www.csdn.net/tag/cassandra" target="_blank" onclick="LogClickCount(this,336);">Cassandra</a>
+<a title="CloudStack" href="http://www.csdn.net/tag/cloudstack" target="_blank" onclick="LogClickCount(this,336);">CloudStack</a>
+<a title="FTC" href="http://www.csdn.net/tag/ftc" target="_blank" onclick="LogClickCount(this,336);">FTC</a>
+<a title="coremail" href="http://www.csdn.net/tag/coremail" target="_blank" onclick="LogClickCount(this,336);">coremail</a>
+<a title="OPhone " href="http://www.csdn.net/tag/ophone" target="_blank" onclick="LogClickCount(this,336);">OPhone </a>
+<a title="CouchBase" href="http://www.csdn.net/tag/couchbase" target="_blank" onclick="LogClickCount(this,336);">CouchBase</a>
+<a title="云计算" href="http://www.csdn.net/tag/%E4%BA%91%E8%AE%A1%E7%AE%97" target="_blank" onclick="LogClickCount(this,336);">云计算</a>
+<a title="iOS6" href="http://www.csdn.net/tag/iOS6" target="_blank" onclick="LogClickCount(this,336);">iOS6</a>
+<a title="Rackspace " href="http://www.csdn.net/tag/rackspace" target="_blank" onclick="LogClickCount(this,336);">Rackspace </a>
+<a title="Web App" href="http://www.csdn.net/tag/webapp" target="_blank" onclick="LogClickCount(this,336);">Web App</a>
+<a title="SpringSide" href="http://www.csdn.net/tag/springside" target="_blank" onclick="LogClickCount(this,336);">SpringSide</a>
+<a title="Maemo" href="http://www.csdn.net/tag/maemo" target="_blank" onclick="LogClickCount(this,336);">Maemo</a>
+<a title="Compuware" href="http://www.csdn.net/tag/compuware" target="_blank" onclick="LogClickCount(this,336);">Compuware</a>
+<a title="大数据" href="http://www.csdn.net/tag/%E5%A4%A7%E6%95%B0%E6%8D%AE" target="_blank" onclick="LogClickCount(this,336);">大数据</a>
+<a title="aptech" href="http://www.csdn.net/tag/aptech" target="_blank" onclick="LogClickCount(this,336);">aptech</a>
+<a title="Perl" href="http://www.csdn.net/tag/perl" target="_blank" onclick="LogClickCount(this,336);">Perl</a>
+<a title="Tornado" href="http://www.csdn.net/tag/tornado" target="_blank" onclick="LogClickCount(this,336);">Tornado</a>
+<a title="Ruby" href="http://www.csdn.net/tag/ruby" target="_blank" onclick="LogClickCount(this,336);">Ruby</a>
+<a title="Hibernate" href="http://www.csdn.net/hibernate" target="_blank" onclick="LogClickCount(this,336);">Hibernate</a>
+<a title="ThinkPHP" href="http://www.csdn.net/tag/thinkphp" target="_blank" onclick="LogClickCount(this,336);">ThinkPHP</a>
+<a title="HBase" href="http://www.csdn.net/tag/hbase" target="_blank" onclick="LogClickCount(this,336);">HBase</a>
+<a title="Pure" href="http://www.csdn.net/tag/pure" target="_blank" onclick="LogClickCount(this,336);">Pure</a>
+<a title="Solr" href="http://www.csdn.net/tag/solr" target="_blank" onclick="LogClickCount(this,336);">Solr</a>
+<a title="Angular" href="http://www.csdn.net/tag/angular" target="_blank" onclick="LogClickCount(this,336);">Angular</a>
+<a title="Cloud Foundry" href="http://www.csdn.net/tag/cloudfoundry" target="_blank" onclick="LogClickCount(this,336);">Cloud Foundry</a>
+<a title="Redis" href="http://www.csdn.net/tag/redis" target="_blank" onclick="LogClickCount(this,336);">Redis</a>
+<a title="Scala" href="http://www.csdn.net/tag/scala" target="_blank" onclick="LogClickCount(this,336);">Scala</a>
+<a title="Django" href="http://www.csdn.net/tag/django" target="_blank" onclick="LogClickCount(this,336);">Django</a>
+<a title="Bootstrap" href="http://www.csdn.net/tag/bootstrap" target="_blank" onclick="LogClickCount(this,336);">Bootstrap</a>
+    </div>
+
+</div>
+  <script language="javascript" type="text/javascript">     
+      $(function(){
+              setTimeout(function(){
+                  $.get("/eson_15/svc/GetTagContent",function(data){
+                      $(".tag_list").html(data).show();
+                  });     
+              });
+          },500);                       
+ </script> 
+
+
+<div id="pop_win" style="display:none ;position: absolute; z-index: 10000; border: 1px solid rgb(220, 220, 220); top: 222.5px; left: 630px; opacity: 1; background: none 0px 0px repeat scroll rgb(255, 255, 255);">
+    
+</div>
+<div id="popup_mask"></div>
+<style>
+    #popup_mask
+    {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        background: #000;
+        z-index: 9999;
+        left: 0px;
+        top: 0px;
+        opacity: 0.3;
+        filter: alpha(opacity=30);
+        display: none;
+    }
+
+</style>
+
+
+
+
+<script type="text/javascript">
+    $(function(){
+        setTimeout(function(){
+            $(".comment_body:contains('回复')").each(function(index,item){
+                var u=$(this).text().split('：')[0].toString().replace("回复","")
+                var thisComment=$(this);
+                if(u)
+                {
+                    $.getJSON("https://passport.csdn.net/get/nick?callback=?", {users: u}, function(a) {
+                        if(a!=null&&a.data!=null&&a.data.length>0)
+                        {
+                            nick=a.data[0].n; 
+                            if(u!=nick)
+                            {
+                                thisComment.text(thisComment.text().replace(u,nick));  
+                            }
+                        }       
+                    });  
+                }
+            });         
+
+        },200);  
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },5000);
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },10000);
+
+        setTimeout(function(){
+            $(".math").each(function(index,value){$(this).find("span").last().css("color","#fff"); })
+        },15000);
+        
+        setTimeout(function(){
+            $("a img[src='http://js.tongji.linezing.com/stats.gif']").parent().css({"position":"absolute","left":"50%"});
+        },300);
+    });
+
+    function loginbox(){
+        var $logpop=$("#pop_win");
+        $logpop.html('<iframe src="https://passport.csdn.net/account/loginbox?service=http://static.blog.csdn.net/callback.htm" frameborder="0" height="600" width="400" scrolling="no"></iframe>');
+
+        $('#popup_mask').css({
+            opacity: 0.5,
+            width: $( document ).width() + 'px',
+            height:  $( document ).height() + 'px'
+        });
+        $('#popup_mask').css("display","block");
+ 
+        $logpop.css( {
+            top: ($( window ).height() - $logpop.height())/ 2  + $( window 
+       ).scrollTop() + 'px',
+            left:($( window ).width() - $logpop.width())/ 2
+        } );
+ 
+        setTimeout( function () {
+            $logpop.show();
+            $logpop.css( {
+                opacity: 1
+            } );
+        }, 200 );
+ 
+        $('#popup_mask').unbind("click");
+        $('#popup_mask').bind("click", function(){
+            $('#popup_mask').hide();
+            var $clopop = $("#pop_win");
+            $("#common_ask_div_sc").css("display","none");
+            $clopop.css( {
+                opacity: 0
+            } );
+            setTimeout( function () {
+                $clopop.hide();
+            }, 350 );
+            return false;
+        });
+    }   
+
+</script>
+ <script language="javascript" type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/async_new.js"></script>      
+
+
+                        <div class="clear">
+                        </div>
+                    </div>                   
+                
+            </div>
+                   
+           <div id="side">
+               
+    <div class="side">
+<div id="panel_Profile" class="panel">
+<ul class="panel_head"><span>个人资料</span></ul>
+<ul class="panel_body profile">
+<div id="blog_userface">
+    <a href="http://my.csdn.net/eson_15" target="_blank">
+    <img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/1_eson_15.jpg" title="访问我的空间" style="max-width:90%">
+    </a>
+    <br>
+    <span><a href="http://my.csdn.net/eson_15" class="user_name" target="_blank">eson_15</a></span>
+</div>
+<div class="interact">
+
+    <a href="javascript:void(0);" class="attent" id="span_add_follow" title="[加关注]"></a>
+
+ <a href="javascript:void(0);" class="letter" title="[发私信]" onclick="window.open(&#39;http://msg.csdn.net/letters/model?receiver=eson_15&#39;,&#39;_blank&#39;,&#39;height=350,width=700&#39;);_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_sixin&#39;])"></a>  
+</div>
+<div id="blog_medal">
+                       <div class="ico_expert" onclick="javascript:location=&#39;http://blog.csdn.net/experts/rule.html&#39;" title="CSDN认证专家" style="cursor:pointer;width:60px;height:60px;background:url(&#39;http://c.csdnimg.cn/jifen/images/xunzhang/xunzhang/bokezhuanjiamiddle.png&#39;) no-repeat"></div>
+                <div id="bms_box">
+                                            <a target="_blank">
+                                                    <img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/zhuanlandaren.png" onmouseover="m_over_m(this,2)" onmouseout="m_out_m()" alt="6">
+                                            </a>
+               </div>
+</div>
+<ul id="blog_rank">
+    <li>访问：<span>693144次</span></li>
+    <li>积分：<span>9926</span> </li>    
+    <li>等级： <span style="position:relative;display:inline-block;z-index:1">
+            <img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/blog6.png" alt="" style="vertical-align: middle;" id="leveImg">
+            <div id="smallTittle" style=" position: absolute;  left: -24px;  top: 25px;  text-align: center;  width: 101px;  height: 32px;  background-color: #fff;  line-height: 32px;  border: 2px #DDDDDD solid;  box-shadow: 0px 2px 2px rgba (0,0,0,0.1);  display: none;   z-index: 999;">
+            <div style="left: 42%;  top: -8px;  position: absolute;  width: 0;  height: 0;  border-left: 10px solid transparent;  border-right: 10px solid transparent;  border-bottom: 8px solid #EAEAEA;"></div>
+            积分：9926 </div>
+        </span>  </li>
+    <li>排名：<span>第1271名</span></li>
+</ul>
+<ul id="blog_statistics">
+    <li>原创：<span>163篇</span></li>
+    <li>转载：<span>5篇</span></li>
+    <li>译文：<span>0篇</span></li>
+    <li>评论：<span>896条</span></li>
+</ul>
+</ul>
+</div>
+
+
+
+
+<div id="custom_column_41720459" class="panel">
+<ul class="panel_head"><span>友情链接</span></ul>
+<ul class="panel_body">
+<a href="https://github.com/eson15/" title="我的github" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/1469525672_5016.jpg" height="55px" width="55px"></a>
+<a href="http://weibo.com/2140039390/profile?topnav=1&amp;wvr=6&amp;is_all=1" title="我的新浪微博" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/1469528343_2369.png" height="50px" width="50px"></a>
+</ul>
+</div><div id="panel_Category" class="panel">
+    <ul class="panel_head"><span>博客专栏</span></ul>
+    <ul class="panel_body" id="sp_column">
+    <table cellpadding="0" cellspacing="0"><tbody><tr>
+    <td style="padding:10px 10px 0 0;">
+    <a href="http://blog.csdn.net/column/details/spring-mvc.html" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160619224858450" style="width:75px;height:75px;"></a>
+    </td>
+    <td style="padding:10px 0; vertical-align:top;">
+    <a href="http://blog.csdn.net/column/details/spring-mvc.html" target="_blank">SpringMVC学习</a>
+    <p>文章：11篇</p>
+    <span>阅读：87501</span>
+    </td>
+    </tr></tbody></table>
+    <table cellpadding="0" cellspacing="0"><tbody><tr>
+    <td style="padding:10px 10px 0 0;">
+    <a href="http://blog.csdn.net/column/details/smybatis.html" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160619223648834" style="width:75px;height:75px;"></a>
+    </td>
+    <td style="padding:10px 0; vertical-align:top;">
+    <a href="http://blog.csdn.net/column/details/smybatis.html" target="_blank">MyBatis学习</a>
+    <p>文章：16篇</p>
+    <span>阅读：58301</span>
+    </td>
+    </tr></tbody></table>
+    <table cellpadding="0" cellspacing="0"><tbody><tr>
+    <td style="padding:10px 10px 0 0;">
+    <a href="http://blog.csdn.net/column/details/bingfa.html" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160529115822874" style="width:75px;height:75px;"></a>
+    </td>
+    <td style="padding:10px 0; vertical-align:top;">
+    <a href="http://blog.csdn.net/column/details/bingfa.html" target="_blank">Java并发技术</a>
+    <p>文章：19篇</p>
+    <span>阅读：54430</span>
+    </td>
+    </tr></tbody></table>
+    <table cellpadding="0" cellspacing="0"><tbody><tr>
+    <td style="padding:10px 10px 0 0;">
+    <a href="http://blog.csdn.net/column/details/str2hiberspring.html" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160619223855415" style="width:75px;height:75px;"></a>
+    </td>
+    <td style="padding:10px 0; vertical-align:top;">
+    <a href="http://blog.csdn.net/column/details/str2hiberspring.html" target="_blank">项目实战总结</a>
+    <p>文章：30篇</p>
+    <span>阅读：190958</span>
+    </td>
+    </tr></tbody></table>
+    <table cellpadding="0" cellspacing="0"><tbody><tr>
+    <td style="padding:10px 10px 0 0;">
+    <a href="http://blog.csdn.net/column/details/des-pattern.html" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160506090611430" style="width:75px;height:75px;"></a>
+    </td>
+    <td style="padding:10px 0; vertical-align:top;">
+    <a href="http://blog.csdn.net/column/details/des-pattern.html" target="_blank">设计模式之禅</a>
+    <p>文章：8篇</p>
+    <span>阅读：25210</span>
+    </td>
+    </tr></tbody></table>
+    <table cellpadding="0" cellspacing="0"><tbody><tr>
+    <td style="padding:10px 10px 0 0;">
+    <a href="http://blog.csdn.net/column/details/servletandjsp.html" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160619235253268" style="width:75px;height:75px;"></a>
+    </td>
+    <td style="padding:10px 0; vertical-align:top;">
+    <a href="http://blog.csdn.net/column/details/servletandjsp.html" target="_blank">J2EE组件</a>
+    <p>文章：17篇</p>
+    <span>阅读：80766</span>
+    </td>
+    </tr></tbody></table>
+    <table cellpadding="0" cellspacing="0"><tbody><tr>
+    <td style="padding:10px 10px 0 0;">
+    <a href="http://blog.csdn.net/column/details/datastructure2.html" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160619223930698" style="width:75px;height:75px;"></a>
+    </td>
+    <td style="padding:10px 0; vertical-align:top;">
+    <a href="http://blog.csdn.net/column/details/datastructure2.html" target="_blank">数据结构和算法</a>
+    <p>文章：19篇</p>
+    <span>阅读：39802</span>
+    </td>
+    </tr></tbody></table>
+    <table cellpadding="0" cellspacing="0"><tbody><tr>
+    <td style="padding:10px 10px 0 0;">
+    <a href="http://blog.csdn.net/column/details/collectionframework.html" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/20160619230611830" style="width:75px;height:75px;"></a>
+    </td>
+    <td style="padding:10px 0; vertical-align:top;">
+    <a href="http://blog.csdn.net/column/details/collectionframework.html" target="_blank">Java进阶</a>
+    <p>文章：29篇</p>
+    <span>阅读：76638</span>
+    </td>
+    </tr></tbody></table>
+    </ul>
+</div><div id="panel_Category" class="panel">
+<ul class="panel_head"><span>文章分类</span></ul>
+<ul class="panel_body">    
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6182037" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">● 点击查看文章目录</a><span>(2)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6228421" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">● 编程语言</a><span>(33)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6172207" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【Java进阶】</a><span>(13)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6228439" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【Java并发】</a><span>(19)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6228426" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【Java虚拟机】</a><span>(2)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6250474" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【Python基础】</a><span>(0)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6228422" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">● 结构算法</a><span>(18)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6172271" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【数据结构】</a><span>(10)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6228423" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【排序算法】</a><span>(8)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6188345" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【Java算法题】</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6228430" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">● Web基础</a><span>(15)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6228431" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【XML】</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6243663" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【AJAX】</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6244402" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【jQuery】</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6183977" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【Servlet和JSP】</a><span>(12)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6228418" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">●  框架技术</a><span>(46)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6183972" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【Spring】</a><span>(3)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6183974" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【Struts2】</a><span>(6)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6183973" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【Hibernate】</a><span>(5)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6241029" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【MyBatis】</a><span>(16)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6241028" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【SpringMVC】</a><span>(11)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6229500" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【EasyUI】</a><span>(5)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6228429" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">● 架构之美</a><span>(23)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6172272" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【设计模式】</a><span>(8)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6271311" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【Maven】</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6291842" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【Shiro】</a><span>(5)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6301481" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【Lucene】</a><span>(4)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6330577" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【WebService】</a><span>(5)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6228419" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">●  项目实战</a><span>(30)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6214186" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【SSH网上商城】</a><span>(30)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6228417" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">● 数 据 库</a><span>(4)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6204632" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【JDBC】</a><span>(3)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6343320" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【Redis】</a><span>(1)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6187792" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【MySQL】</a><span>(0)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6261797" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【Oracle】</a><span>(0)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6228420" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">● 程序人生</a><span>(5)</span>
+                </li>
+                 <li>
+                    <a href="http://blog.csdn.net/eson_15/article/category/6203821" onclick="_gaq.push([&#39;_trackEvent&#39;,&#39;function&#39;, &#39;onclick&#39;, &#39;blog_articles_wenzhangfenlei&#39;]); ">------【程序人生】</a><span>(5)</span>
+                </li>
+</ul>
+</div>
+
+<div id="custom_column_41605183" class="panel">
+<ul class="panel_head"><span>休闲时刻</span></ul>
+<ul class="panel_body">
+<ul class="panel_head">
+<font style="padding-left:25px">学累了吗？用鼠标逗逗它吧^_^</font></ul>
+<object type="application/x-shockwave-flash" style="outline:none;" data="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/hamster.swf" width="236" height="185"><param name="movie" value="http://cdn.abowman.com/widgets/hamster/hamster.swf?"><param name="AllowScriptAccess" value="always"><param name="wmode" value="opaque"></object><br>
+<!--
+<embed src="http://v.65dj.com/wailian/84791c997d8c55023dad0d5690e48c28.mp3" width="240" height="50" autostart="true" loop="1" hidden="”true”" id="MediaPlayer" name="MediaPlayer">-->
+</ul>
+</div><div id="hotarticls" class="panel">
+<ul class="panel_head">
+    <span>       
+阅读排行    </span>
+</ul>
+
+<ul class="panel_body itemlist">
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51479994" title="【SSH网上商城项目实战30】项目总结（附源码下载地址）">【SSH网上商城项目实战30】项目总结（附源码下载地址）</a><span>(15875)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51484247" title="【SSH网上商城项目实战27】域名空间的申请和项目的部署及发布">【SSH网上商城项目实战27】域名空间的申请和项目的部署及发布</a><span>(13113)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51731567" title="【SpringMVC学习07】SpringMVC中的统一异常处理">【SpringMVC学习07】SpringMVC中的统一异常处理</a><span>(12478)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51277324" title="【SSH网上商城项目实战01】整合Struts2、Hibernate4.3和Spring4.2">【SSH网上商城项目实战01】整合Struts2、Hibernate4.3和Spring4.2</a><span>(11793)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51366384" title="【SSH网上商城项目实战13】Struts2实现文件上传功能">【SSH网上商城项目实战13】Struts2实现文件上传功能</a><span>(10636)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51418350" title="【SSH网上商城项目实战17】购物车基本功能的实现">【SSH网上商城项目实战17】购物车基本功能的实现</a><span>(10321)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51405911" title="【SSH网上商城项目实战16】Hibernate的二级缓存处理首页的热门显示">【SSH网上商城项目实战16】Hibernate的二级缓存处理首页的热门显示</a><span>(10117)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51497533" title="jQuery-Validate验证插件的使用步骤详解">jQuery-Validate验证插件的使用步骤详解</a><span>(9952)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51454428" title="JDBC技术总结（三）">JDBC技术总结（三）</a><span>(9830)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51366370" title="【SSH网上商城项目实战12】添加和更新商品功能的实现">【SSH网上商城项目实战12】添加和更新商品功能的实现</a><span>(9825)</span>
+</li>
+</ul>
+</div>
+<div id="hotarticls2" class="panel">
+<ul class="panel_head"><span>评论排行</span></ul>
+<ul class="panel_body itemlist">
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51277324" title="【SSH网上商城项目实战01】整合Struts2、Hibernate4.3和Spring4.2">【SSH网上商城项目实战01】整合Struts2、Hibernate4.3和Spring4.2</a><span>(91)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51787391" title="【Shiro】Apache Shiro架构之实际运用（整合到Spring中)">【Shiro】Apache Shiro架构之实际运用（整合到Spring中)</a><span>(58)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51144079" title="【数据结构和算法05】 红-黑树（看完包懂~）">【数据结构和算法05】 红-黑树（看完包懂~）</a><span>(53)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51479994" title="【SSH网上商城项目实战30】项目总结（附源码下载地址）">【SSH网上商城项目实战30】项目总结（附源码下载地址）</a><span>(40)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51332758" title="【SSH网上商城项目实战07】Struts2和Json的整合">【SSH网上商城项目实战07】Struts2和Json的整合</a><span>(32)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51297698" title="【SSH网上商城项目实战02】基本增删查改、Service和Action的抽取以及使用注解替换xml">【SSH网上商城项目实战02】基本增删查改、Service和Action的抽取以及使用注解替换xml</a><span>(29)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51320212" title="【SSH网上商城项目实战05】完成数据库的级联查询和分页">【SSH网上商城项目实战05】完成数据库的级联查询和分页</a><span>(20)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51138663" title="【数据结构与算法04】二叉树">【数据结构与算法04】二叉树</a><span>(20)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51689023" title="【SpringMVC学习01】宏观上把握SpringMVC框架">【SpringMVC学习01】宏观上把握SpringMVC框架</a><span>(16)</span>
+</li>
+<li>
+<a href="http://blog.csdn.net/eson_15/article/details/51347734" title="【SSH网上商城项目实战09】添加和更新商品类别功能的实现">【SSH网上商城项目实战09】添加和更新商品类别功能的实现</a><span>(14)</span>
+</li>
+</ul>
+</div>
+    </div>
+    <div class="clear">
+    </div>
+
+
+                 <!-- 广告位开始 --> 
+                    <div class="J_adv" data-view="true" data-mod="ad_popu_189" data-mtp="36" data-order="40" data-con="ad_content_1259" style="width: 250px; height: 250px;"><!-- 广告占位容器 --><div id="cpro_u2734133" style="width: 250px; height: 250px; display: inline-block;"><iframe id="iframeu2734133_0" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/xclm(3).html" width="250" height="250" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0; vertical-align:bottom;margin:0;" allowtransparency="true"></iframe></div><!-- 投放代码 --><script type="text/javascript">(window['cproStyleApi'] = window['cproStyleApi'] ||{})['u2734133']={at:'3',rsi0:'250',rsi1:'250',pat:'6',tn:'baiduCustNativeAD',rss1:'#FFFFFF',conBW:'1',adp:'1',ptt:'0',titFF:'%E5%BE%AE%E8%BD%AF%E9%9B%85%E9%BB%91',titFS:'',rss2:'#000000',titSU:'0',ptbg:'90',piw:'0',pih:'0',ptp:'0'};/*服务器频道首页置顶Banner960*90，创建于2014-7-3*/(window.cproArray = window.cproArray || []).push({id:'u2734133'});  </script>  <script src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/c.js" type="text/javascript"></script></div> 
+                <!-- 广告位结束 -->
+
+           </div>   
+
+            <div class="clear">
+            </div>
+        </div>
+
+        
+
+<script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/cnick.js"></script>
+<script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/newblog.min.js"></script>
+
+
+<script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/showblogmedal.ashx"></script>
+<script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/JavaScript1.js"></script><link rel="stylesheet" type="text/css" href="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/pub_footer_2014.css"><div class="pub_fo"><div id="pub_footerall" class="pub_footer_new"><dl><dt></dt> <dd class="foot_sub_menu"><a href="http://www.csdn.net/company/about.html" target="_blank">公司简介</a><span>|</span><a href="http://www.csdn.net/company/recruit.html" target="_blank">招贤纳士</a><span>|</span><a href="http://www.csdn.net/company/marketing.html" target="_blank">广告服务</a><span>|</span><a href="http://www.csdn.net/company/account.html" target="_blank">银行汇款帐号</a><span>|</span><a href="http://www.csdn.net/company/contact.html" target="_blank">联系方式</a><span>|</span><a href="http://www.csdn.net/company/statement.html" target="_blank">版权声明</a><span>|</span><a href="http://www.csdn.net/company/layer.html" target="_blank">法律顾问</a><span>|</span><a href="mailto:webmaster@csdn.net">问题报告</a><span>|</span><a target="_blank" href="http://www.csdn.net/friendlink.html">合作伙伴</a><span>|</span><a href="http://bbs.csdn.net/forums/Service" target="_blank">论坛反馈</a></dd><dd class="foot_contact"><a href="javascript:void(0);" target="_blank" class="qq">网站客服</a><a href="http://wpa.qq.com/msgrd?v=3&amp;uin=2251809102&amp;site=qq&amp;menu=yes" target="_blank" class="qq">杂志客服</a><a href="http://e.weibo.com/csdnsupport/profile" target="_blank" class="weibo">微博客服</a><a href="mailto:webmaster@csdn.net" class="email" title="联系邮箱">webmaster@csdn.net</a><span class="phone" title="服务热线">400-600-2320</span><span class="interval">|</span><span>北京创新乐知信息技术有限公司 版权所有</span><span class="interval">|</span><span>江苏知之为计算机有限公司</span><span class="interval">|</span><span>江苏乐知网络技术有限公司</span></dd><dd class="foot_copyright"><span>京&nbsp;ICP&nbsp;证&nbsp;09002463&nbsp;号</span><span class="interval">|</span><span>Copyright © 1999-2016, CSDN.NET, All Rights Reserved&nbsp;</span><a href="http://www.hd315.gov.cn/beian/view.asp?bianhao=010202001032100010" target="_blank"><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/gongshang_logos.gif" alt="GongshangLogo" title=""></a></dd></dl></div></div><div id="note1" class="csdn_note" style="display:none; position:absolute; z-index:9999; width:440px">  <span class="notice_top_arrow"><span class="inner"></span></span>  <div class="box"></div></div><div class="csdn_notice_tip" style="display:none; position:absolute; z-index:9990; width:170px">  <iframe src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/saved_resource(2).html" frameborder="0" scrolling="no" style="z-index:-1;position:absolute;top:0;left:0;width:100%;height:100%;background:transparent"></iframe>  <div class="tip_text">您有<strong>0</strong>条新通知</div>  <a href="javascript:void 0" class="close2"></a></div><script id="noticeScript" type="text/javascript" btnid="header_notice_num" wrapid="note1" count="5" subcount="5" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/notify.js"></script>
+
+    <script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/login.js"></script>
+<script type="text/javascript">document.write("<img src=http://counter.csdn.net/pv.aspx?id=24 border=0 width=0 height=0>");</script><img src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/pv.aspx" border="0" width="0" height="0">
+<script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/counter.js"></script><script type="text/javascript" charset="UTF-8" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/msg.popup.js"></script>
+<script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/ad-blog.js"></script>
+<script type="text/javascript">
+    $(function () {
+        function __get_code_toolbar(snippet_id) {
+            return $("<span class='tracking-ad' data-mod='popu_167'><a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "' target='_blank' title='在CODE上查看代码片'  style='text-indent:0;'><img src='https://code.csdn.net/assets/CODE_ico.png' width=12 height=12 alt='在CODE上查看代码片' style='position:relative;top:1px;left:2px;'/></a></span>"
+                    + "<span class='tracking-ad' data-mod='popu_170'><a href='https://code.csdn.net/snippets/"
+                    + snippet_id
+                    + "/fork' target='_blank' title='派生到我的代码片' style='text-indent:0;'><img src='https://code.csdn.net/assets/ico_fork.svg' width=12 height=12 alt='派生到我的代码片' style='position:relative;top:2px;left:2px;'/></a></span>");
+        }
+        
+        $("[code_snippet_id]").each(function () {
+            __s_id = $(this).attr("code_snippet_id");
+            if (__s_id != null && __s_id != "" && __s_id != 0 && parseInt(__s_id) > 70020) {
+                __code_tool = __get_code_toolbar(__s_id);
+                $(this).prev().find(".tools").append(__code_tool);
+            }
+        });
+
+        $(".bar").show();
+    });
+</script>
+
+
+
+
+
+    </div><input type="hidden" id="aa_g_data_ids">
+      <!--new top-->
+    
+    <script id="csdn-toolbar-id" btnid="header_notice_num" wrapid="note1" count="5" subcount="5" type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/toolbar.js"></script>
+     <!--new top-->
+   
+    <link href="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/ask_float_block.css" type="text/css" rel="stylesheet">
+    <script language="JavaScript" type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/wmd.js"></script>
+    <script language="JavaScript" type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/showdown.js"></script>
+    <script language="JavaScript" type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/prettify.js"></script>
+    <script language="JavaScript" type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/ask_float_block.js"></script>
+   
+
+  <div id="a52b5334d" style="width: 1px; height: 1px; display: none;">
+                    <script id="adJs52b5334" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/52b5334.js"></script>
+                    <script>document.getElementById("adJs52b5334").src = "http://ads.csdn.net/js/opt/52b5334.js?t=" + Math.random();</script>
+   <div><iframe src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/skip.html" style="width: 1px; height: 1px; position: absolute; visibility: hidden;"></iframe></div></div>
+
+    <link rel="stylesheet" href="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/blog_code.css">
+    <script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/saveToCode.js"></script>
+      <script type="text/javascript" src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/main(1).js"></script>
+
+   
+ <div id="tag-suggest-pop">
+  <div class="relative">
+    <div class="close"></div>
+    <div class="content"></div>
+  </div>
+</div><link rel="stylesheet" type="text/css" media="screen" href="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/ask_float_fonts_css-6b30a53970eb5c3a2a045e3df585b475.css"><div data-mod="popu_64" class="csdn-tracking-statistics" chg-blk="0"><a id="com-quick-reply" title="快速回复" style="top:336px"></a><a id="com-d-top-a" style="top: 374px; display: block;" title="返回顶部" onclick=""></a> </div><div class="pop_edit ask_second comm_ask_second"><h3>提问</h3><span class="ask_float_span">您的问题将会被发布在“<a class="ask_float_channel" href="http://ask.csdn.net/" target="_blank" style="cursor:pointer">技术问答</a>”频道</span><a href="http://blog.csdn.net/eson_15/article/details/51669608#" nodetype="close" class="close">×</a><div class="context"><div class="err_div"><span class="err_ico"></span><span class="err_txt">该问题已存在，请勿重复提问</span></div><div class="input_div"><input id="askInputSecond" type="text" style="font-size:14px;" placeholder="问题标题"></div><div class="cm_box"><div class="cm_dialog"></div> <div class="pop_cm cm_add_link"><input type="text" placeholder="链接内容" id="af_cm_link_txt"><input type="text" placeholder="链接地址" id="af_cm_link_url"><input type="text" placeholder="链接提示" id="af_cm_link_tit"><div class="text-right"><span class="btn btn-default btn-sm" id="add_link_btn">插入链接</span> </div> </div><div class="pop_cm cm_add_img"><div class="nav-tabs"><a class="img_tab active" href="http://blog.csdn.net/eson_15/article/details/51669608#tab_upload">本地上传</a><a class="img_tab" href="http://blog.csdn.net/eson_15/article/details/51669608#tab_weburl">网络图片</a></div><div class="tab_panel active" id="tab_upload"><div class="set_img"><iframe src="./【MyBatis学习13】MyBatis中的二级缓存 - 倪升武的博客 - 博客频道 - CSDN.NET_files/upload.html"></iframe></div></div><div class="tab_panel" id="tab_weburl"><input type="text" placeholder="图片地址" id="af_cm_img_url"><input type="text" placeholder="图片说明" id="af_cm_img_alt"><div class="text-right"><span class="btn btn-default btn-sm" id="add_img_btn">插入图片</span> </div></div> </div></div> <textarea id="editor_all" rows="8" style="display: none;"></textarea><div class="editor-toolbar"><i class="separator">|</i><a class="icon-headline" title="标题一（Ctrl+Alt+1）"></a><a class="icon-heading" title="标题二（Ctrl+Alt+2）"></a><a class="icon-bold" title="粗体（Ctrl+B）"></a><a class="icon-italic" title="斜体（Ctrl+I）"></a><i class="separator">|</i><a class="icon-quote-left" title="引用（Ctrl+’）"></a><a class="icon-code" title="插入代码片（Ctrl+,）"></a><a class="icon-list-ul" title="无序列表（Ctrl+L）"></a><a class="icon-list-ol" title="有序列表（Ctrl+Alt+L）"></a><i class="separator">|</i><a class="icon-link" title="添加链接（Ctrl+K）"></a><a class="icon-picture" title="添加图片（Ctrl+Alt+I）"></a><i class="separator">|</i><a class="icon-reply" title="撤退（Ctrl+Z）"></a><a class="icon-share-alt" title="前进（Ctrl+Shift+Z）"></a><i class="separator">|</i><a class="icon-info" href="http://ask.csdn.net/pages/markdown" target="_blank" title="markdown语法参考"></a><a class="icon-preview" title="预览"></a><i class="separator">|</i></div><div class="CodeMirror cm-s-paper CodeMirror-focused"><div style="overflow: hidden; position: relative; width: 3px; height: 0px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" style="position: absolute; padding: 0px; width: 1000px; height: 1em; outline: none; font-size: 4px;" tabindex="0"></textarea></div><div class="CodeMirror-hscrollbar"><div style="height: 1px;"></div></div><div class="CodeMirror-vscrollbar"><div style="width: 1px;"></div></div><div class="CodeMirror-scrollbar-filler"></div><div class="CodeMirror-gutter-filler"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="min-width: 33px;"><div style="position: relative;"><div class="CodeMirror-lines"><div style="position: relative; outline: none;"><div class="CodeMirror-measure"><pre>&nbsp;<span style="display: inline-block; width: 1px; margin-right: -1px;">&nbsp;</span></pre></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-code"></div><div class="CodeMirror-cursor" style="visibility: hidden;">&nbsp;</div><div class="CodeMirror-cursor CodeMirror-secondarycursor" style="visibility: hidden;">&nbsp;</div></div></div></div></div><div style="position: absolute; height: 30px; width: 1px;"></div><div class="CodeMirror-gutters" style="display: none;"></div></div></div><div class="editor-statusbar"><span class="lines">0</span><span class="words">0</span><span class="cursor">0:0</span></div><div class="div_tags clearfix"><div id="divSearchTags" class="tags_con"><input type="text"></div><input type="hidden" name="txtSearchTags"></div><div id="ask2_tagRecomm_div" class="drt_tagRecomm tracking-ad" data-mod="popu_73"><span class="drt_tit">推荐标签：</span></div></div><div class="success"><div class="left_area"><input id="chk_cb" type="checkbox"><span class="wyxs">我要悬赏</span><input id="cb_num" class="cb_num" readonly="true"><span class="phib_rii"><span> 币</span></span></div><a href="http://blog.csdn.net/eson_15/article/details/51669608#" nodetype="cancel" class="cancel">取消</a><a href="http://blog.csdn.net/eson_15/article/details/51669608#" nodetype="ok" class="ok">发布</a></div></div><div id="common_ask_div_sc" class="searchContainer"><div class="sTitle">可能存在类似的问题：</div><div class="sFooter"><a class="sFirstNewAsk">我想提一个新问题</a></div></div><div id="mask_code"></div><div class="gist_edit"><div class="save_snippets clearfix"><div class="tit"><h3>保存代码片</h3><span>整理和分享保存的代码片，请访问<a href="https://code.csdn.net/snippets_manage" target="_blank">代码笔记</a></span></div><div class="con_form"><ul class="gist_edit_list clearfix"><li><span class="red">*</span><span class="txt">标题</span><input id="form_title" class="form-input" placeholder="【MyBatis学习13】MyBatis中的二级缓存" type="text"></li><li><span class="red">*</span><span class="txt">描述</span><textarea id="form-textarea" class="form-textarea" placeholder="【MyBatis学习13】MyBatis中的二级缓存： http://blog.csdn.net/eson_15/article/details/51669608"></textarea></li><li><span class="red">&nbsp;</span><span class="txt">标签</span><div id="divSearchTags"><span class="label blog_tag"><span>mybatis</span><a title="Removing tag" href="javascript:;">x</a></span><span class="label blog_tag"><span>二级缓存</span><a title="Removing tag" href="javascript:;">x</a></span><span class="label blog_tag"><span>java</span><a title="Removing tag" href="javascript:;">x</a></span><span class="label blog_tag"><span>web框架</span><a title="Removing tag" href="javascript:;">x</a></span><span class="label blog_tag"><span>缓存</span><a title="Removing tag" href="javascript:;">x</a></span><input id="insertTag" class="insertTag" placeholder="请输入标签，按Enter生成(最多5项)" type="text" value="" name="insertTag" maxlength="21" style="color: rgb(51, 51, 51);"><input id="OrganTag" class="OrganTag" type="hidden" name="OrganTag" value="mybatis,二级缓存,java,web框架,缓存,"><input id="OldOrganTag" class="OldOrganTag" type="hidden" name="OldOrganTag" value=""><input type="hidden" name="txtSearchTags"></div></li></ul></div><div class="bottom-bar"><a href="javascript:;" class="btn-submit btn-cancel">取消</a><span class="tracking-ad" data-mod="popu_250"><a class="btn-submit btn-confirm" href="javascript:;" target="_blank">确定</a></span></div></div></div></body></html>

@@ -1,0 +1,4 @@
+document.write('<!--可控视频自动投放代码开始 -->');
+adInfoTempSc = { src:"http://img1.126.net/channel1/html/kk_1020.html", url:"", key:"93385380814775466644593"}
+document.write('<script src="http://img2.126.net/ntesrich/2016/1024/scbox-iframe-2016.10.24-v3.js"></script>');
+document.write('<!--可控视频自动投放代码结束-->');

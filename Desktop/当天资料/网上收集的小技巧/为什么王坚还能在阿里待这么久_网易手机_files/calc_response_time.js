@@ -1,0 +1,1 @@
+function calcResponseTime(a,c,d,e){try{var b=window.location.search.match(/[?&]startTime=([^&]*)/);if(!b)return;var f=(new Date).getTime()-b[1],a="syndId="+c+"&memberId="+d+"&advType="+e+"&time="+f+"&channelType="+a;(new Image).src="http://impservice.youdao.com/logs/p2ptime.s?"+a}catch(g){}return!0};

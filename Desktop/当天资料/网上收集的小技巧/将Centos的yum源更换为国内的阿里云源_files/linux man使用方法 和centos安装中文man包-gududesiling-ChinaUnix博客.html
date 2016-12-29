@@ -1,0 +1,1790 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- saved from url=(0053)http://blog.chinaunix.net/uid-25100840-id-302308.html -->
+<html xmlns="http://www.w3.org/1999/xhtml"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<script type="text/javascript" async="" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/ga.js"></script><script type="text/javascript" async="" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/ycsm"></script><script type="text/javascript" async="" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/ycsm(1)"></script><script>
+var ua = navigator.userAgent.toLowerCase();
+if(ua.match(/MicroMessenger/i)=="micromessenger") {
+    location.href='http://blog.chinaunix.net/article.php?url='+ window.location.href;
+}
+</script>
+        <style>
+    .Blog_nav1_2 a em { display:inline-block; width:16px; height:13px; background:url(/image/v.jpg) no-repeat; overflow:hidden;}
+</style>
+
+<link rel="stylesheet" type="text/css" href="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/style.css">
+<link rel="stylesheet" type="text/css" href="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/qqFace.css">
+<link rel="stylesheet" type="text/css" href="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/asyncbox.css">
+<link rel="stylesheet" type="text/css" href="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/pager.css">
+<script type="text/javascript" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/jquery.min.js"></script>
+<script type="text/javascript" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/jquery.cookies.min.js"></script>
+<script type="text/javascript" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/AsyncBox.v1.4.5.js"></script>
+<title>linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客</title>
+<meta name="description" content="
+这两天学习&lt;linux设备驱动程序开发详解&gt;中的异步通知，其中有一个fcntl()函数，就是找不到，很气愤，在网上搜，也没有好的解决办法，
+最终，一个网友给我做了解答：是因为fcntl()是标准库，在内核源码中是找不到的，">
+<script type="text/javascript" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/h600.js"></script><script type="text/javascript" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/h600(1).js"></script>
+
+<script type="text/javascript">
+if(/AppleWebKit.*Mobile/i.test(navigator.userAgent) || (/MIDP|SymbianOS|NOKIA|SAMSUNG|LG|NEC|TCL|Alcatel|BIRD|DBTEL|Dopod|PHILIPS|HAIER|LENOVO|MOT-|Nokia|SonyEricsson|SIE-|Amoi|ZTE/.test(navigator.userAgent))){
+	try{
+		if(!/iPad/i.test(navigator.userAgent)){
+			var oldurl=window.location.href;
+			if(window.location.hostname.indexOf('m.blog.chinaunix.net')==-1){
+			var wapUrl= oldurl.replace('blog.chinaunix.net', "m.blog.chinaunix.net") ;
+			window.location.href = wapUrl;
+			}
+		}
+	}catch(e){}
+}
+</script>
+
+
+<script language="javascript">
+//用户是否在线
+var isOnLine = '';
+$(document).ready(function(){
+	var blog = {'name': '', 'name_url': '', 'brief': ''};
+	//消息通知显示和隐藏控制
+	$('#show_message_slide_button').hover(
+		function(){
+			$('#message_slide_div').slideDown(100);											   
+		},
+		function(){
+			
+		}
+	);
+
+	$('#message_slide_div').hover(
+		function(){
+			
+		},
+		function(){
+			$('#message_slide_div').slideUp(100);
+		}
+	);
+	
+	//编辑博客名
+	$('#editbna').click(function(){
+		blog.name = $('#bnaspan a').text();
+		var val = '<input id="bnainput" type="text" style="float:left" value="" rel="' +$(this).attr('rel') + '" /><input id="bnasub" type="button" style="float:left" class="btn1"><input id="bnacanl" type="button" style="float:left" class="btn2"><div class="clear"></div>';
+		$('#bnaspan').html(val);
+		$('#bnainput').val(blog.name);
+		$(this).parent().hide();
+	});
+	
+	$('#bnasub').live('click', function(){
+	    var rel = eval('({' + $('#bnainput').attr('rel') + '})');
+		var name = $('#bnainput').val();
+		if(name != blog.name){
+	        $.ajax({
+			    type: "POST",
+			    url: rel.url,	
+			    data: {
+				    'name' : name
+			    },
+			    success:function(data){
+				    if(data == 0){
+						$('#bnaspan').html(blog.name);
+						$('#bnaspan').html('<a href="' + rel.href + '">' + $('#bnaspan').html() + '</a>');
+				    }else if(data == -1){
+                                        showErrorMsg('名称中含有违禁词，请从新编辑!', '消息提示');
+                                    }else{
+						$('#bnaspan').html(data);
+						$('#bnaspan').html('<a href="' + rel.href + '">' + $('#bnaspan').html() + '</a>');
+				    }
+					$('#editbna').parent().show();
+				}
+			});
+		}else{
+		    $('#bnaspan').text(blog.name).html();
+			$('#bnaspan').html('<a href="' + rel.href + '">' + $('#bnaspan').html() + '</a>');
+			$('#editbna').parent().show();
+		}
+	});
+	
+	$('#bnacanl').live('click', function(){
+		var rel = eval('({' + $('#bnainput').attr('rel') + '})');
+		$('#bnaspan').html('<a href="' + rel.href + '">' + blog.name + '</a>');
+		$('#editbna').parent().show();
+	});
+	
+	//编辑签名
+	$('#editbrief').click(function(){
+	    blog.brief = $('#briefem').text();
+		var val = '<input id="brfinput" type="text" style="float:left" value="" rel="' + $(this).attr('rel') + '" /><input id="brfsub" style="float:left"  type="button" class="btn1"><input style="float:left"  id="brfcanl" type="button" class="btn2"><div class="clear"></div>';
+		$('#briefem').html(val);
+		$('#brfinput').val(blog.brief);
+		$(this).parent().hide();
+	});
+	
+	$('#brfsub').live('click', function(){
+	    var url = $('#brfinput').attr('rel');
+		var brief = $('#brfinput').val();
+		if(brief != blog.brief){
+	        $.ajax({
+			    type: "POST",
+			    url: url,	
+			    data: {
+				    'brief' : brief
+			    },
+			    success:function(data){
+				    if(data == 0){
+				        $('#briefem').html(blog.brief);
+				    }else if(data == -1){
+                                        showErrorMsg('签名中含有违禁词，请从新编辑!', '消息提示');
+                                    }else{
+						$('#briefem').html(data);
+				    }
+					$('#editbrief').parent().show();
+				}
+			});
+		}else{
+		    $('#briefem').text(blog.brief).html();
+			$('#editbrief').parent().show();
+		}
+	});
+	
+	$('#brfcanl').live('click', function(){
+		$('#briefem').html(blog.brief);
+		$('#editbrief').parent().show();
+	});
+
+});
+</script>
+<script src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/share.js"></script><link rel="stylesheet" href="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/share_style0_16.css"></head>
+<body><div id="BAIDU_DUP_fp_wrapper" style="position: absolute; left: -1px; bottom: -1px; z-index: 0; width: 0px; height: 0px; overflow: hidden; visibility: hidden; display: none;"><iframe id="BAIDU_DUP_fp_iframe" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/o.html" style="width: 0px; height: 0px; visibility: hidden; display: none;"></iframe></div>
+<div class="box">
+  <!-- 一级导航 -->
+  <div class="Blog_nav1">
+    <div class="Blog_nav1_2"><a href="http://blog.chinaunix.net/"><img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/1.png"></a><a href="http://www.chinaunix.net/" class="Blog_a1">Chinaunix首页</a> | <a href="http://bbs.chinaunix.net/" target="_blank">论坛</a> | <a href="http://u.it168.com/vip/"><font color="red">认证专区</font></a> | <a href="http://blog.chinaunix.net/" target="_blank">博客</a><span class="Blog_span1"></span>
+              <a href="http://blog.chinaunix.net/site/login.html" class="Blog_a1" onclick="linkto()">登录</a> | <a href="http://u.it168.com/Register?webid=5&amp;returnUrl=http%3A%2F%2Fblog.chinaunix.net%2Fuid-25100840-id-302308.html" class="Blog_a1">注册</a>
+          </div>
+	<!--自动提示层-->
+	<style>
+	.bor13221{border:1px #bbb solid;width:206px;position:absolute;top:34px;left:0;background:#fff; z-index:9999;display:none}
+	.bor13221 li{height:26px;line-height:26px;padding-left:6px;color:#555;font-size:14px;cursor:pointer;}
+	.here{background:#f3f3f3;}
+    </style>
+
+	<!--自动提示层-->
+    <div class="Blog_nav1_3" style="position:relative; z-index:9999;">
+	 <div class="bor13221">
+      <ul>
+      </ul>
+    </div>
+	  <form action="http://blog.chinaunix.net/site/search.html" method="post">
+		<input type="text" autocomplete="off" class="Blog_txt1" id="search_input_id" name="keywords">
+		<select class="Bolg_sel1" name="type" id="search_type_blog">
+		  <option value="blog">博文</option>
+		  <option value="author">博主</option>
+		</select>
+		<input type="submit" value="" name="submit" class="Blog_btn1">
+	 </form>
+    </div>
+    <div class="clear"></div>
+    <div class="Blog_nav1_layer1" id="message_slide_div" style="display:none;">
+	    <ul>
+	    	<li><a href="http://blog.chinaunix.net/message/private.html">私人消息()</a></li>
+	    	<li><a href="http://blog.chinaunix.net/message/system.html">系统消息()</a></li>
+	    	<li><a href="http://blog.chinaunix.net/member/request.html">好友请求()</a></li>
+	    	<li><a href="http://blog.chinaunix.net/member/notification.html">通知管理()</a></li>
+	    </ul>
+    </div>
+  </div>
+   <script type="text/javascript">
+  	$(function(){
+		//点击添加进文本框
+		$(".bor13221 li").live( 'click' , function(e){
+			if ( e && e.stopPropagation )
+			{
+				//因此它支持W3C的stopPropagation()方法
+				e.stopPropagation();
+			}
+			else
+			{
+				//否则，我们需要使用IE的方式来取消事件冒泡
+				window.event.cancelBubble = true; 
+			}
+			$('#search_input_id').val($(this).text());
+			$(".bor13221 ul").html('');
+			$(".bor13221").hide();
+		});
+		$(".bor13221 ul li").live({
+			mouseenter:
+			function()
+			{
+				$(".bor13221 ul li").removeClass("here");
+				$(this).addClass('here');
+			},
+			mouseleave:
+			function()
+			{
+				$(".bor13221 ul li").removeClass("here");
+				$(this).removeClass('here');
+			}
+		});
+		//自动提示
+		$('#search_input_id').keyup(function(event){
+			//取消博主的提示
+			var search_type_blog = $('#search_type_blog').val();
+			if(search_type_blog == 'author') return false;
+
+			var key = $(this).val();
+			//获取键值
+			var keycode = event.which; //38 上 40 下
+			var count = $('.bor13221 ul li').length;
+			if(key != '' && keycode != 38 && keycode != 40)
+			{
+				$.getJSON("http://api.sou.it168.com/autoWenKuCloud?jsoncallback=?",{"ty":"json","offset":"0","limit":"10","q":key}, function(result)
+					{
+						var arr = result.data;
+
+						var html ='';
+						for (i=0;i<arr.length ;i++ )   
+						{   
+							html += '<li>'+arr[i]+'</li>';
+						} 
+						
+						$('.bor13221 ul').html(html);
+						(arr.length > 1) ?  $(".bor13221").show() : $(".bor13221").hide();
+					}
+				);
+			}
+			else if(keycode == 38)
+			{
+				if(count > 0)
+				{
+					//遍历li
+					var curr_li_num;
+					$('.bor13221 ul li').each(function(index , dom){
+						if($(dom).attr('class') == 'here')
+						{
+							curr_li_num = index;
+							return false;
+						}
+					}); 
+					var next_li_num;
+					if(typeof(curr_li_num) == 'undefined')
+					{
+						next_li_num = count - 1;
+					}
+					else
+					{
+						if(curr_li_num == 0)
+						{
+							next_li_num = count - 1;
+						}
+						else
+						{
+							next_li_num = curr_li_num - 1;
+						}
+					}
+					$(".bor13221 ul li").removeClass("here");
+					$(".bor13221 ul li:eq(" + next_li_num + ")").addClass("here");
+					$('#search_input_id').val($(".bor13221 ul li:eq(" + next_li_num + ")").text());
+				}
+			}
+			else if(keycode == 40)
+			{
+				if(count > 0)
+				{
+					//遍历li
+					var curr_li_num;
+					$('.bor13221 ul li').each(function(index , dom){
+						if($(dom).attr('class') == 'here')
+						{
+							curr_li_num = index;
+							return false;
+						}
+					}); 
+					var next_li_num;
+					if(typeof(curr_li_num) == 'undefined')
+					{
+						next_li_num = 0;
+					}
+					else
+					{
+						if(curr_li_num == count - 1)
+						{
+							next_li_num = 0;
+						}
+						else
+						{
+							next_li_num = curr_li_num + 1;
+						}
+					}
+					$(".bor13221 ul li").removeClass("here");
+					$(".bor13221 ul li:eq(" + next_li_num + ")").addClass("here");
+					$('#search_input_id').val($(".bor13221 ul li:eq(" + next_li_num + ")").text());
+				}
+			}
+		});
+		$(document).click(function(e){
+			$(".bor13221").hide();
+		});
+
+	});
+  </script>
+  <!-- 头 -->
+  <!-- 推荐博客-->
+  <div class="Blog_header1">
+	    <div class="Blog_header1_1">
+      <p class="Blog_p1"><em><a href="http://blog.chinaunix.net/uid/25100840.html">弱水三千，取一瓢饮</a></em><a href="http://gududesiling.blog.chinaunix.net/">gududesiling.blog.chinaunix.net</a></p>      <p class="Blog_p2" style="color:#125A94">。。。</p>
+    </div>
+        <div class="Blog_header1_2" id="hide_div1">
+    	<span class="Blog_span3"></span>
+    	<div class="float_div1" style="white-space:nowrap;" onmouseover="javascript:isMove=false" onmouseout="javascript:isMove=true">
+	    <ul id="noticev2" style="line-height: 25px; margin-top: 0px;">  
+		    		    <li><a href="http://blog.chinaunix.net/uid-30204791-id-5752644.html" target="_blank">2016中国系统架构师大会门票申请 </a></li>
+		    		    <li><a href="http://blog.chinaunix.net/uid-24789255-id-5568211.html" target="_blank">新注册用户开通“博客写作”功能，需要申请与实名认证 </a></li>
+		    		    <li><a href="http://blog.chinaunix.net/uid-10718265-id-5141960.html" target="_blank"> 互动：数据分析与云计算应用案例 （征集|参与）</a></li>
+		    	    </ul>
+	    </div>
+    </div>
+            <div class="Blog_header1_3"><a href="http://blog.chinaunix.net/uid/25100840.html">首页</a>　| 　<a href="http://blog.chinaunix.net/uid/25100840/abstract/1.html">博文目录</a>　| 　<a href="http://blog.chinaunix.net/member/profile/uid/25100840.html">关于我</a></div>
+  </div>
+    
+  <!-- 内容部分 -->
+  	<script type="text/javascript" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/XRegExp.js"></script> <!-- XRegExp is bundled with the final shCore.js during build -->
+<script type="text/javascript" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/shCore.js"></script>
+<script type="text/javascript" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/shAutoloader.js"></script>
+<link type="text/css" rel="stylesheet" href="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/shCore.css">
+<link type="text/css" rel="Stylesheet" href="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/shThemeDefault.css">
+<link href="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/fck_editorarea.css" rel="stylesheet" type="text/css">
+<style>
+.Blog_p5 em{ display:inline-block; width:16px; height:13px; background:url(/image/v.jpg) no-repeat; overflow:hidden;}
+</style>
+  <div class="Blog_contain"> 
+    <!-- 左 -->
+	<style>
+    .Blog_left1_1 p a em { display:inline-block; width:16px; height:13px; background:url(/image/v.jpg) no-repeat; overflow:hidden;}
+</style>
+
+<script language="javascript">
+$(document).ready(function(){
+	$('#ConcernBtn').bind('click',function(){
+			var cuid = '25100840';
+			var url =  '/member/concern.html';
+			var type = $(this).attr('rel');
+		
+			if(type == 'addConcern'){
+				$.ajax({
+					type : 'get',
+					url  : url,
+					data : {'op' : 'ajaxadd' , 'cuid' : cuid, 'random' : Math.random()},
+					success : function(msg){	
+					   if(msg == -1){
+						   showErrorMsg('参数错误！');
+					   } else if (msg == 0){
+						   showErrorMsg('关注失败，没有该用户！');
+					   } else if (msg == 1){
+						   showErrorMsg('关注失败，您已经关注了该用户！');
+					   } else if (msg == 2){
+						   $('#ConcernBtn').val('已关注');
+						   $('#ConcernBtn').attr('rel','delConcern');
+						   showSucceedMsg('关注成功!');
+					   } else if (msg == 3){
+						   showErrorMsg('未知错误');
+					   }
+					}
+				});	
+			} else if ( type == 'delConcern'){
+				$.ajax({
+					type : 'get',
+					url  : url,
+					data : {'op' : 'ajaxdel' , 'cuid' : cuid, 'random' : Math.random()},
+					success : function(msg){
+					   if(msg == 0){
+						   showErrorMsg('参数错误！','消息提示');
+					   } else if (msg == 1){
+						   showErrorMsg('操作失败，请尝试刷新页面重试！','消息提示');
+					   } else if (msg == 2){
+						   $('#ConcernBtn').val('加关注');
+						   $('#ConcernBtn').attr('rel','addConcern');
+						   showSucceedMsg('成功取消关注！','消息提示');
+					   } else if (msg == 3){
+						   showErrorMsg('未知错误！','消息提示'); 
+					   }
+					}
+				});	
+			}
+	});					   
+});
+
+//加好友
+function addFriend(fuid, url){
+	if(fuid == '' || fuid.length == 0){
+		showErrorMsg('缺少参数！','信息提示');
+		return false;
+	}
+	$.ajax({
+		   type : 'get',
+		   url : url,
+		   data : {'op' : 'add', 'fuid' : fuid , 'random' : Math.random()},
+		   success : function(msg){
+				if(msg == -1){
+					showErrorMsg('参数错误！','消息提示');
+				} else if (msg == -2){
+					showErrorMsg('添加好友失败,没有该用户的信息！','消息提示');
+				} else if (msg == -3){
+					showErrorMsg('添加好友失败,你不能添加自己为好友！','消息提示');
+				} else if (msg == -4){
+					showErrorMsg('添加好友未知错误,该错误已被记录！','消息提示');
+				} else if (msg == -5){
+					showErrorMsg('添加好友失败,你之前已经发送过好友请求,请耐心等待对方同意申请！','消息提示');
+				} else if (msg == -6){
+					showErrorMsg('添加好友失败,你们已经是好友了！','消息提示');
+				} else {
+					$.cover(true);
+					asyncbox.open({
+						id : 'addFriend',
+						title : '添加好友',
+						url : url,
+						data : {'op' : 'add', 'fuid' : fuid , 'random' : Math.random()},
+						width : 490,
+						height : 180,
+						scroll : 'no',
+						callback : function(action) {
+							if (action == 'close'){
+								$.cover(false);
+							}	
+						}
+					});	
+				}
+		   }
+	});	
+	
+}
+
+//发送短消息
+function postMessage(msguid, url){
+	if(msguid == '' || msguid.length == 0){
+		showErrorMsg('缺少参数！','信息提示');
+		return false;
+	}
+	
+	$.ajax({
+		   type : 'post',
+		   url : url,
+		   data : {'op' : 'ajaxpost', 'msguid' : msguid , 'random' : Math.random()},
+		   success : function(msg){
+				if(msg == -1){
+					showErrorMsg('发送失败，缺少收件人对象！','消息提示');
+				} else if(msg == -2){
+					showErrorMsg('发送失败，自己不能给自己发送短消息！','消息提示');
+				} else {
+					$.cover(true);
+					asyncbox.open({
+						id : 'postMessage',
+						title : '发送短消息',
+						url : url,
+						data : {'op' : 'ajaxpost', 'msguid' : msguid , 'random' : Math.random()},
+						width : 510,
+						height : 255,
+						scroll : 'no',
+						callback : function(action) {
+							if (action == 'close'){
+								$.cover(false);
+							}	
+						}
+					});	
+				}
+		   }
+	});	
+}
+
+</script>
+<div class="Blog_left">
+      <div class="Blog_left1 Blog_bg1">
+        <div class="Blog_left1_1">
+			<!-- 专家博客-->
+			<a href="http://blog.chinaunix.net/uid/25100840.html">                            <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar.php">
+                        </a>
+                        <p><a href="http://blog.chinaunix.net/uid/25100840.html">gududesiling</a></p>
+                     </div>
+        <ul class="Blog_ul1 Blog_noline1">
+          <li>博客访问： 1428361 </li>
+          <li>博文数量： 446 </li>
+          <li>博客积分： 10994 </li>
+          <!--<li>专家积分： 180</li>-->
+          <li>博客等级： 上将 </li>
+		  <li>技术积分： 5481 </li>
+          <li>用  户  组：  普通用户</li>
+          <li>注册时间： 2010-12-17 19:49 </li>
+                            </ul>  
+
+
+        
+                <div class="HT_line3 HT_line3_1"></div>
+        <ul class="Blog_ul2">
+          <li><input type="button" value="加关注" id="ConcernBtn" onclick="showErrorMsg(&#39;操作失败,您需要先登录!&#39;, &#39;消息提示&#39;, &#39;/site/login.html&#39;)"></li>
+          <li><input type="button" value="短消息" id="postMessageBtn" onclick="showErrorMsg(&#39;操作失败,您需要先登录!&#39;, &#39;消息提示&#39;, &#39;/site/login.html&#39;)"></li>
+          <li><input type="button" value="论坛" onclick="location.href=&#39;http://bbs.chinaunix.net&#39;"></li>
+          <li><input type="button" value="加好友" id="addFriendBtn" onclick="showErrorMsg(&#39;操作失败,您需要先登录!&#39;, &#39;消息提示&#39;, &#39;/site/login.html&#39;)"></li>
+        </ul>
+              </div>
+        
+	 <div class="Blog_left2 Blog_left3 Blog_bg1">
+        <div class="Blog_tit1">CU论坛APP</div>
+        <div class="">
+                <div class="" style="float:left; margin-right:5px;">
+                 <img width="90" height="90" alt="" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/cuapp.png">
+                 </div><br>
+                <div class="" style="margin-top:10px;">
+                 <p class="">
+                         CU论坛APP
+                </p>
+                 <p class="">
+
+                 <br><br>
+                 APP发帖 享双倍积分
+                </p>
+                </div>
+        </div>
+	</div>
+         
+      <div class="Blog_left2 Blog_bg1">
+        <div class="Blog_tit1">文章分类</div>
+        <div class="Blog_left2_1">
+          <p class="Blog_p4"><a href="http://blog.chinaunix.net/uid/25100840/list/1.html">全部博文</a>（446）</p>
+          <ul id="blogCla">
+                            <li><a href="http://blog.chinaunix.net/uid/25100840/cid-156635-list-1.html" title="uboot移植">uboot移植</a>（5）
+                                </li>
+                            <li><span class="Blog_jia1"></span><a href="http://blog.chinaunix.net/uid/25100840/cid-151732-list-1.html" title="linux内核驱动文件系">linux内核驱动文</a>（60）
+                                    <div style="display:none;" class="zk">
+					                        <p><a href="http://blog.chinaunix.net/uid/25100840/sid-152187-list-1.html" title="lddr3 学习">lddr3 学习</a>（4）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-28157-list-1.html" title="驱动Makefile">驱动Makefile</a>（0）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-28156-list-1.html" title="内核Makefile">内核Makefile</a>（1）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-19686-list-1.html" title="文件系统学习与移植">文件系统学习与移</a>（0）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-19679-list-1.html" title="linux 内核移植与学习">linux 内核移植与</a>（19）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-19680-list-1.html" title="linux 驱动学习">linux 驱动学习</a>（36）</p>
+                                        </div>
+                                </li>
+                            <li><span class="Blog_jia1"></span><a href="http://blog.chinaunix.net/uid/25100840/cid-151731-list-1.html" title="linux基本操作">linux基本操作</a>（94）
+                                    <div style="display:none;" class="zk">
+					                        <p><a href="http://blog.chinaunix.net/uid/25100840/sid-19685-list-1.html" title="工具配置">工具配置</a>（43）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-19682-list-1.html" title="linux 命令">linux 命令</a>（32）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-19681-list-1.html" title="软件安装">软件安装</a>（18）</p>
+                                        </div>
+                                </li>
+                            <li><span class="Blog_jia1"></span><a href="http://blog.chinaunix.net/uid/25100840/cid-151730-list-1.html" title="linux 应用程序">linux 应用程序</a>（31）
+                                    <div style="display:none;" class="zk">
+					                        <p><a href="http://blog.chinaunix.net/uid/25100840/sid-161331-list-1.html" title="unix环境高级编程">unix环境高级编程</a>（3）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-28155-list-1.html" title="应用程序makefile">应用程序makefile</a>（8）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-19690-list-1.html" title="Makefile">Makefile</a>（0）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-19677-list-1.html" title="linux 应用程序学习">linux 应用程序学</a>（19）</p>
+                                        </div>
+                                </li>
+                            <li><a href="http://blog.chinaunix.net/uid/25100840/cid-104917-list-1.html" title="java学习">java学习</a>（6）
+                                </li>
+                            <li><a href="http://blog.chinaunix.net/uid/25100840/cid-85708-list-1.html" title="unix(freebsd等)">unix(freebsd等)</a>（5）
+                                </li>
+                            <li><a href="http://blog.chinaunix.net/uid/25100840/cid-29736-list-1.html" title="shell/lua/pytheon">shell/lua/pytheo</a>（9）
+                                </li>
+                            <li><a href="http://blog.chinaunix.net/uid/25100840/cid-29079-list-1.html" title="html/jscript/asp">html/jscript/asp</a>（18）
+                                </li>
+                            <li><span class="Blog_jia1"></span><a href="http://blog.chinaunix.net/uid/25100840/cid-29007-list-1.html" title="fl2440实验">fl2440实验</a>（8）
+                                    <div style="display:none;" class="zk">
+					                        <p><a href="http://blog.chinaunix.net/uid/25100840/sid-29011-list-1.html" title="驱动编写">驱动编写</a>（2）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-29010-list-1.html" title="文件系统移植">文件系统移植</a>（0）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-29009-list-1.html" title="内核移植">内核移植</a>（1）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-29008-list-1.html" title="裸奔">裸奔</a>（4）</p>
+                                        </div>
+                                </li>
+                            <li><span class="Blog_jia1"></span><a href="http://blog.chinaunix.net/uid/25100840/cid-26935-list-1.html" title="工作涉及的">工作涉及的</a>（49）
+                                    <div style="display:none;" class="zk">
+					                        <p><a href="http://blog.chinaunix.net/uid/25100840/sid-162239-list-1.html" title="市new">市new</a>（2）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-156112-list-1.html" title="work日志记录">work日志记录</a>（1）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-153522-list-1.html" title="智达vxworks">智达vxworks</a>（3）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-151800-list-1.html" title="taobao_learn">taobao_learn</a>（2）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-151733-list-1.html" title="智达linux">智达linux</a>（9）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-28028-list-1.html" title="西莫rt3052路由器">西莫rt3052路由器</a>（11）</p>
+                                        </div>
+                                </li>
+                            <li><span class="Blog_jia1"></span><a href="http://blog.chinaunix.net/uid/25100840/cid-22338-list-1.html" title="mini2440实验">mini2440实验</a>（69）
+                                    <div style="display:none;" class="zk">
+					                        <p><a href="http://blog.chinaunix.net/uid/25100840/sid-22687-list-1.html" title="第四阶段">第四阶段</a>（19）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-22686-list-1.html" title="第三阶段">第三阶段</a>（25）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-22685-list-1.html" title="第二阶段">第二阶段</a>（0）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-22684-list-1.html" title="第一阶段">第一阶段</a>（7）</p>
+                                            <p><a href="http://blog.chinaunix.net/uid/25100840/sid-19676-list-1.html" title="arm9_2440裸机">arm9_2440裸机</a>（18）</p>
+                                        </div>
+                                </li>
+                            <li><a href="http://blog.chinaunix.net/uid/25100840/cid-21429-list-1.html" title="qt/ucgui">qt/ucgui</a>（4）
+                                </li>
+                            <li><a href="http://blog.chinaunix.net/uid/25100840/cid-20181-list-1.html" title="心情">心情</a>（7）
+                                </li>
+                            <li><a href="http://blog.chinaunix.net/uid/25100840/cid-20171-list-1.html" title="杂谈">杂谈</a>（23）
+                                </li>
+                            <li><a href="http://blog.chinaunix.net/uid/25100840/cid-20170-list-1.html" title="计算机网络">计算机网络</a>（8）
+                                </li>
+                            <li><span class="Blog_jia1"></span><a href="http://blog.chinaunix.net/uid/25100840/cid-19689-list-1.html" title="c算法和常用源码">c算法和常用源码</a>（24）
+                                    <div style="display:none;" class="zk">
+					                        <p><a href="http://blog.chinaunix.net/uid/25100840/sid-171251-list-1.html" title="常用源码">常用源码</a>（0）</p>
+                                        </div>
+                                </li>
+                            <li><a href="http://blog.chinaunix.net/uid/25100840/cid-19678-list-1.html" title="计算机组成原理">计算机组成原理</a>（4）
+                                </li>
+                            <li><a href="http://blog.chinaunix.net/uid/25100840/cid-19684-list-1.html" title="系统解释方面优秀博文">系统解释方面优秀</a>（2）
+                                </li>
+                            <li><a href="http://blog.chinaunix.net/uid/25100840/cid-19683-list-1.html" title="其他">其他</a>（8）
+                                </li>
+                            <li><a href="http://blog.chinaunix.net/uid/25100840/cid--1-list-1.html" title="未分配的博文">未分配的博文</a>（12）
+                                </li>
+                      </ul>
+        </div>
+      </div>
+      	              <div class="Blog_left2 Blog_bg1">
+        <div class="Blog_tit1">文章存档</div>
+        <div class="Blog_left2_1" id="blogdtr">
+                    <p class="Blog_p4"><span class="Blog_jia1"></span><a href="http://blog.chinaunix.net/uid/25100840/year-2014-list-1.html">2014年</a>（1）</p>
+          <ul style="display:none;" class="Blog_ul3 zk">
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201407-list-1.html">2014年07月</a>（1）</li>
+                      </ul>
+                    <p class="Blog_p4"><span class="Blog_jia1"></span><a href="http://blog.chinaunix.net/uid/25100840/year-2013-list-1.html">2013年</a>（10）</p>
+          <ul style="display:none;" class="Blog_ul3 zk">
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201305-list-1.html">2013年05月</a>（1）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201303-list-1.html">2013年03月</a>（1）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201302-list-1.html">2013年02月</a>（2）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201301-list-1.html">2013年01月</a>（6）</li>
+                      </ul>
+                    <p class="Blog_p4"><span class="Blog_jia1"></span><a href="http://blog.chinaunix.net/uid/25100840/year-2012-list-1.html">2012年</a>（89）</p>
+          <ul style="display:none;" class="Blog_ul3 zk">
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201211-list-1.html">2012年11月</a>（2）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201210-list-1.html">2012年10月</a>（3）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201209-list-1.html">2012年09月</a>（1）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201208-list-1.html">2012年08月</a>（10）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201207-list-1.html">2012年07月</a>（20）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201205-list-1.html">2012年05月</a>（4）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201204-list-1.html">2012年04月</a>（10）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201203-list-1.html">2012年03月</a>（16）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201202-list-1.html">2012年02月</a>（21）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201201-list-1.html">2012年01月</a>（2）</li>
+                      </ul>
+                    <p class="Blog_p4"><span class="Blog_jia1"></span><a href="http://blog.chinaunix.net/uid/25100840/year-2011-list-1.html">2011年</a>（335）</p>
+          <ul style="display:none;" class="Blog_ul3 zk">
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201111-list-1.html">2011年11月</a>（8）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201110-list-1.html">2011年10月</a>（8）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201109-list-1.html">2011年09月</a>（15）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201108-list-1.html">2011年08月</a>（54）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201107-list-1.html">2011年07月</a>（59）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201106-list-1.html">2011年06月</a>（44）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201105-list-1.html">2011年05月</a>（75）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201104-list-1.html">2011年04月</a>（12）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201103-list-1.html">2011年03月</a>（43）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201102-list-1.html">2011年02月</a>（5）</li>
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201101-list-1.html">2011年01月</a>（12）</li>
+                      </ul>
+                    <p class="Blog_p4"><span class="Blog_jia1"></span><a href="http://blog.chinaunix.net/uid/25100840/year-2010-list-1.html">2010年</a>（11）</p>
+          <ul style="display:none;" class="Blog_ul3 zk">
+                        <li><a href="http://blog.chinaunix.net/uid/25100840/year-201012-list-1.html">2010年12月</a>（11）</li>
+                      </ul>
+                  </div>
+      </div>
+      	  	        <div class="Blog_left2 Blog_bg1">
+        <div class="Blog_tit1">我的朋友</div>
+        <ul class="Blog_ul4">
+                    <li><a href="http://blog.chinaunix.net/uid/14824714.html">              <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar(1).php">
+              </a>
+            <p><a href="http://blog.chinaunix.net/uid/14824714.html" title="ehlopxp">ehlopxp</a></p>
+          </li>
+                    <li><a href="http://blog.chinaunix.net/uid/28839962.html">              <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar(2).php">
+              </a>
+            <p><a href="http://blog.chinaunix.net/uid/28839962.html" title="9008681qq">9008681q</a></p>
+          </li>
+                    <li><a href="http://blog.chinaunix.net/uid/11472000.html">              <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar(3).php">
+              </a>
+            <p><a href="http://blog.chinaunix.net/uid/11472000.html" title="creatory">creatory</a></p>
+          </li>
+                    <li><a href="http://blog.chinaunix.net/uid/25645945.html">              <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar(4).php">
+              </a>
+            <p><a href="http://blog.chinaunix.net/uid/25645945.html" title="subukenai123">subukena</a></p>
+          </li>
+                    <li><a href="http://blog.chinaunix.net/uid/20543183.html">              <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar(5).php">
+              </a>
+            <p><a href="http://blog.chinaunix.net/uid/20543183.html" title="xgr180">xgr180</a></p>
+          </li>
+                    <li><a href="http://blog.chinaunix.net/uid/24789255.html">              <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar(6).php">
+              </a>
+            <p><a href="http://blog.chinaunix.net/uid/24789255.html" title="CU官方博客">CU官方博</a></p>
+          </li>
+                    <li><a href="http://blog.chinaunix.net/uid/28503021.html">              <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar(7).php">
+              </a>
+            <p><a href="http://blog.chinaunix.net/uid/28503021.html" title="shencz2000">shencz20</a></p>
+          </li>
+                    <li><a href="http://blog.chinaunix.net/uid/25617828.html">              <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar(8).php">
+              </a>
+            <p><a href="http://blog.chinaunix.net/uid/25617828.html" title="Bellofreedom">Bellofre</a></p>
+          </li>
+                    <li><a href="http://blog.chinaunix.net/uid/25426872.html">              <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar(9).php">
+              </a>
+            <p><a href="http://blog.chinaunix.net/uid/25426872.html" title="lugege9526">lugege95</a></p>
+          </li>
+                  </ul>
+      </div>
+	  	        <div class="Blog_left2 Blog_bg1">
+        <div class="Blog_tit1">最近访客</div>
+        <ul class="Blog_ul4">
+                    <li><a href="http://blog.chinaunix.net/uid/28835508.html">              <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar(10).php">
+              </a>
+            <p><a href="http://blog.chinaunix.net/uid/28835508.html" title="wenhualin1005">wenhuali</a></p>
+          </li>
+                    <li><a href="http://blog.chinaunix.net/uid/31423400.html">              <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar(11).php">
+              </a>
+            <p><a href="http://blog.chinaunix.net/uid/31423400.html" title="wangqingwa">wangqing</a></p>
+          </li>
+                    <li><a href="http://blog.chinaunix.net/uid/31363385.html">              <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar(12).php">
+              </a>
+            <p><a href="http://blog.chinaunix.net/uid/31363385.html" title="flyking861">flyking8</a></p>
+          </li>
+                    <li><a href="http://blog.chinaunix.net/uid/31422740.html">              <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar(13).php">
+              </a>
+            <p><a href="http://blog.chinaunix.net/uid/31422740.html" title="yuanzhoulv31415">yuanzhou</a></p>
+          </li>
+                    <li><a href="http://blog.chinaunix.net/uid/31421587.html">              <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar(14).php">
+              </a>
+            <p><a href="http://blog.chinaunix.net/uid/31421587.html" title="njxxcs">njxxcs</a></p>
+          </li>
+                    <li><a href="http://blog.chinaunix.net/uid/29287533.html">              <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar(15).php">
+              </a>
+            <p><a href="http://blog.chinaunix.net/uid/29287533.html" title="IT小青年">IT小青年</a></p>
+          </li>
+                    <li><a href="http://blog.chinaunix.net/uid/1710280.html">              <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar(16).php">
+              </a>
+            <p><a href="http://blog.chinaunix.net/uid/1710280.html" title="frosty">frosty</a></p>
+          </li>
+                    <li><a href="http://blog.chinaunix.net/uid/31413794.html">              <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar(17).php">
+              </a>
+            <p><a href="http://blog.chinaunix.net/uid/31413794.html" title="王瑞坤">王瑞坤</a></p>
+          </li>
+                    <li><a href="http://blog.chinaunix.net/uid/29713815.html">              <img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/avatar(18).php">
+              </a>
+            <p><a href="http://blog.chinaunix.net/uid/29713815.html" title="qianglei0123@163.com">qianglei</a></p>
+          </li>
+                  </ul>
+      </div>
+	           <div class="Blog_left2 Blog_left3 Blog_bg1">
+        <div class="Blog_tit1">微信关注</div>
+        <div class="">
+                <div class="" style="float:left; margin-right:5px;">
+                 <img width="90" height="90" alt="" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/IT168.jpg">
+                 </div><br>
+                <div class="" style="margin-top:10px;">
+                 <p class="">
+                         IT168企业级官微
+                </p>
+                 <p class="">
+
+                 <br><br>
+                 微信号：IT168qiye
+                </p>
+                </div>
+        </div>
+<hr size="1" style="clear:both;">
+        <div class="" style="clear:both;">
+                <div class="" style="float:left; margin-right:5px;">
+                 <img width="90" height="90" alt="" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/itpub.jpg">
+                 </div><br>
+                <div class="" style="margin-top:10px;">
+                 <p class="">
+                         系统架构师大会
+                </p>
+                 <p class="">
+
+                 <br><br>
+                 微信号：SACC2013
+                </p>
+                </div>
+        </div>
+
+</div>
+      <div class="Blog_left2 Blog_bg1">
+        <div class="Blog_tit1">订阅</div>
+        <ul class="Blog_ul5">
+          <li><a href="http://blog.chinaunix.net/blog/rss/uid/25100840.html" class="Blog_a4"></a></li>
+          <li><a href="http://www.google.com/ig/add?feedurl=http%3A%2F%2Fblog.chinaunix.net%2Fuid%2F25100840.html" class="Blog_a5"></a></li>
+        </ul>
+      </div>
+      <div class="Blog_left2 Blog_left3 Blog_bg1">
+        <div class="Blog_tit1">推荐博文</div>
+        <ul class="Blog_ul6">
+				  			<li>·<a href="http://blog.chinaunix.net/uid-16974460-id-5757336.html" title="Linux nc命令详解">Linux nc命令详解</a></li>
+		  			<li>·<a href="http://blog.chinaunix.net/uid-31424080-id-5757418.html" title="gcc及其选项详解">gcc及其选项详解</a></li>
+		  			<li>·<a href="http://blog.chinaunix.net/uid-28266791-id-5757397.html" title="MongoDB 分片的原理、搭建、应用">MongoDB 分片的原理、搭建、...</a></li>
+		  			<li>·<a href="http://blog.chinaunix.net/uid-20620288-id-5757383.html" title=" linux 下 进程和线程的区别（baidu 面试) "> linux 下 进程和线程的区别...</a></li>
+		  			<li>·<a href="http://blog.chinaunix.net/uid-31421765-id-5757358.html" title="三年0故障总结，提升代码质量的秘诀">三年0故障总结，提升代码质量...</a></li>
+		  						  			<li>·<a href="http://blog.itpub.net/7192724/viewspace-2131503" title="一个执行计划异常变更的案例 - 外传之聚簇因子(Clustering Factor)">一个执行计划异常变更的案例 ...</a></li>
+		  			<li>·<a href="http://blog.itpub.net/26736162/viewspace-2131488" title="【Linux】将Oracle安装目录从根目录下迁移到逻辑卷">【Linux】将Oracle安装目录从...</a></li>
+		  			<li>·<a href="http://blog.itpub.net/7192724/viewspace-2131423" title="一个执行计划异常变更的案例 - 外传之rolling invalidation">一个执行计划异常变更的案例 ...</a></li>
+		  			<li>·<a href="http://blog.itpub.net/23718752/viewspace-2131422" title=" 用Oracle的眼光来学习MySQL 5.7的sys（下）(r11笔记第25天) "> 用Oracle的眼光来学习MySQL ...</a></li>
+		  			<li>·<a href="http://blog.itpub.net/26015009/viewspace-2131402" title="Oracle ASM Allocation Table">Oracle ASM Allocation Table</a></li>
+		  				
+        </ul>
+      </div>
+      <div class="Blog_left2 Blog_left3 Blog_bg1">
+        <div class="Blog_tit1">热词专题</div>
+        <ul class="Blog_ul6">
+                        <li class="no_line1">·<a href="http://blog.chinaunix.net/zt/1000/linux_1000000.shtml" target="blank" title="lua编译(linux)">lua编译(linux)</a></li>
+          <!--              <li>·<a href="http://www.dataguru.cn/zhuanti/hadoop220peizhi.shtml" target='blank' title='配置hadoop2.2.0格式化namenode问题'></a></li>
+              <li>·<a href="http://www.dataguru.cn/zhuanti/hadoopshouce.shtml" target='blank' title='hadoop2.2.0安装手册'></a></li>-->
+        </ul>
+      </div>
+	  
+
+	</div>
+<script language="javascript">
+$(document).ready(function(){
+    /*目录树JS效果*/
+	$('#blogCla li > span').click(function(){
+		var cla = $(this).attr('class');
+		if(cla == 'Blog_jia1'){
+			//$('#blogCla li > span').removeClass('Blog_jian1').addClass('Blog_jia1');
+			//$('#blogCla li > .zk').css('display', 'none');
+				
+			$(this).removeClass('Blog_jia1').addClass('Blog_jian1');
+            $(this).parent().children('.zk').css('display', 'block');
+		}else{
+			$(this).removeClass('Blog_jian1').addClass('Blog_jia1');
+            $(this).parent().children('.zk').css('display', 'none');
+		}
+	});
+		
+	$('#blogdtr > p > span').click(function(){
+		var cla = $(this).attr('class');
+		if(cla == 'Blog_jia1'){
+			//$('#blogdtr > .Blog_p4 > span').removeClass('Blog_jian1').addClass('Blog_jia1');
+			//$('#blogdtr ul').css('display', 'none');
+				
+			$(this).removeClass('Blog_jia1').addClass('Blog_jian1');
+            $(this).parent().next().css('display', 'block');
+		}else{
+			$(this).removeClass('Blog_jian1').addClass('Blog_jia1');
+            $(this).parent().next().css('display', 'none');
+		}
+	});
+});
+</script>    <!-- 右 -->
+    <div class="Blog_right1">
+      <div class="Blog_right1_1 Blog_right1_11">
+        <div class="Blog_right1_2 ">
+			<!--推荐博文-->
+          <div class="Blog_tit4 Blog_tit5">
+                        <b class="Blog_b1"></b>
+            <a href="http://blog.chinaunix.net/uid-25100840-id-302308.html">linux man使用方法 和centos安装中文man包</a>
+            <em>2011-05-10 11:52:42</em>
+          </div>
+          <div class="Blog_con2">
+            <div class="Blog_con3">
+              <p>分类： <span>LINUX</span></p>
+			                <p></p>
+            </div>
+           <div class="Blog_wz1" style="word-wrap: break-word;">
+						<div>
+<font color="#008000" size="3">这两天学习<linux设备驱动程序开发详解>中的异步通知，其中有一个fcntl()函数，就是找不到，很气愤，在网上搜，也没有好的解决办法，</linux设备驱动程序开发详解></font>
+<p><font color="#008000">最终，一个网友给我做了解答：是因为fcntl()是标准库，在内核源码中是找不到的，只能在系统中查找到，你可以用这个命令来实现：man fcntl</font></p>
+<p><font color="#008000">所以，我才重新看看man的用法，发现确实有这么多的用处，咳，整理如下：</font></p>
+<font size="3">什么是man手册</font>
+<p><font size="3">首先，man是manual的简称，中文说法可以是手册。</font></p>
+<p></p>
+<p><font color="#800080" size="3">在Linux世界中，许多新手请教某条命令的用法时， 好多不耐心的老手通常会用一条命令来回答这位无助的新手，而这条命令通常<br>就是man开头。无助的新手敲上这条命令一看究竟，在终端上顿时显示出来了一屏幕的英文，<br>老手的意思是，自己看看手册吗，可是看手册也是有学问的，无助的新手甚<br>至不知道怎么退出这条命令呢。下面我们就来讲解一下看man手册的学问</font></p>
+<p><font color="#008080" size="5">一。介绍man的使用方法</font></p>
+<p>1.手册页(Man Pages)<br>对于Linux初学者,不能将手册页当教程,因为它只是简明的参考资料.在你需要了解某一命令的功能以及相关的参数意义时可以用到它.</p>
+<p style="TEXT-INDENT: 21pt; MARGIN: 0cm 0cm 0pt; mso-char-indent-count: 2.0"><span lang="EN-US"><font face="Times New Roman">Linux man</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">中的</span><span lang="EN-US"><font face="Times New Roman">man</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">就是</span><span lang="EN-US"><font face="Times New Roman">manual</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">的缩写，用来查看系统中自带的各种参考手册，但是手册页分为好几个部分，如下所示<font color="#008000">：（注：手册页，很重要的，一般我们也都没有用上，不过有时候，你就会发现你用上了</font>）</span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">1<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>Executable programs or shell commands</font></span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">2<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>System calls (functions provided by the kernel)</font></span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">3<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>Library calls (functions within program libraries)</font></span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">4<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>Special files (usually found in /dev)</font></span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">5<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>File formats and conventions eg /etc/passwd</font></span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">6<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>Games</font></span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">7<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>Miscellaneous (including macro packages and conventions), e.g. man(7), groff(7)</font></span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">8<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>System administration commands (usually only for root)</font></span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">9<span style="mso-spacerun: yes">&nbsp;&nbsp; </span>Kernel routines [Non standard]</font></span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">----------------------</font></span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">解释一下</span><span lang="EN-US"><font face="Times New Roman">, </font></span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">1</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">是普通的命令</span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">2</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">是系统调用</span><span lang="EN-US"><font face="Times New Roman">,</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">如</span><span lang="EN-US"><font face="Times New Roman">open,write</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">之类的</span><span lang="EN-US"><font face="Times New Roman">(</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">通过这个，至少可以很方便的查到调用这个函数，需要加什么头文件</span><span lang="EN-US"><font face="Times New Roman">)</font></span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">3</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">是库函数</span><span lang="EN-US"><font face="Times New Roman">,</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">如</span><span lang="EN-US"><font face="Times New Roman">printf,fread</font></span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">4</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">是特殊文件</span><span lang="EN-US"><font face="Times New Roman">,</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">也就是</span><span lang="EN-US"><font face="Times New Roman">/dev</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">下的各种设备文件</span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">5</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">是指文件的格式</span><span lang="EN-US"><font face="Times New Roman">,</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">比如</span><span lang="EN-US"><font face="Times New Roman">passwd, </font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">就会说明这个文件中各个字段的含义</span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">6</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">是给游戏留的</span><span lang="EN-US"><font face="Times New Roman">,</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">由各个游戏自己定义</span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">7</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">是附件还有一些变量</span><span lang="EN-US"><font face="Times New Roman">,</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">比如向</span><span lang="EN-US"><font face="Times New Roman">environ</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">这种全局变量在这里就有说明</span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">8</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">是系统管理用的命令</span><span lang="EN-US"><font face="Times New Roman">,</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">这些命令只能由</span><span lang="EN-US"><font face="Times New Roman">root</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">使用</span><span lang="EN-US"><font face="Times New Roman">,</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">如</span><span lang="EN-US"><font face="Times New Roman">ifconfig</font></span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">------------------------------------</font></span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">n </font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">新文档，</span><font face="Times New Roman"> </font><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">可能要移到更适合的领域。</span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">o </font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">老文档，</span><font face="Times New Roman"> </font><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">可能会在一段期限内保留。</span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">l </font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">本地文档，</span><font face="Times New Roman"> </font><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">与本特定系统有关的。</span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">------------------------------------</font></span></p>
+<p style="TEXT-INDENT: 21pt; MARGIN: 0cm 0cm 0pt; mso-char-indent-count: 2.0"><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">在</span><span lang="EN-US"><font face="Times New Roman">shell</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">中输入</span><span lang="EN-US"><font face="Times New Roman"> man+</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">数字</span><span lang="EN-US"><font face="Times New Roman">+</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">命令</span><span lang="EN-US"><font face="Times New Roman">/</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">函数</span><font face="Times New Roman"> </font><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">即可以查到相关的命令和函数。若不加数字，那</span><span lang="EN-US"><font face="Times New Roman">Linux man</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">命令默认从数字较小的手册中寻找相关命令和函数。</span></p>
+<p style="TEXT-INDENT: 21pt; MARGIN: 0cm 0cm 0pt; mso-char-indent-count: 2.0"><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">例如：我们输入</span><span lang="EN-US"><font face="Times New Roman"> man ls</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">，它会在最左上角显示“</span><span lang="EN-US"><font face="Times New Roman">LS</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">（</span><span lang="EN-US"><font face="Times New Roman">1</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">）”，在这里，“</span><span lang="EN-US"><font face="Times New Roman">LS</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">”表示手册名称，而“（</span><span lang="EN-US"><font face="Times New Roman">1</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">）”表示该手册位于第一节章，同样，我们输入“</span><span lang="EN-US"><font face="Times New Roman">man ifconfig</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">”它会在最左上角显示“</span><span lang="EN-US"><font face="Times New Roman">IFCONFIG</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">（</span><span lang="EN-US"><font face="Times New Roman">8</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">）”。也可以这样输入命令：“</span><span lang="EN-US"><font face="Times New Roman">man [</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">章节号</span><span lang="EN-US"><font face="Times New Roman">] </font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">手册名称”。</span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">man</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">是按照手册的章节号的顺序进行搜索的，比如：</span><span lang="EN-US"><font face="Times New Roman">man sleep</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">，只会显示</span><span lang="EN-US"><font face="Times New Roman">sleep</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">命令的手册</span><span lang="EN-US"><font face="Times New Roman">,</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">如果想查看库函数</span><span lang="EN-US"><font face="Times New Roman">sleep</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">，就要输入：</span><span lang="EN-US"><font face="Times New Roman">man 3 sleep</font></span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">------------------------------------</font></span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">man -f command </font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">显示</span><span lang="EN-US"><font face="Times New Roman">man</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">程序的所有手册</span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">例如：</span><span lang="EN-US"><font face="Times New Roman">man -f kill</font></span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">man n command </font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">显示指定章节的手册</span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">man -a command </font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">显示所有章节的手册</span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">man -w command </font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">显示手册所在的路径</span></p>
+<p style="MARGIN: 0cm 0cm 0pt"><span lang="EN-US"><font face="Times New Roman">man -aw command </font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">结合</span><span lang="EN-US"><font face="Times New Roman">-a</font></span><span style="FONT-FAMILY: 宋体; mso-ascii-font-family: &#39;Times New Roman&#39;; mso-hansi-font-family: &#39;Times New Roman&#39;">参数显示所有章节的手册路径</span></p>
+<p><br>手册页一般由以下几部分组成:<br><span style="COLOR: #ff6600">NAME 命令名称&nbsp;&nbsp; <span style="COLOR: #0000ff">SYNOPSIS 命令的语法格式</span>&nbsp;&nbsp; <span style="COLOR: #00ffff">DESCRIPTION 对命令功能的描述&nbsp;&nbsp;</span><br>OPEIONS 说明该命令所提供的选项和参数&nbsp;&nbsp;&nbsp; <span style="COLOR: #333300">EXAMPLES 对命令如何使用给出的例子 </span>FILES 该手册页的默认位置&nbsp;<br>AUTHOR 该软件的作者&nbsp;&nbsp; <span style="COLOR: #666699">REPORTING BUGS 告诉用户将他们发现的BUGS通过邮件发送给开发者&nbsp;</span>&nbsp;&nbsp; COPYRIGHT 版权信息 <br>SEEALSO 与该程序有关的其他程序</span></p>
+<p><span style="COLOR: #ff6600"><font color="#000000">如：若是以mkdir为例的话，第一行中出现的</font><font color="#000000"><font size="3">MKDIR(1)表示该命令属于Section 1，为用户命令，类似的man<br>apt-get会看到APT-GET(8)，表示apt-get命令为系统管理工具</font>&nbsp;</font></span></p>
+<p>man程序是基于less命令的因此less程序的操作命令都可以在man pages中使用.</p>
+<p>&nbsp;</p>
+<p><span style="COLOR: #ff0000">在手册页的最下面一行</span>,<span style="COLOR: #ff6600">可以输入少量的命令(这些命令很重要，其实和Vi下面编辑程序的快捷键很一致的，哈哈 学会举一反三哦）</span>信息的浏览和定位.见下表:<br>-------------------------------------------<br>按键&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 描述<br>-------------------------------------------<br>j&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;------》&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 向下滚动一行&nbsp; <br>k&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;------》&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 向上滚动一行<br><br>&nbsp;g&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;------》&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 跳转到手册的第一行<br>&nbsp;G&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;------》&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 跳转到手册的最后一行<br><br>&nbsp;/String + Enter&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;------》&nbsp; 在手册页中查找第一个Sting<br>&nbsp;n&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;------》&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 同方向查找的下一次匹配,可多次使用<br>&nbsp;N&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;------》&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;反方向查找的下一次匹配,可多次使用<br>&nbsp;h&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;------》&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;获得手册页的帮助<br>也可以使用如：ctrl+f，ctrl+b来翻一整屏</p>
+<p><br>q------》退出手册页</p>
+<p>练习，利用可以用man more 和man less 看看他们之间的区别<br>------------------------------------------<br><span style="COLOR: #ff0000"><span style="FONT-SIZE: small"><font size="2">下面简单说明下more命令和less功能的区别：</font></span></span><span style="FONT-SIZE: small"><br><span style="COLOR: #ff6600"><span style="WIDOWS: 2; TEXT-TRANSFORM: none; TEXT-INDENT: 0px; BORDER-COLLAPSE: separate; FONT: medium Simsun; WHITE-SPACE: normal; ORPHANS: 2; LETTER-SPACING: normal; WORD-SPACING: 0px; webkit-border-horizontal-spacing: 0px; webkit-border-vertical-spacing: 0px; webkit-text-decorations-in-effect: none; webkit-text-size-adjust: auto; webkit-text-stroke-width: 0px" class="Apple-style-span"><span style="LINE-HEIGHT: 24px; FONT-FAMILY: arial, 宋体, sans-serif" class="Apple-style-span">more命令功能：让画面在显示满一页时暂停，此时可按空格健继续显示下一个画面，或按Q键停止显示。<br>less命令功能：less命令的用法与more命令类似，也可以用来浏览超过一页的文件。所不同的是less命令除了可以按空格键向下显示文件外，还可以利用上下键来卷动文件。当要结束浏览时，只要在less命令的提示符“: ”下按Q键即可。<br>它们功能上相近，只是从浏览习惯和显示方式上有所不同</span></span></span></span></p>
+<p><span style="FONT-SIZE: small"><span style="COLOR: #ff6600"><span style="WIDOWS: 2; TEXT-TRANSFORM: none; TEXT-INDENT: 0px; BORDER-COLLAPSE: separate; FONT: medium Simsun; WHITE-SPACE: normal; ORPHANS: 2; LETTER-SPACING: normal; WORD-SPACING: 0px; webkit-border-horizontal-spacing: 0px; webkit-border-vertical-spacing: 0px; webkit-text-decorations-in-effect: none; webkit-text-size-adjust: auto; webkit-text-stroke-width: 0px" class="Apple-style-span"><span style="LINE-HEIGHT: 24px; FONT-FAMILY: arial, 宋体, sans-serif" class="Apple-style-span"></span></span></span></span>&nbsp;</p><span style="FONT-SIZE: small"><span style="COLOR: #ff6600"><span style="WIDOWS: 2; TEXT-TRANSFORM: none; TEXT-INDENT: 0px; BORDER-COLLAPSE: separate; FONT: medium Simsun; WHITE-SPACE: normal; ORPHANS: 2; LETTER-SPACING: normal; WORD-SPACING: 0px; webkit-border-horizontal-spacing: 0px; webkit-border-vertical-spacing: 0px; webkit-text-decorations-in-effect: none; webkit-text-size-adjust: auto; webkit-text-stroke-width: 0px" class="Apple-style-span"><span style="LINE-HEIGHT: 24px; FONT-FAMILY: arial, 宋体, sans-serif" class="Apple-style-span"></span></span></span></span></div>
+<p><span style="FONT-SIZE: small"><span style="COLOR: #ff6600"><span style="WIDOWS: 2; TEXT-TRANSFORM: none; TEXT-INDENT: 0px; BORDER-COLLAPSE: separate; FONT: medium Simsun; WHITE-SPACE: normal; ORPHANS: 2; LETTER-SPACING: normal; WORD-SPACING: 0px; webkit-border-horizontal-spacing: 0px; webkit-border-vertical-spacing: 0px; webkit-text-decorations-in-effect: none; webkit-text-size-adjust: auto; webkit-text-stroke-width: 0px" class="Apple-style-span"><span style="LINE-HEIGHT: 24px; FONT-FAMILY: arial, 宋体, sans-serif" class="Apple-style-span"></span></span></span></span>&nbsp;</p>
+<p><span style="FONT-SIZE: small"><span style="COLOR: #ff6600"><span style="WIDOWS: 2; TEXT-TRANSFORM: none; TEXT-INDENT: 0px; BORDER-COLLAPSE: separate; FONT: medium Simsun; WHITE-SPACE: normal; ORPHANS: 2; LETTER-SPACING: normal; WORD-SPACING: 0px; webkit-border-horizontal-spacing: 0px; webkit-border-vertical-spacing: 0px; webkit-text-decorations-in-effect: none; webkit-text-size-adjust: auto; webkit-text-stroke-width: 0px" class="Apple-style-span"><span style="LINE-HEIGHT: 24px; FONT-FAMILY: arial, 宋体, sans-serif" class="Apple-style-span"><font color="#008000" size="5">二.如何安装中文的man包</font></span></span></span></span></p><span style="FONT-SIZE: small"><span style="COLOR: #ff6600"><span style="WIDOWS: 2; TEXT-TRANSFORM: none; TEXT-INDENT: 0px; BORDER-COLLAPSE: separate; FONT: medium Simsun; WHITE-SPACE: normal; ORPHANS: 2; LETTER-SPACING: normal; WORD-SPACING: 0px; webkit-border-horizontal-spacing: 0px; webkit-border-vertical-spacing: 0px; webkit-text-decorations-in-effect: none; webkit-text-size-adjust: auto; webkit-text-stroke-width: 0px" class="Apple-style-span"><span style="LINE-HEIGHT: 24px; FONT-FAMILY: arial, 宋体, sans-serif" class="Apple-style-span">
+<p><font color="#000000">中文man对英文不是很好的朋友来说,可以起到一点帮助作用。不过要学好linux,就不能太依赖这个东东,毕竟学好英语才是王道。</font></p>
+<p><font color="#000000">环境:centos 5.3，内核：2.6.18-194.el5 <font color="#008000">（注，我的电脑也是这个，呵呵</font>）</font></p>
+<p><font color="#000000">官方网站:http://cmpp.linuxforum.net</font></p>
+<p><font color="#000000">这个是源码的：</font><a href="http://manpages-zh.googlecode.com/files/manpages-zh-1.5.1.tar.gz" target="_blank"><font color="#000000">http://manpages-zh.googlecode.com/files/manpages-zh-1.5.1.tar.gz</font></a></p>
+<p><font color="#000000">现在下载安装包:</font></p>
+<p><font color="#000000">wget </font><a href="http://manpages-zh.googlecode.com/files/manpages-zh-1.5.1.tar.gz" target="_blank"><font color="#000000">http://manpages-zh.googlecode.com/files/manpages-zh-1.5.1.tar.gz</font></a></p>
+<p><font color="#000000">操作步骤如下:</font></p>
+<p><font color="#000000">#tar zxvf manpages-zh-1.5.1.tar.gz&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></p>
+<p><font color="#008000">（注：我使用的加上了解压目录的命令 即又加上了：-C /tmp&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;）</font></p>
+<p><font color="#000000">#cd manpages-zh-1.5.1</font></p>
+<p><font color="#000000">#./configure --prefix=/usr/local/zhman --disable-zhtw&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </font></p>
+<p><font color="#000000">#make</font></p>
+<p><font color="#000000">#make install</font></p>
+<p><font color="#000000">以上安装完成.请做如下操作:</font></p>
+<p><font color="#000000">#cd ~</font></p>
+<p><font color="#000000">#vi .bashrc</font></p>
+<p><font color="#000000">在.bashrc中增加:<br>alias cman='man -M /usr/local/zhman/share/man/zh_CN'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</font></p>
+<p><font color="#000000">#source .bashrc&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //在命令行执行，为了使刚刚添加的alias生效</font></p>
+<p><font color="#000000">OK!现在就可以使用中文版的man了，</font><font color="#f00000">在这里是cman，此时，你发现你可以用自带的man，还有安装有中文的cman了，是不是很爽呀。。。</font></p>
+<p><font color="#000000">如:</font></p>
+<p><font color="#000000">cman cd&nbsp;&nbsp;</font></p>
+<p><font color="#000000">cman ls</font></p></span></span></span></span>
+<p><font color="#000000"><br></font></p>                                   </div>
+            <!-- <div class="Blog_con3_1">管理员在2009年8月13日编辑了该文章文章。</div> -->
+            <div class="Blog_con2_1 Blog_con3_2">
+              <div>
+			  <!--<img src="/image/default/tu_8.png">-->
+			  <!-- JiaThis Button BEGIN -->
+				<div class="bdsharebuttonbox bdshare-button-style0-16" data-bd-bind="1482923903007"><a class="bds_more" href="http://blog.chinaunix.net/uid-25100840-id-302308.html#" data-cmd="more"></a><a class="bds_qzone" title="分享到QQ空间" href="http://blog.chinaunix.net/uid-25100840-id-302308.html#" data-cmd="qzone"></a><a class="bds_tsina" title="分享到新浪微博" href="http://blog.chinaunix.net/uid-25100840-id-302308.html#" data-cmd="tsina"></a><a class="bds_tqq" title="分享到腾讯微博" href="http://blog.chinaunix.net/uid-25100840-id-302308.html#" data-cmd="tqq"></a><a class="bds_renren" title="分享到人人网" href="http://blog.chinaunix.net/uid-25100840-id-302308.html#" data-cmd="renren"></a><a class="bds_weixin" title="分享到微信" href="http://blog.chinaunix.net/uid-25100840-id-302308.html#" data-cmd="weixin"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+				<!-- JiaThis Button END -->
+			  </div>
+              阅读(18310) | 评论(2) | 转发(5) |
+			                <div class="HT_line3"></div>
+            </div>
+            <div class="Blog_con3_3">
+              <div><span id="digg_num">0</span><a href="javascript:void(0)" id="digg" bid="302308" url="/blog/digg.html"></a></div>
+              <p>上一篇：<a href="http://blog.chinaunix.net/uid-25100840-id-300830.html">轮询控制 应用层poll系统调用内部实现细节</a></p>
+              <p>下一篇：<a href="http://blog.chinaunix.net/uid-25100840-id-303111.html">对STDOUT_FILENO的理解</a></p>
+            </div>
+          </div>
+          <div class="Blog_con3_4">
+            <div class="Blog_tit2 Blog_tit6">相关热门文章</div>
+			            <ul class="Blog_ul7">
+						  <li><span class="Blog_span7"></span><a href="http://blog.chinaunix.net/uid-10900999-id-2920737.html" title="linux 常见服务端口" target="blank">linux 常见服务端口</a></li>
+						  <li><span class="Blog_span7"></span><a href="http://blog.chinaunix.net/uid-20457694-id-1944680.html" title="xmanager 2.0 for linux配置" target="blank">xmanager 2.0 for linux配置</a></li>
+						  <li><span class="Blog_span7"></span><a href="http://blog.chinaunix.net/uid-21025382-id-168762.html" title="【ROOTFS搭建】busybox的httpd使用CGI脚本(BusyBox httpd CGI scripts)" target="blank">【ROOTFS搭建】busybox的httpd...</a></li>
+						  <li><span class="Blog_span7"></span><a href="http://blog.chinaunix.net/uid-26824563-id-4591418.html" title="openwrt中luci学习笔记" target="blank">openwrt中luci学习笔记</a></li>
+						  <li><span class="Blog_span7"></span><a href="http://blog.chinaunix.net/uid-20378509-id-1956694.html" title="什么是shell" target="blank">什么是shell</a></li>
+			            </ul>
+            <ul class="Blog_ul7">
+						  <li><span class="Blog_span6"></span><a href="http://ask.chinaunix.net/question/785970" title="linux dhcp  peizhi roc" target="blank">linux dhcp  peizhi roc</a></li>
+						  <li><span class="Blog_span6"></span><a href="http://ask.chinaunix.net/question/785964" title="关于Unix文件的软链接" target="blank">关于Unix文件的软链接</a></li>
+						  <li><span class="Blog_span6"></span><a href="http://ask.chinaunix.net/question/785935" title="求教这个命令什么意思，我是新手，刚刚学习solaris" target="blank">求教这个命令什么意思，我是新...</a></li>
+						  <li><span class="Blog_span6"></span><a href="http://ask.chinaunix.net/question/785919" title="sed -e &quot;/grep/d&quot; 是什么意思？谢谢" target="blank">sed -e "/grep/d" 是什么意思...</a></li>
+						  <li><span class="Blog_span6"></span><a href="http://ask.chinaunix.net/question/785702" title="谁能够帮我解决LINUX  2.6  10版本驱动" target="blank">谁能够帮我解决LINUX  2.6  10...</a></li>
+			            </ul>
+            <div class="clear"></div>
+          </div>
+		  <!--
+          <div class="Blog_con3_4 Blog_con3_5">
+            <div class="Blog_tit2 Blog_tit7">热门推荐</div>
+            <ul>
+			              <li><a href="" title="" target='blank' ></a></li>
+			            </ul>
+          </div>
+		  -->
+        </div>
+      </div>
+      <div class="Blog_right1_7" id="replyList">
+		<div class="Blog_tit3">给主人留下些什么吧！~~</div>
+														<!--不包含引用-->
+					<div class="Blog_right1_8">
+					  <div class="Blog_right_img1"><a href="http://blog.chinaunix.net/uid/28625743.html"><img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/noavatar_small.gif" onerror="this.onerror=null;this.src=&#39;http://passport.ixpub.net/images/noavatar_small.gif&#39;"></a></div>
+					  <div class="Blog_right_font1">
+                                              						<p class="Blog_p5"><span><a href="http://blog.chinaunix.net/uid/28625743.html"><span>yonghengxinyuan</span></a></span>2014-03-07 23:36:31</p>
+                                              						<p class="Blog_p6">特意注册了个帐号来&nbsp;顶一下，这个太好了，对初学者来说参考一下太需要了，赞一个</p>                                     
+						<div class="div1"><a href="javascript:void(0);" class="Blog_a10" toid="28625743" bid="302308" cid="608994" tname="yonghengxinyuan">回复</a> | <a href="javascript:;" onclick="linkto();showErrorMsg(&#39;操作失败,您需要先登录!&#39;, &#39;消息提示&#39;, &#39;/site/login.html&#39;);" class="box_report">举报</a></div>
+						<!-- 评论占位框-->
+						<div class="z_move_comment" style="display:none">
+						</div>
+					  </div>
+					  <div class="Blog_line1"></div>
+					</div>
+																<!--不包含引用-->
+					<div class="Blog_right1_8">
+					  <div class="Blog_right_img1"><a href="http://blog.chinaunix.net/uid/28743574.html"><img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/noavatar_small.gif" onerror="this.onerror=null;this.src=&#39;http://passport.ixpub.net/images/noavatar_small.gif&#39;"></a></div>
+					  <div class="Blog_right_font1">
+                                              						<p class="Blog_p5"><span><a href="http://blog.chinaunix.net/uid/28743574.html"><span>Given_GG</span></a></span>2013-03-22 11:03:58</p>
+                                              						<p class="Blog_p6">谢谢分享！菜鸟刚上路，看到满天的英文就头晕...<img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/16.gif"></p>                                     
+						<div class="div1"><a href="javascript:void(0);" class="Blog_a10" toid="28743574" bid="302308" cid="587417" tname="Given_GG">回复</a> | <a href="javascript:;" onclick="linkto();showErrorMsg(&#39;操作失败,您需要先登录!&#39;, &#39;消息提示&#39;, &#39;/site/login.html&#39;);" class="box_report">举报</a></div>
+						<!-- 评论占位框-->
+						<div class="z_move_comment" style="display:none">
+						</div>
+					  </div>
+					  <div class="Blog_line1"></div>
+					</div>
+											<!-- 评论分页-->
+		<div class="Blog_right1_6 Blog_right1_12">
+        		</div>
+		<!-- 评论分页-->
+        <div class="Blog_right1_10">
+          <div class="Blog_tit3">评论热议</div>
+		  		 <!--未登录 -->
+        <div class="Blog_right1_8">
+          <div class="nologin_con1"> 请登录后评论。
+            <p><a href="http://blog.chinaunix.net/site/login.html" onclick="linkto()">登录</a> <a href="http://sso.chinaunix.net/Register?return_url=http%3A%2F%2Ft.cublog.com%2F">注册</a></p>
+          </div>
+        </div>
+        <br>
+        <div>
+            <div style="float:left;margin-left:70px;margin-right:10px;">
+             <script type="text/javascript">
+            var cpro_id = "u1625692";
+            </script>
+            <script src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/c.js" type="text/javascript"></script><div id="BAIDU_SSP__wrapper_u1625692_0"><iframe id="iframeu1625692_0" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/ycsm.html" width="468" height="60" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0; vertical-align:bottom;margin:0;" allowtransparency="true"></iframe></div>
+            </div>
+            <div style="margin-left:10px;">
+            <script type="text/javascript">
+            var cpro_id = "u1625694";
+            </script>
+            <script src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/c.js" type="text/javascript"></script><div id="BAIDU_SSP__wrapper_u1625694_0"><iframe id="iframeu1625694_0" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/ycsm(2).html" width="468" height="60" align="center,center" vspace="0" hspace="0" marginwidth="0" marginheight="0" scrolling="no" frameborder="0" style="border:0; vertical-align:bottom;margin:0;" allowtransparency="true"></iframe></div>
+            </div>
+        </div>
+		
+        </div>
+      </div>
+    </div>
+  </div>
+  <input type="hidden" id="report_url" value="/blog/ViewReport.html">
+
+<script type="text/javascript">
+  	//测试字符串的长度 一个汉字算2个字节
+	function mb_strlen(str)
+	{
+		var len=str.length;
+		var totalCount=0;
+		for(var i=0;i<len;i++)
+		{
+			var c = str.charCodeAt(i);
+			if ((c >= 0x0001 && c <= 0x007e) || (0xff60<=c && c<=0xff9f)) {
+				totalCount++;
+			}else{
+				totalCount+=2;
+			}
+		}
+		return totalCount;
+	}
+	/*
+	var Util = {};
+	Util.calWbText = function (text, max){
+		if(max === undefined)
+			max = 500;
+		var cLen=0;
+		var matcher = text.match(/[^\x00-\xff]/g),
+			wlen  = (matcher && matcher.length) || 0;
+		//匹配url链接正则 http://***
+		var pattern = /http:\/\/([\w-]+\.)+[\w-]+(\/*[\w-\.\/\?%&=][^\s^\u4e00-\u9fa5]*)?/gi;
+		//匹配的数据存入数组
+		var arrPt = new Array();
+		var i = 0;
+		while((result = pattern.exec(text)) != null){
+			arrPt[i] = result[0];
+			i++;
+		}
+		//替换掉原文本中的链接
+		for(var j = 0;j<arrPt.length;j++){
+			text = text.replace(arrPt[j],"");
+		}
+		//减掉链接所占的长度
+		return Math.floor((max*2 - text.length - wlen)/2 - 12*i);
+	};
+	*/
+	var allowComment = '0';
+	
+	//举报弹出层
+	function showJuBao(url, cid){
+		
+			$.cover(false);
+			asyncbox.open({
+				id  : 'report_thickbox',
+				url : url,
+				title : '举报违规',
+				width : 378,
+				height : 240,
+				scroll : 'no',
+				data : {
+					'cid'	 : cid,
+					'idtype' : 2 ,
+                                        'blogurl' : window.location.href
+				},
+				callback : function(action){
+					if(action == 'close'){
+						$.cover(false);
+					}
+				}
+			});
+	}
+
+	$(function(){
+
+		//创建管理员删除的弹出层
+		$('#admin_article_del').click(function(){
+			$.cover(false);
+			asyncbox.open({
+				id : 'class_thickbox',
+				html : '<div class="HT_layer3_1"><ul><li class="HT_li1">操作原因：<select class="HT_sel7" id="del_type" name="del_type"><option value="广告文章">广告文章</option><option value="违规内容">违规内容</option><option value="标题不明">标题不明</option><option value="文不对题">文不对题</option></select></li><li class="HT_li1" ><input class="HT_btn4" id="admin_delete"  type="button" /></li></ul></div>',
+				title : '选择类型',
+				width : 300,
+				height : 150,
+				scroll : 'no',
+				callback : function(action){
+					if(action == 'close'){
+						$.cover(false);
+					}
+				}
+			});
+		});
+		$('#admin_delete').live('click' , function(){
+			///blog/logicdel/id/3480184/url/%252Fblog%252Findex.html.html
+			var type = $('#del_type').val();
+			var url = '/blog/logicdel/id/302308/url/%252Fuid%252F25100840.html.html';
+			window.location.href= url + '?type=' + type;
+		});
+
+
+		//顶  js中暂未添加&过滤 
+		$('#digg').live('click' , function(){
+
+			if(isOnLine == '' )
+			{
+				//showErrorMsg('登录之后才能进行此操作' , '消息提示');
+				showErrorMsg('操作失败,您需要先登录!', '消息提示', '/site/login.html');
+				return false;
+			}
+
+			var bid = $('#digg').attr('bid');
+			var url = $('#digg').attr('url');
+
+			var digg_str = $.cookie('digg_id');
+			if(digg_str != null)
+			{
+				var arr= new Array(); //定义一数组
+
+				arr = digg_str.split(","); //字符分割     
+				for( i=0 ; i < arr.length ; i++ )   
+				{   
+					if(bid == arr[i])
+					{
+						showErrorMsg('已经赞过该文章', '消息提示'); 
+						return false;
+					}
+				} 
+			}
+			$.ajax({
+				type:"POST",
+				url:url,	
+				data: {
+					'bid' : bid 
+				},
+				dataType: 'json',
+				success:function(msg){
+					if(msg.error == 0)
+					{
+						var num = parseInt($('#digg_num').html(),10);
+						num += 1;
+						$('#digg_num').html(num);
+						$('#digg').die();
+
+						if(digg_str == null)
+						{
+							$.cookie('digg_id', bid, {expires: 30 , path: '/'});
+						}
+						else
+						{
+							$.cookie('digg_id', digg_str + ',' + bid, {expires: 30 , path: '/'});
+						}
+						showSucceedMsg('谢谢' , '消息提示');
+					}
+					else if(msg.error == 1)
+					{
+						//showErrorMsg(msg.error_content , '消息提示'); 
+						showErrorMsg('操作失败,您需要先登录!', '消息提示', '/site/login.html');
+					}
+					else if(msg.error == 2)
+					{
+						showErrorMsg(msg.error_content , '消息提示'); 
+					}
+				}
+			});
+		});
+		//举报弹出层
+		/*$('.box_report').live('click' , function(){
+			if(isOnLine == '' )
+			{
+				//showErrorMsg('登录之后才能进行此操作' , '消息提示');
+				showErrorMsg('操作失败,您需要先登录!', '消息提示', '/site/login.html');
+				return false;
+			}
+			var url = $('#report_url').val();
+			var cid = $(this).attr('cid');
+			$.cover(false);
+			asyncbox.open({
+				id  : 'report_thickbox',
+				url : url,
+				title : '举报违规',
+				width : 378,
+				height : 240,
+				scroll : 'no',
+				data : {
+					'cid'	 : cid,
+					'idtype' : 2 
+				},
+				callback : function(action){
+					if(action == 'close'){
+						$.cover(false);
+					}
+				}
+			});
+		});*/
+
+
+		//评论相关代码
+		
+		//点击回复显示评论框
+		$('.Blog_a10').live('click' , function(){
+			if(isOnLine == '' )
+			{
+				//showErrorMsg('登录之后才能进行此操作' , '消息提示');
+				showErrorMsg('操作失败,您需要先登录!', '消息提示', '/site/login.html');
+				return false;
+			}
+
+			if(allowComment == 1)
+			{
+				showErrorMsg('该博文不允许评论' , '消息提示'); 
+				return false;
+			}
+			var tid = $(this).attr('toid');//留言作者id
+			var bid = $(this).attr('bid');//blogid
+			var cid = $(this).attr('cid');//留言id
+			var tname = $(this).attr('tname');
+                         			var tpl  = '<div class="Blog_right1_9">';
+				tpl +=	 '<div class="div2">';
+				tpl +=     '<textarea name="" cols="" rows="" class="Blog_ar1_1" id="rmsg">文明上网，理性发言...</textarea>';
+				tpl +=	 '</div>';
+				tpl +=   '<div class="div3">';
+				tpl +=		'<div class="div3_2"><a href="javascript:void(0);" class="Blog_a11" id="quota_sbumit" url="/Comment/PostComment.html" tid="'+tid+'" bid="'+bid+'" cid="'+cid+'" tname="'+tname+'" ></a><a href="javascript:void(0)" id="qx_comment" class="Blog_a12"></a></div>';
+				tpl +=		'<div class="div3_1"><a href="javascript:void(0);" id="mface"><span></span>表情</a></div>';
+				tpl +=		'<div class="clear"></div>';
+				tpl +=	 '</div>';
+				tpl +=  '</div>';
+                                 			$('.z_move_comment').html('');
+			$(this).parents('.Blog_right1_8').find('.z_move_comment').html(tpl).show();
+		});
+		//引用的评论提交
+		$('#quota_sbumit').live('click' , function(){
+
+			if(isOnLine == '' )
+			{
+				//showErrorMsg('登录之后才能进行此操作' , '消息提示');
+				showErrorMsg('操作失败,您需要先登录!', '消息提示', '/site/login.html');
+				return false;
+			}
+
+			var bid   = $(this).attr('bid');
+			var tid   = $(this).attr('tid');//被引用人的id
+			var qid   = $(this).attr('cid');//引用的id
+			var url = $(this).attr('url');
+			var text = $('#rmsg').val();
+			var tname = $(this).attr('tname');
+			if(text == '' || text=='文明上网，理性发言...')
+			{
+				showErrorMsg('评论内容不能为空！' , '消息提示'); 
+				return false;
+			}
+			else
+			{
+				if(mb_strlen(text) > 1000){
+					showErrorMsg('评论内容不能超过500个汉字' , '消息提示'); 
+					return false;
+				}
+			}
+		    $.ajax({
+		        type: "post",
+			    url: url ,
+			    data: {'bid': bid , 'to' : tid , 'qid' : qid , 'text': text , 'tname' : tname },
+				dataType: 'json',
+			    success: function(data){
+				    if(data.code == 1){
+						var tpl =  '<div class="Blog_right1_8">';
+							tpl+=     '<div class="Blog_right_img1"><a href="' +data.info.url+ '" >' + data.info.header + '</a></div>';
+							tpl+=     '<div class="Blog_right_font1">';
+							tpl+=         '<p class="Blog_p5"><span><a href="' +data.info.url+ '" >' + data.info.username + '</a></span>' + data.info.dateline + '</p>';
+							tpl+=         '<p class="Blog_p7"><a href="' + data.info.quota.url + '">' + data.info.quota.username + '</a>：'+ data.info.quota.content + '</p>';
+							tpl+=         '<p class="Blog_p8">' + data.info.content + '</p><span class="span_text1"><a href="javascript:void(0);" class="Blog_a10" toid=' + data.info.fuid + ' bid=' + data.info.bid + ' cid=' + data.info.cid + '  tname = ' + data.info.username + ' >回复</a> | 　<a class="comment_del_mark" style="cursor:pointer" url="' + data.info.delurl + '" >删除</a>　| 　<a href="javascript:showJuBao(\'/blog/ViewReport.html\','+data.info.cid+')" class="box_report" cid="' + data.info.cid + '" >举报</a></span></div>';
+							tpl+=         '<div class="z_move_comment" style="display:none"></div>';
+							tpl+=	      '<div class="Blog_line1"></div></div>';
+							$('#replyList .Blog_right1_8:first').before(tpl);
+							$('.z_move_comment').html('').hide();
+				    }
+					else if(data.code == -1){
+						//showErrorMsg(data.info , '消息提示'); 
+						showErrorMsg('操作失败,您需要先登录!', '消息提示', '/site/login.html');
+			        }
+                },
+			    error: function(){//请求出错处理
+                        
+                }
+			});
+		});
+		//底部发表评论
+		$('#submitmsg').click(function(){
+			if(allowComment == 1)
+			{
+				showErrorMsg('该博文不允许评论' , '消息提示'); 
+				return false;
+			}
+			var bid   = $(this).attr('bid');
+			var toid  = $(this).attr('toid');
+			var text = $('#reply').val();
+			var url = $(this).attr('url');
+			if(text == '' || text=='文明上网，理性发言...')
+			{
+				showErrorMsg('评论内容不能为空！' , '消息提示'); 
+				return false;
+			}
+			else
+			{
+				if(mb_strlen(text) > 1000){
+					showErrorMsg('评论内容不能超过500个汉字' , '消息提示'); 
+					return false;
+				}
+			}
+		    $.ajax({
+		        type: "post",
+			    url: url ,
+			    data: {'bid': bid , 'to' : toid ,'text': text},
+				dataType: 'json',
+			    success: function(data){
+				    if(data.code == 1)
+					{
+						var tpl   = '<div class="Blog_right1_8">';
+							tpl  +=   '<div class="Blog_right_img1"><a href="' +data.info.url+ '" >' + data.info.header + '</a></div>';
+							tpl  +=	  '<div class="Blog_right_font1">';
+							tpl  +=       '<p class="Blog_p5"><span><a href="' +data.info.url+ '" >' + data.info.username + '</a></span>' + data.info.dateline + '</p>';
+							tpl  +=       '<p class="Blog_p6">' + data.info.content + '</p>';
+							tpl  +=		  '<div class="div1"><a href="javascript:void(0);" class="Blog_a10"  toid=' + data.info.fuid + ' bid=' + data.info.bid + ' cid=' + data.info.cid + '>回复</a> | 　<a class="comment_del_mark" style="cursor:pointer" url="' + data.info.delurl + '">删除</a>　| 　<a href="javascript:showJuBao(\'/blog/ViewReport.html\','+data.info.cid+')" class="box_report" cid="' + data.info.cid + '">举报</a></div>';
+							tpl  +=		  '<div class="z_move_comment" style="display:none"></div>';
+							tpl  +=    '</div><div class="Blog_line1"></div></div>';
+							$('.Blog_tit3:first').after(tpl);
+							$('#reply').val('文明上网，理性发言...');
+					}
+					else if(data.code == -1)
+					{
+						showErrorMsg(data.info , '消息提示'); 
+			        }
+                },
+			    error: function(){//请求出错处理
+                        
+                }
+		    });
+			
+		});
+		//底部评论重置
+		$('#reset_comment').click(function(){
+			$('#reply').val('文明上网，理性发言...');
+		});
+		//取消回复
+		$('#qx_comment').live('click' , function(){
+			$('.z_move_comment').html('').hide();
+		});
+
+
+		$('#rmsg, #reply').live({
+		    focus:function(){
+			    if($(this).val() == '文明上网，理性发言...'){
+			        $(this).val('');
+			    }
+			},
+			blur:function(){
+		        if($(this).val() == ''){
+			        $(this).val('文明上网，理性发言...');
+			    }
+			}
+		});
+		//删除留言确认
+		$('.comment_del_mark').live('click' , function(){
+			var url = $(this).attr('url');
+			asyncbox.confirm('删除留言','确认', function(action){
+				if(action == 'ok')
+				{
+					location.href = url;
+				}
+			});
+		});
+		//删除时间确认
+		$('.del_article_id').click(function(){
+			var delurl = $(this).attr('delurl');
+			asyncbox.confirm('删除文章','确认', function(action){
+				if(action == 'ok')
+				{
+					location.href = delurl;
+				}
+			});
+		});
+		/*
+		//字数限制
+		$('#rmsg, #reply').live('keyup', function(){
+			var id = $(this).attr('id');
+			var left = Util.calWbText($(this).val(), 500);
+			var eid = '#errmsg';
+			
+			if(id == 'reply') eid =  '#rerrmsg';
+			if (left >= 0)
+		        $(eid).html('您还可以输入<span>' + left + '</span>字');
+		    else
+		        $(eid).html('<font color="red">您已超出<span>' + Math.abs(left) + '</span>字 </font>');
+		});
+		*/
+		//加载表情
+	    $('#face').qqFace({id : 'facebox1', assign : 'reply', path : '/image/qqface/'});
+	    $('#mface').qqFace({id : 'facebox', assign : 'rmsg', path:'/image/qqface/'});
+	    
+		/*
+		$('#class_one_id').change(function(){
+			alert(123213);
+			var id = parseInt($(this).val() , 10);
+			if(id == 0) return false;
+			$('.hidden_son_class span').each(function( index , dom ){
+				if( dom.attr('cid')  == id )
+				{
+				}
+			});
+		});
+		*/
+		//转载文章
+		var turn_url = "/blog/viewClassPart.html";
+		$('#repost_bar').click(function(){
+			if(isOnLine == '' )
+			{
+				//showErrorMsg('登录之后才能进行此操作' , '消息提示');
+				showErrorMsg('操作失败,您需要先登录!', '消息提示', '/site/login.html');
+				return false;
+			}
+			var id = $(this).attr('bid');
+			asyncbox.open({
+				id  : 'turn_class_thickbox',
+				url : turn_url,
+				title : '转载文章',
+				width : 330,
+				height : 131,
+				scroll : 'no',
+				data : {
+					'id'	 : id
+				},
+				callback : function(action){
+					if(action == 'close'){
+						$.cover(false);
+					}
+				}
+			});
+		});
+		/*
+	    //转发文章
+	    $('#repost_bar').live('click' , function(){
+			if(isOnLine == '' )
+			{
+				//showErrorMsg('登录之后才能进行此操作' , '消息提示');
+				showErrorMsg('操作失败,您需要先登录!', '消息提示', '/site/login.html');
+				return false;
+			}
+	    	var bid  = $(this).attr('bid');
+	    	var url  = $(this).attr('url');
+	    	asyncbox.confirm('转载文章','确认', function(action){
+	    	  if(action == 'ok'){
+	    	    $.ajax({
+				type:"POST",
+				url:url,	
+				data: {
+					'bid' : bid 
+				},
+				dataType: 'json',
+				success:function(msg){
+				  if(msg.error == 0){
+				    showSucceedMsg('转发成功！', '消息提示');
+				  }else if(msg.error == 1){
+				    //location.href = '/index.php?r=site/login';
+					showErrorMsg('操作失败,您需要先登录!', '消息提示', '/site/login.html');
+				  }else{
+				    showErrorMsg(msg.error_content, '消息提示');
+			      }
+				}
+			  });
+	    	  }
+	    	});
+
+		});
+		*/
+
+	});
+</script>
+<!--该部分应该放在输出代码块的后面才起作用 -->
+<script type="text/javascript">
+
+SyntaxHighlighter.autoloader(
+	'applescript			/highlight/scripts/shBrushAppleScript.js',
+	'actionscript3 as3		/highlight/scripts/shBrushAS3.js',
+	'bash shell				/highlight/scripts/shBrushBash.js',
+	'coldfusion cf			/highlight/scripts/shBrushColdFusion.js',
+	'cpp c					/highlight/scripts/shBrushCpp.js',
+	'c# c-sharp csharp		/highlight/scripts/shBrushCSharp.js',
+	'css					/highlight/scripts/shBrushCss.js',
+	'delphi pascal			/highlight/scripts/shBrushDelphi.js',
+	'diff patch pas			/highlight/scripts/shBrushDiff.js',
+	'erl erlang				/highlight/scripts/shBrushErlang.js',
+	'groovy					/highlight/scripts/shBrushGroovy.js',
+	'java					/highlight/scripts/shBrushJava.js',
+	'jfx javafx				/highlight/scripts/shBrushJavaFX.js',
+	'js jscript javascript	/highlight/scripts/shBrushJScript.js',
+	'perl pl				/highlight/scripts/shBrushPerl.js',
+	'php					/highlight/scripts/shBrushPhp.js',
+	'text plain				/highlight/scripts/shBrushPlain.js',
+	'py python				/highlight/scripts/shBrushPython.js',
+	'ruby rails ror rb		/highlight/scripts/shBrushRuby.js',
+	'scala					/highlight/scripts/shBrushScala.js',
+	'sql					/highlight/scripts/shBrushSql.js',
+	'vb vbnet				/highlight/scripts/shBrushVb.js',
+	'xml xhtml xslt html	/highlight/scripts/shBrushXml.js'
+);
+SyntaxHighlighter.all();
+
+
+function code_hide(id){
+	var code = document.getElementById(id).style.display;
+	if(code == 'none'){
+		document.getElementById(id).style.display = 'block';
+	}else{
+		document.getElementById(id).style.display = 'none';
+	}
+}
+</script>
+<!--回顶部js2011.12.30-->
+<script language="javascript">
+ lastScrollY=0;
+ function heartBeat(){
+ var diffY;
+ if (document.documentElement && document.documentElement.scrollTop)
+     diffY = document.documentElement.scrollTop;
+ else if (document.body)
+     diffY = document.body.scrollTop
+ else
+     {/*Netscape stuff*/}
+ percent=.1*(diffY-lastScrollY);
+ if(percent>0)percent=Math.ceil(percent);
+ else percent=Math.floor(percent);
+ document.getElementById("full").style.top=parseInt(document.getElementById("full").style.top)+percent+"px";
+ lastScrollY=lastScrollY+percent;
+ if(lastScrollY<200)
+ {
+ document.getElementById("full").style.display="none";
+ }
+ else
+ {
+ document.getElementById("full").style.display="block";
+ }
+ }
+ var gkuan=document.body.clientWidth;
+ var ks=(gkuan-960)/2-30;
+ suspendcode="<div id=\"full\" style='right:4px;POSITION:absolute;TOP:500px;z-index:100;width:20px; height:50px;cursor:pointer;'><a href=\"javascript:void(0)\" onclick=\"window.scrollTo(0,0);\"><img src=\"\/image\/top.png\" /></a></div>"
+ document.write(suspendcode);
+ window.setInterval("heartBeat()",1);
+ </script><div id="full" style="right: 4px; position: absolute; top: 800px; z-index: 100; width: 20px; height: 50px; cursor: pointer; display: block;"><a href="javascript:void(0)" onclick="window.scrollTo(0,0);"><img src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/top.png"></a></div>
+  <!-- footer -->
+  <div class="Blog_footer" style="clear:both">
+    <div><a href="http://www.chinaunix.net/about/index.shtml" target="_blank" rel="nofollow">关于我们</a> | <a href="http://www.it168.com/bottomfile/it168.shtml" target="_blank" rel="nofollow">关于IT168</a> | <a href="http://www.chinaunix.net/about/connect.html" target="_blank" rel="nofollow">联系方式</a> | <a href="http://www.chinaunix.net/about/service.html" target="_blank" rel="nofollow">广告合作</a> | <a href="http://www.it168.com//bottomfile/flgw/fl.htm" target="_blank" rel="nofollow">法律声明</a> | <a href="http://sso.chinaunix.net/Register?return_url=http%3A%2F%2Fblog.chinaunix.net%2F" target="_blank" rel="nofollow">免费注册</a>
+      <p>Copyright  2001-2010 ChinaUnix.net All Rights Reserved 北京皓辰网域网络信息技术有限公司. 版权所有 </p>
+      <div>感谢所有关心和支持过ChinaUnix的朋友们
+        <p>京ICP证041476号 京ICP证060528号</p>
+      </div>
+    </div>
+  </div>
+</div>
+<script language="javascript">
+
+//全局错误提示弹出框
+function showErrorMsg(content, title, url){
+	var url = url || '';
+	var title = title || '消息提示';
+	var html = '';
+	html += '<div class="HT_layer3_1 HT_layer3_2"><ul><li><p><span class="login_span1"></span>' + content + '</p></li>';
+	if(url == '' || url.length == 0){
+		html += '<li class="HT_li1"><input type="button" class="HT_btn2"  onclick=\'close_windows("error_msg")\'></li>';	
+	} else {
+		html += '<li class="HT_li1"><input type="button" class="login_btn1" onclick="location.href=\'' + url + '\'"></li>';
+	}
+	html += '</ul></div>';
+	$.cover(true);
+	   asyncbox.open({
+		 id: 'error_msg',
+		 title : title,
+		 html : html,
+		 'callback' : function(action){
+			 if(action == 'close'){
+				 $.cover(false);
+			 }
+		 }
+	});
+}
+
+//全局正确提示
+function showSucceedMsg(content, title , url ){
+	var url = url || '';
+	var title = title || '消息提示';
+	var html = '';
+	html += '<div class="HT_layer3_1 HT_layer3_2"><ul><li><p><span class="login_span2"></span>' + content + '</p></li>';
+	if(url == '' || url.length == 0){
+		html += '<li class="HT_li1"><input type="button" class="HT_btn2"  onclick=\'close_windows("error_msg")\'></li>';	
+	} else {
+		html += '<li class="HT_li1"><input type="button" class="HT_btn2" onclick="location.href=\'' + url + '\'"></li>';
+	}
+	html += '</ul></div>';
+	$.cover(true);
+	asyncbox.open({
+		 id: 'error_msg',
+		 title : title,
+		 html : html,
+		 'callback' : function(action){
+			 if(action == 'close'){
+				 $.cover(false);
+			 }
+		 }
+	});
+}
+
+//关闭指定id的窗口
+function close_windows(id){
+	$.cover(false);
+	$.close(id);
+}
+
+
+//公告
+var tID;
+var tn;                        // 高度
+var nStopTime = 5000;        // 不同行间滚动时间隔的时间，值越小，移动越快
+var nSpeed = 50;            // 滚动时，向上移动一像素间隔的时间，值越小，移动越快
+var isMove = true;
+var nHeight = 25;
+var nS = 0;
+var nNewsCount = 3;
+
+/**
+ * n 用于表示是否为第一次运行
+ **/
+function moveT(n)
+{
+    clearTimeout(tID)
+    var noticev2 = document.getElementById("noticev2")
+    nS = nSpeed;
+    
+    // 只在第一次调用时运行，初始化环境（有没有参数）
+    if (n)
+    {
+        // 设置行高
+        noticev2.style.lineHeight = nHeight + "px";
+        // 初始化显示位置
+        tn = 0;
+        // 刚进入时在第一行停止时间
+        nS = nStopTime;
+    }
+    
+    // 判断鼠标是否指向层
+    if (isMove)
+    {
+        // 向上移动一像素
+        tn--;
+        // 如果移动到最下面一行了，则移到顶行
+        if (Math.abs(tn) == nNewsCount * nHeight)
+        {
+            tn = 0;
+        }
+        // 设置位置
+        noticev2.style.marginTop = tn + "px";
+        // 完整显示一行时，停止一段时间
+        if (tn % nHeight == 0)
+        {
+            nS = nStopTime;
+        }
+    }
+
+    tID = setTimeout("moveT()", nS);
+}
+moveT(1);    // 此处可以传入任何参数
+</script>
+<script language="javascript" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/pv.js"></script>
+<script>
+function sendPV(){
+    var pvTrack = new PvTrack();
+    pvTrack.type = 35; // 频道类别ID
+    pvTrack.channel = 189; // 频道ID
+    pvTrack.pageType = 0;
+    pvTrack.track();
+}
+window.setTimeout("sendPV()", 1000);
+</script>
+<script type="text/javascript">
+  var _gaq = _gaq || [];
+  _gaq.push(['_setAccount', 'UA-20237423-2']);
+  _gaq.push(['_setDomainName', '.chinaunix.net']);
+  _gaq.push(['_trackPageview']);
+
+  (function() {
+    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+    ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  })();
+
+</script>
+<script type="text/javascript">
+var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F0ee5e8cdc4d43389b3d1bfd76e83216b' type='text/javascript'%3E%3C/script%3E"));
+
+function linkto(){
+    setCookie("returnUrl", location.href, 1483010209, "/");
+}
+function linktoOut(){
+    setCookie("returnOutUrl", location.href, 1483010209, "/");
+}
+//JS写COOKIE
+function setCookie(name, value, expires, path, domain){
+	if(!arguments[2]) expires = 3600 * 24;
+	if(!arguments[3]) path = "";
+	if(!arguments[4]) domain = "";
+	var str=name+"="+escape(value);
+	if(expires!=""){
+		var date=new Date();
+		date.setTime(date.getTime()+expires*1000);
+		str+=";expires="+date.toGMTString();
+	}
+	if(path!=""){
+		str+=";path="+path;//指定可访问cookie的目录
+	}
+	if(domain!=""){
+		str+=";domain="+domain;//指定可访问cookie的域
+	}
+	document.cookie = str;
+}
+
+</script><script src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/h.js" type="text/javascript"></script>
+<script type="text/javascript" src="./linux man使用方法 和centos安装中文man包-gududesiling-ChinaUnix博客_files/jquery.qqFace.js"></script>
+
+
+<div id="asyncbox_cover" unselectable="on" style="opacity:0.1;filter:alpha(opacity=10);background:#000"></div><div id="asyncbox_clone"></div><div id="asyncbox_focus"></div><div id="asyncbox_load"><div><span></span></div></div></body></html>
